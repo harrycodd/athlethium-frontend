@@ -1,0 +1,579 @@
+import React, { useState } from 'react';
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Modal,
+  ActivityIndicator,
+} from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import ScreenWrapper from '@/components/ui/screen-wrapper';
+import Text from '@/components/ui/text';
+import { useTheme } from '@/hooks/use-theme';
+import { useAuth } from '@/hooks/use-auth';
+import { createWorkout } from '@/lib/workout-service';
+import { ActivityType } from '@/types/activity';
+import {
+  ChevronLeft,
+  Calendar as CalendarIcon,
+  Clock,
+  ChevronDown,
+  Check,
+  Upload,
+  Activity,
+  Tag,
+  Zap,
+} from 'lucide-react-native';
+import { format } from 'date-fns';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Radius, BorderWidth } from '@/constants/theme';
+import { GlassButton } from '@/components/ui/glass-button';
+import { cn } from "@/lib/utils";
+import * as DocumentPicker from 'expo-document-picker';
+
+const SPORT_OPTIONS: { label: string; value: ActivityType }[] = [
+  { label: 'Running', value: 'running' },
+  { label: 'Cycling', value: 'cycling' },
+  { label: 'Swimming', value: 'swimming' },
+  { label: 'Strength', value: 'strength' },
+  { label: 'Stretching', value: 'stretching' },
+  { label: 'Other', value: 'other' },
+];
+
+const EVENT_TYPES = ['Session', 'Event', 'Goal'];
+
+const EFFORT_LEVELS = [
+  { label: 'Recovery (Zone 1)', factor: 25 },
+  { label: 'Steady (Zone 2)', factor: 45 },
+  { label: 'Threshold (Zone 3/4)', factor: 60 },
+  { label: 'VO2max / Hard (Zone 5)', factor: 80 },
+];
+
+export default function AddTrainingScreen() {
+  const router = useRouter();
+  const theme = useTheme();
+  const insets = useSafeAreaInsets();
+  const { user } = useAuth();
+  const { date: dateParam } = useLocalSearchParams<{ date?: string }>();
+
+  const [name, setName] = useState('');
+  const [sport, setSport] = useState<ActivityType>('running');
+  const [eventType, setEventType] = useState('Session');
+  const [description, setDescription] = useState('');
+  const [selectedDate, setSelectedDate] = useState(dateParam ? new Date(dateParam) : new Date());
+
+  const [duration, setDuration] = useState('00:30:00');
+  const [effortLevel, setEffortLevel] = useState(EFFORT_LEVELS[1]); // Steady default
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showSportPicker, setShowSportPicker] = useState(false);
+  const [showTypePicker, setShowTypePicker] = useState(false);
+  const [showEffortPicker, setShowEffortPicker] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const formatDurationInput = (text: string) => {
+    const cleaned = text.replace(/[^0-9]/g, '');
+    let digits = cleaned.padStart(6, '0');
+    if (digits.length > 6) digits = digits.slice(-6);
+    const hh = digits.slice(0, 2);
+    const mm = digits.slice(2, 4);
+    const ss = digits.slice(4, 6);
+    return `${hh}:${mm}:${ss}`;
+  };
+
+  const getDurationInSeconds = () => {
+    const parts = duration.split(':').map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return 0;
+    return (parts[0] * 3600) + (parts[1] * 60) + parts[2];
+  };
+
+  const calculateTSS = () => {
+    const totalHours = getDurationInSeconds() / 3600;
+    return Math.round(totalHours * effortLevel.factor);
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+    if (!name.trim()) {
+      Alert.alert('Required', 'Please enter a session name');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const durationSecs = getDurationInSeconds();
+      const minutesFormatted = Math.floor(durationSecs / 60);
+      const durationStr = `${minutesFormatted}m`;
+      const tss = calculateTSS();
+      const dateString = format(selectedDate, 'yyyy-MM-dd');
+
+      await createWorkout({
+        userId: user.uid,
+        sport,
+        name: name.trim(),
+        description: description.trim() || `Manually added ${sport} session`,
+        meta: `${durationStr} • ${effortLevel.label} • ~${tss} TSS`,
+        date: dateString,
+        completed: false,
+        status: 'planned',
+        type: eventType,
+        segments: [
+          {
+            title: `Manual ${sport} session`,
+            description: description.trim() || `Manual ${sport} session`,
+            duration: durationSecs,
+          },
+        ],
+        plannedTime: durationSecs,
+        plannedTss: tss,
+      });
+
+      router.back();
+    } catch (error) {
+      console.error('Failed to add training:', error);
+      Alert.alert('Error', 'Failed to save training session');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFileUpload = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: '*/*',
+        copyToCacheDirectory: true,
+      });
+
+      if (result.canceled || !result.assets || result.assets.length === 0) {
+        return;
+      }
+
+      setUploading(true);
+      const file = result.assets[0];
+
+      const formData = new FormData();
+      formData.append('userId', user!.uid);
+
+      const fileData = {
+        uri: file.uri,
+        name: file.name,
+        type: 'application/octet-stream',
+      };
+
+      // @ts-ignore
+      formData.append('file', fileData);
+
+      const response = await fetch('https://upload-workout-fit-2stnjlmrwq-nw.a.run.app', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        Alert.alert('Success', 'Workout uploaded and analyzed successfully!');
+        if (router.canGoBack()) {
+          router.back();
+        } else {
+          router.replace('/(tabs)');
+        }
+      } else {
+        const errorText = await response.text();
+        console.error('Upload failed:', errorText);
+        Alert.alert('Error', `Upload failed: ${errorText}`);
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      Alert.alert('Error', 'An error occurred during upload.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const PickerButton = ({ label, value, icon: Icon, onPress }: any) => (
+    <View className="mb-3 flex-1">
+      <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">
+        {label}
+      </Text>
+      <TouchableOpacity
+        onPress={onPress}
+        activeOpacity={0.75}
+        style={{
+          borderRadius: Radius.xl,
+          borderWidth: BorderWidth.hairline,
+          borderColor: theme.colors.border,
+          backgroundColor: theme.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+          paddingVertical: 12,
+          paddingHorizontal: 14,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <View className="mr-2.5">
+          <Icon size={16} color={theme.colors.primary} />
+        </View>
+        <Text
+          className="flex-1 text-[15px] font-semibold"
+          style={{ color: theme.colors.text, includeFontPadding: false }}
+          numberOfLines={1}
+        >
+          {value}
+        </Text>
+        <ChevronDown size={14} color={theme.colors.textSecondary} />
+      </TouchableOpacity>
+    </View>
+  );
+
+  return (
+    <>
+      <ScreenWrapper scrollable={false} withTopInset={false}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          className="flex-1"
+        >
+          {/* Navigation Bar */}
+          <View className="px-4 pt-3 pb-2 flex-row items-center justify-between">
+            <GlassButton
+              onPress={() => router.back()}
+              shape="pill"
+              size="sm"
+              style={{ width: 80, height: 36 }}
+              contentContainerStyle={{ paddingHorizontal: 0, paddingVertical: 0, width: '100%', height: 36, justifyContent: 'center', alignItems: 'center' }}
+            >
+              <View className="flex-row items-center justify-center gap-1">
+                <ChevronLeft size={16} color={theme.colors.text} strokeWidth={2.5} />
+                <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text }}>Back</Text>
+              </View>
+            </GlassButton>
+
+            <View className="flex-row gap-2 items-center">
+              <GlassButton
+                onPress={handleFileUpload}
+                disabled={uploading || loading}
+                shape="pill"
+                size="sm"
+                style={{ width: 92, height: 36 }}
+                contentContainerStyle={{ paddingHorizontal: 0, paddingVertical: 0, width: '100%', height: 36, justifyContent: 'center', alignItems: 'center' }}
+              >
+                <View className="flex-row items-center justify-center gap-1.5">
+                  <Upload size={13} color={theme.colors.primary} />
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: theme.colors.primary }}>Upload</Text>
+                </View>
+              </GlassButton>
+            </View>
+          </View>
+
+          {/* Prominent Session Title Section */}
+          <View className="px-4 pt-3 pb-3">
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              placeholder="Session Name"
+              placeholderTextColor={theme.colors.textSecondary}
+              multiline={true}
+              className="text-2xl font-black tracking-tight"
+              style={{
+                color: theme.colors.text,
+                includeFontPadding: false,
+                paddingVertical: 0,
+                lineHeight: 30,
+              }}
+            />
+            <View className="flex-row items-center gap-2 mt-2 flex-wrap">
+              {/* Sport Badge */}
+              <View
+                style={{
+                  backgroundColor: 'rgba(34, 197, 94, 0.15)',
+                  borderColor: 'rgba(34, 197, 94, 0.35)',
+                  borderWidth: BorderWidth.hairline,
+                  paddingHorizontal: 10,
+                  paddingVertical: 3,
+                  borderRadius: Radius.full,
+                }}
+              >
+                <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.primary, textTransform: 'capitalize' }}>
+                  {sport}
+                </Text>
+              </View>
+
+              {/* Event Type Badge */}
+              <View
+                style={{
+                  backgroundColor: theme.isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
+                  borderColor: theme.colors.border,
+                  borderWidth: BorderWidth.hairline,
+                  paddingHorizontal: 10,
+                  paddingVertical: 3,
+                  borderRadius: Radius.full,
+                }}
+              >
+                <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.textSecondary }}>
+                  {eventType}
+                </Text>
+              </View>
+
+              {/* Calculated TSS Badge */}
+              <View
+                style={{
+                  backgroundColor: theme.isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
+                  borderColor: theme.colors.border,
+                  borderWidth: BorderWidth.hairline,
+                  paddingHorizontal: 10,
+                  paddingVertical: 3,
+                  borderRadius: Radius.full,
+                }}
+              >
+                <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.textSecondary }}>
+                  ~{calculateTSS()} TSS
+                </Text>
+              </View>
+
+              {/* Effort Level Badge */}
+              <View
+                style={{
+                  backgroundColor: 'rgba(59, 130, 246, 0.12)',
+                  borderColor: 'rgba(59, 130, 246, 0.3)',
+                  borderWidth: BorderWidth.hairline,
+                  paddingHorizontal: 10,
+                  paddingVertical: 3,
+                  borderRadius: Radius.full,
+                }}
+              >
+                <Text style={{ fontSize: 11, fontWeight: '700', color: '#60a5fa' }}>
+                  {effortLevel.label}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Uploading Modal */}
+          <Modal visible={uploading} transparent animationType="fade">
+            <View className="flex-1 bg-black/60 justify-center items-center px-6">
+              <View
+                style={{
+                  backgroundColor: theme.surface,
+                  borderColor: theme.colors.border,
+                  borderRadius: Radius.xxl,
+                  borderWidth: BorderWidth.hairline,
+                  padding: 24,
+                  alignItems: 'center',
+                }}
+                className="w-full shadow-lg"
+              >
+                <ActivityIndicator size="large" color={theme.colors.primary} />
+                <Text variant="h2" className="mt-5 mb-2 text-center">Uploading Workout</Text>
+                <Text variant="muted" className="text-center text-xs">
+                  Parsing FIT file and generating analytics. This might take a few seconds...
+                </Text>
+              </View>
+            </View>
+          </Modal>
+
+          <ScrollView className="flex-1 px-4 pt-2" showsVerticalScrollIndicator={false}>
+            <View>
+              {/* Row 1: Date & Sport */}
+              <View className="flex-row gap-2 items-stretch">
+                <PickerButton
+                  label="Date"
+                  value={format(selectedDate, 'EEE, MMM do')}
+                  icon={CalendarIcon}
+                  onPress={() => setShowDatePicker(true)}
+                />
+                <PickerButton
+                  label="Sport"
+                  value={SPORT_OPTIONS.find(s => s.value === sport)?.label || sport}
+                  icon={Activity}
+                  onPress={() => setShowSportPicker(true)}
+                />
+              </View>
+
+              {/* Row 2: Type & Effort Level */}
+              <View className="flex-row gap-2 items-stretch">
+                <PickerButton
+                  label="Type"
+                  value={eventType}
+                  icon={Tag}
+                  onPress={() => setShowTypePicker(true)}
+                />
+                <PickerButton
+                  label="Effort Level"
+                  value={effortLevel.label}
+                  icon={Zap}
+                  onPress={() => setShowEffortPicker(true)}
+                />
+              </View>
+
+              {/* Planned Duration */}
+              <View className="mb-4">
+                <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">
+                  Planned Duration
+                </Text>
+                <View
+                  style={{
+                    borderRadius: Radius.xl,
+                    borderWidth: BorderWidth.hairline,
+                    borderColor: theme.colors.border,
+                    backgroundColor: theme.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+                  }}
+                  className="py-3 px-3.5 flex-row items-center"
+                >
+                  <View className="mr-2.5">
+                    <Clock size={16} color={theme.colors.primary} />
+                  </View>
+                  <TextInput
+                    value={duration}
+                    onChangeText={(text) => setDuration(formatDurationInput(text))}
+                    keyboardType="numeric"
+                    placeholder="00:00:00"
+                    placeholderTextColor={theme.colors.textSecondary}
+                    className="flex-1 text-[15px] font-semibold p-0 m-0"
+                    style={{ color: theme.colors.text, includeFontPadding: false, textAlignVertical: 'center', paddingVertical: 0 }}
+                  />
+                </View>
+              </View>
+
+              {/* Description & Goals */}
+              <View className="mb-6">
+                <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">
+                  Description & Goals
+                </Text>
+                <TextInput
+                  value={description}
+                  onChangeText={setDescription}
+                  placeholder="What are the goals or notes for this session?"
+                  placeholderTextColor={theme.colors.textSecondary}
+                  multiline
+                  style={{
+                    borderRadius: Radius.xl,
+                    borderWidth: BorderWidth.hairline,
+                    borderColor: theme.colors.border,
+                    backgroundColor: theme.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+                    color: theme.colors.text,
+                    textAlignVertical: 'top',
+                    includeFontPadding: false,
+                    minHeight: 120,
+                    padding: 14,
+                    fontSize: 15,
+                    lineHeight: 22,
+                  }}
+                />
+              </View>
+            </View>
+          </ScrollView>
+
+          {/* Sticky Actions */}
+          <View className="px-4 pt-3 pb-8 border-t border-border bg-background">
+            <View className="flex-row gap-2">
+              <GlassButton
+                label={loading ? "Saving..." : "Add to Plan"}
+                variant="glass-primary"
+                size="lg"
+                shape="pill"
+                onPress={handleSave}
+                disabled={loading}
+                loading={loading}
+                style={{ flex: 1, height: 48 }}
+                contentContainerStyle={{ height: 48, justifyContent: 'center', alignItems: 'center' }}
+              />
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </ScreenWrapper>
+
+      {/* Date Picker Modal */}
+      {showDatePicker && (
+        <DateTimePicker
+          value={selectedDate}
+          mode="date"
+          display="default"
+          onChange={(_event: any, date?: Date) => {
+            setShowDatePicker(false);
+            if (date) setSelectedDate(date);
+          }}
+        />
+      )}
+
+      {/* Modals for Pickers */}
+      <SelectionModal
+        visible={showSportPicker}
+        onClose={() => setShowSportPicker(false)}
+        title="Select Sport"
+        options={SPORT_OPTIONS}
+        selectedValue={sport}
+        onSelect={(val: any) => setSport(val)}
+      />
+
+      <SelectionModal
+        visible={showTypePicker}
+        onClose={() => setShowTypePicker(false)}
+        title="Select Event Type"
+        options={EVENT_TYPES.map(t => ({ label: t, value: t }))}
+        selectedValue={eventType}
+        onSelect={(val: any) => setEventType(val)}
+      />
+
+      <SelectionModal
+        visible={showEffortPicker}
+        onClose={() => setShowEffortPicker(false)}
+        title="Select Effort Level"
+        options={EFFORT_LEVELS.map(e => ({ label: e.label, value: e }))}
+        selectedValue={effortLevel}
+        onSelect={(val: any) => setEffortLevel(val)}
+      />
+    </>
+  );
+}
+
+function SelectionModal({ visible, onClose, title, options, selectedValue, onSelect }: any) {
+  const theme = useTheme();
+
+  return (
+    <Modal visible={visible} transparent animationType="slide">
+      <TouchableOpacity
+        className="flex-1 bg-black/50 justify-end"
+        activeOpacity={1}
+        onPress={onClose}
+      >
+        <View className="bg-card rounded-t-[32px] p-6 pb-12 border-t border-border">
+          <Text variant="h2" className="mb-6">{title}</Text>
+          {options.map((opt: any, index: number) => {
+            const isSelected = selectedValue === opt.value || selectedValue?.label === opt.value?.label;
+            return (
+              <TouchableOpacity
+                key={opt.label}
+                onPress={() => {
+                  onSelect(opt.value);
+                  onClose();
+                }}
+                className={cn(
+                  "flex-row items-center py-4 border-b border-border",
+                  index === options.length - 1 && "border-b-0"
+                )}
+              >
+                <Text className={`flex-1 text-lg ${isSelected ? 'text-primary font-bold' : ''}`}>
+                  {opt.label}
+                </Text>
+                {isSelected && <Check size={20} color={theme.colors.primary} />}
+              </TouchableOpacity>
+            );
+          })}
+          <GlassButton
+            label="Cancel"
+            variant="glass"
+            size="lg"
+            shape="pill"
+            onPress={onClose}
+            className="mt-6 w-full"
+          />
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
+}

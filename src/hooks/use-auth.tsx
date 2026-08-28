@@ -1,0 +1,86 @@
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { UserProfile, subscribeToUserProfile, createUserProfile, DEFAULT_PROFILE } from '@/lib/user-service';
+
+interface AuthContextType {
+  user: User | null;
+  profile: UserProfile | null;
+  loading: boolean;
+}
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  profile: null,
+  loading: true,
+});
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let unsubProfile: (() => void) | undefined;
+
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+
+      if (currentUser) {
+        // Set an immediate initial profile so screens never have null reference
+        setProfile(prev => prev || ({
+          uid: currentUser.uid,
+          email: currentUser.email,
+          displayName: currentUser.displayName || currentUser.email?.split('@')[0] || 'Athlete',
+          ...DEFAULT_PROFILE,
+          wizardCompleted: false,
+        } as UserProfile));
+
+        // Ensure loading state is released promptly
+        const safetyTimer = setTimeout(() => {
+          setLoading(false);
+        }, 800);
+
+        if (unsubProfile) unsubProfile();
+        unsubProfile = subscribeToUserProfile(currentUser.uid, async (p) => {
+          clearTimeout(safetyTimer);
+          if (p === null) {
+            try {
+              const newProfile = await createUserProfile(
+                currentUser.uid,
+                currentUser.email,
+                currentUser.displayName || currentUser.email?.split('@')[0] || 'Athlete'
+              );
+              setProfile(newProfile);
+            } catch (err) {
+              console.error("Error creating initial profile:", err);
+            }
+          } else {
+            setProfile(p);
+          }
+          setLoading(false);
+        });
+      } else {
+        if (unsubProfile) {
+          unsubProfile();
+          unsubProfile = undefined;
+        }
+        setProfile(null);
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      if (unsubProfile) unsubProfile();
+    };
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, profile, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => useContext(AuthContext);

@@ -1,0 +1,186 @@
+import React, { useState } from 'react';
+import { View, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { getUserProfile } from '@/lib/user-service';
+import { Link, useRouter } from 'expo-router';
+import ScreenWrapper from '@/components/ui/screen-wrapper';
+import Text from '@/components/ui/text';
+import { GlassButton } from '@/components/ui/glass-button';
+import { useTheme } from '@/hooks/use-theme';
+import { Radius } from '@/constants/theme';
+import { useTranslation } from 'react-i18next';
+
+export default function LoginScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { colors, isDark } = useTheme();
+  const { t } = useTranslation('auth');
+
+  const hasEmail = email.trim().length > 0;
+  const hasPassword = password.length > 0;
+  const isFormFilled = hasEmail && hasPassword;
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      const userProfile = await getUserProfile(userCredential.user.uid);
+      if (userProfile?.wizardCompleted) {
+        router.replace('/(tabs)');
+      } else {
+        router.replace('/wizard');
+      }
+    } catch (error: any) {
+      const code = error?.code;
+      if (
+        code === 'auth/invalid-credential' ||
+        code === 'auth/user-not-found' ||
+        code === 'auth/wrong-password' ||
+        code === 'auth/invalid-email'
+      ) {
+        Alert.alert('Login Error', 'Incorrect username or password');
+      } else {
+        Alert.alert('Login Error', 'Please try again later');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const content = (
+    <View style={{ width: '100%', maxWidth: 420, alignSelf: 'center', paddingVertical: 24 }}>
+      <View style={{ alignItems: 'center', marginBottom: 28 }}>
+        <Text style={{ fontSize: 34, fontWeight: '900', letterSpacing: -0.5, color: colors.text }}>
+          Athlethium
+        </Text>
+      </View>
+
+      <View style={{ gap: 16, marginBottom: 28 }}>
+        <View>
+          <Text 
+            variant="small" 
+            style={{ 
+              marginBottom: 6, 
+              marginLeft: 4, 
+              color: colors.textSecondary, 
+              fontWeight: '600' 
+            }}
+          >
+            {t('email', 'Email')}
+          </Text>
+          <TextInput
+            style={{ 
+              height: 52,
+              paddingHorizontal: 16,
+              borderRadius: Radius.lg,
+              borderWidth: 1.5,
+              color: colors.text, 
+              backgroundColor: colors.surfaceMuted,
+              borderColor: colors.border,
+              fontSize: 16,
+            }}
+            placeholder={t('emailPlaceholder', 'example@email.com')}
+            placeholderTextColor={colors.textSecondary}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+        </View>
+
+        <View>
+          <Text 
+            variant="small" 
+            style={{ 
+              marginBottom: 6, 
+              marginLeft: 4, 
+              color: colors.textSecondary, 
+              fontWeight: '600' 
+            }}
+          >
+            {t('password', 'Password')}
+          </Text>
+          <TextInput
+            style={{ 
+              height: 52,
+              paddingHorizontal: 16,
+              borderRadius: Radius.lg,
+              borderWidth: 1.5,
+              color: colors.text, 
+              backgroundColor: colors.surfaceMuted,
+              borderColor: colors.border,
+              fontSize: 16,
+            }}
+            placeholder={t('passwordPlaceholder', '••••••••')}
+            placeholderTextColor={colors.textSecondary}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+        </View>
+      </View>
+
+      {/* Glowing Sign In Button when filled */}
+      <GlassButton 
+        label={t('signInButton', 'Sign In')} 
+        onPress={handleLogin}
+        disabled={loading}
+        loading={loading}
+        variant="glass-primary"
+        shape="rounded"
+        size="lg"
+        glowColor={isFormFilled ? '#22c55e' : undefined}
+        tintColor={isFormFilled ? (isDark ? 'rgba(34, 197, 94, 0.35)' : 'rgba(22, 163, 74, 0.25)') : undefined}
+        style={{ 
+          minHeight: 52,
+          opacity: isFormFilled ? 1 : 0.65,
+          shadowColor: isFormFilled ? '#22c55e' : '#000000',
+          shadowOpacity: isFormFilled ? (isDark ? 0.6 : 0.35) : 0.1,
+          shadowRadius: isFormFilled ? 16 : 4,
+          elevation: isFormFilled ? 6 : 2,
+        }}
+      />
+
+      <Link href="/(auth)/signup" asChild>
+        <TouchableOpacity style={{ marginTop: 24, alignItems: 'center', padding: 8 }}>
+          <Text style={{ fontSize: 14, color: colors.textSecondary, textAlign: 'center' }}>
+            {t('dontHaveAccount', "Don't have an account? ")}{" "}
+            <Text style={{ color: colors.primary, fontWeight: '700' }}>
+              {t('signUp', 'Sign Up')}
+            </Text>
+          </Text>
+        </TouchableOpacity>
+      </Link>
+
+      <Link href="/(auth)/forgot-password" asChild>
+        <TouchableOpacity style={{ marginTop: 8, alignItems: 'center', padding: 8 }}>
+          <Text style={{ fontSize: 14, color: colors.primary, fontWeight: '600', textAlign: 'center' }}>
+            {t('forgotPassword', 'Forgot Password?')}
+          </Text>
+        </TouchableOpacity>
+      </Link>
+    </View>
+  );
+
+  return (
+    <ScreenWrapper scrollable={true}>
+      <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 24, minHeight: 520 }}>
+        {Platform.OS === 'ios' ? (
+          <KeyboardAvoidingView behavior="padding" style={{ flex: 1, justifyContent: 'center' }}>
+            {content}
+          </KeyboardAvoidingView>
+        ) : (
+          content
+        )}
+      </View>
+    </ScreenWrapper>
+  );
+}
