@@ -195,6 +195,8 @@ export function GlassButton({
 const styles = StyleSheet.create({
   touchable: {
     overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 10,

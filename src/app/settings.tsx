@@ -1808,28 +1808,29 @@ export default function SettingsScreen() {
                     Automatically imports your completed workouts, power duration curves, heart rate, and GPS tracks.
                   </Text>
 
-                  {/* Compact connect button */}
+                  {/* Full width centered connect button */}
                   <GlassButton
                     onPress={handleStravaConnect}
                     disabled={connectingStrava}
                     loading={connectingStrava}
                     variant={profile?.stravaConnected ? 'glass' : 'glass-primary'}
                     shape="pill"
-                    size="sm"
+                    size="md"
                     glowColor={profile?.stravaConnected ? undefined : "#ea580c"}
-                    style={{ alignSelf: 'flex-start', height: 34, paddingHorizontal: 16 }}
+                    style={{ width: '100%', height: 40 }}
+                    contentContainerStyle={{ height: 40, paddingVertical: 0, justifyContent: 'center', alignItems: 'center' }}
                   >
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                       {profile?.stravaConnected ? (
-                        <Text style={{ fontSize: 13, fontWeight: '600', color: colors.textSecondary }}>
+                        <Text style={{ fontSize: 13, fontWeight: '700', color: colors.textSecondary }}>
                           Disconnect Strava
                         </Text>
                       ) : (
                         <>
-                          <Text style={{ fontSize: 13, fontWeight: '700', color: '#ffffff' }}>
+                          <Text style={{ fontSize: 13, fontWeight: '700', color: isDark ? '#4ade80' : '#15803d' }}>
                             Connect with Strava
                           </Text>
-                          <ExternalLink size={13} color="#ffffff" strokeWidth={2.2} />
+                          <ExternalLink size={14} color={isDark ? '#4ade80' : '#15803d'} strokeWidth={2.2} />
                         </>
                       )}
                     </View>

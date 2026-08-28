@@ -10,12 +10,117 @@ import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/hooks/use-auth';
 import { updateUserProfile } from '@/lib/user-service';
 import { regenerateIncompleteGeneratedWorkouts, createWorkout } from '@/lib/workout-service';
-import { ChevronLeft, ChevronDown, Check, Dumbbell, Target, User, Sparkles, Award, Clock, Flame, Calendar as CalendarIcon, Flag, Zap, Timer, PieChart, Sliders, Link2, ExternalLink, Star } from 'lucide-react-native';
+import { ChevronLeft, ChevronDown, ChevronUp, Check, Dumbbell, Target, User, Sparkles, Award, Clock, Flame, Calendar as CalendarIcon, Flag, Zap, Timer, PieChart, Sliders, Link2, ExternalLink, Star, Heart, Footprints, Bike, Waves, Scale, Gauge, Info } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Radius, BorderWidth } from '@/constants/theme';
 import { format, addWeeks, differenceInWeeks } from 'date-fns';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+type FitnessLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite';
+
+const FITNESS_LEVEL_PRESETS: Record<
+  FitnessLevel,
+  {
+    label: string;
+    badge: string;
+    color: string;
+    defaultCtl: number;
+    description: string;
+    cyclingFtp: number;
+    runningPaceSecKm: number;
+    swimCssSec100m: number;
+    fthr: number;
+    maxHr: number;
+  }
+> = {
+  beginner: {
+    label: 'Beginner',
+    badge: 'Starting Out',
+    color: '#22c55e',
+    defaultCtl: 18,
+    description: 'New to structured training or resuming after a break (1-3 hrs/week baseline).',
+    cyclingFtp: 150,
+    runningPaceSecKm: 375, // 6:15/km
+    swimCssSec100m: 135, // 2:15/100m
+    fthr: 160,
+    maxHr: 185,
+  },
+  intermediate: {
+    label: 'Intermediate',
+    badge: 'Consistent Athlete',
+    color: '#06b6d4',
+    defaultCtl: 45,
+    description: 'Consistently training 4-8 hrs/week with established aerobic foundation.',
+    cyclingFtp: 220,
+    runningPaceSecKm: 290, // 4:50/km
+    swimCssSec100m: 105, // 1:45/100m
+    fthr: 168,
+    maxHr: 188,
+  },
+  advanced: {
+    label: 'Advanced',
+    badge: 'Dedicated Competitor',
+    color: '#a855f7',
+    defaultCtl: 75,
+    description: 'Years of regular endurance workouts & high-volume training (8-14+ hrs/week).',
+    cyclingFtp: 285,
+    runningPaceSecKm: 240, // 4:00/km
+    swimCssSec100m: 85, // 1:25/100m
+    fthr: 172,
+    maxHr: 192,
+  },
+  elite: {
+    label: 'Elite / National',
+    badge: 'High Performance',
+    color: '#ef4444',
+    defaultCtl: 100,
+    description: 'Elite / age-group podium competitor with extensive high-volume background (14-20+ hrs/week).',
+    cyclingFtp: 350,
+    runningPaceSecKm: 210, // 3:30/km
+    swimCssSec100m: 72, // 1:12/100m
+    fthr: 176,
+    maxHr: 195,
+  },
+};
+
+const formatRunningPace = (secondsPerKm?: number, isImperial: boolean = false) => {
+  if (!secondsPerKm || secondsPerKm <= 0) return isImperial ? '07:45' : '04:50';
+  const sec = isImperial ? secondsPerKm * 1.60934 : secondsPerKm;
+  const m = Math.floor(sec / 60);
+  const s = Math.round(sec % 60);
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+};
+
+const parseRunningPace = (paceStr: string, isImperial: boolean = false): number => {
+  const parts = paceStr.split(':');
+  if (parts.length === 2) {
+    const mins = parseInt(parts[0], 10) || 0;
+    const secs = parseInt(parts[1], 10) || 0;
+    const totalSecs = mins * 60 + secs;
+    if (totalSecs > 0) {
+      return isImperial ? Math.round(totalSecs / 1.60934) : totalSecs;
+    }
+  }
+  return 290;
+};
+
+const formatSwimPace = (secondsPer100m?: number) => {
+  if (!secondsPer100m || secondsPer100m <= 0) return '01:45';
+  const m = Math.floor(secondsPer100m / 60);
+  const s = Math.round(secondsPer100m % 60);
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+};
+
+const parseSwimPace = (paceStr: string): number => {
+  const parts = paceStr.split(':');
+  if (parts.length === 2) {
+    const mins = parseInt(parts[0], 10) || 0;
+    const secs = parseInt(parts[1], 10) || 0;
+    const totalSecs = mins * 60 + secs;
+    if (totalSecs > 0) return totalSecs;
+  }
+  return 105;
+};
 
 const SPORTS = ['running', 'cycling', 'swimming', 'strength', 'stretching'] as const;
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
@@ -201,7 +306,7 @@ const getDefaultDurationForGoal = (goal: string) => {
 };
 
 const getSteps = (hasStrength: boolean) => {
-  return hasStrength ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] : [1, 2, 3, 4, 5, 6, 7, 9, 10];
+  return hasStrength ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] : [1, 2, 3, 4, 5, 6, 7, 9, 10, 11];
 };
 
 export default function WizardScreen() {
@@ -248,6 +353,27 @@ export default function WizardScreen() {
   const [customBodyArea, setCustomBodyArea] = useState<BodyArea>('all');
   const [showMilestonePicker, setShowMilestonePicker] = useState(false);
 
+  // Fitness Level & Baseline Metrics (Step 10)
+  const [fitnessLevel, setFitnessLevel] = useState<FitnessLevel>('intermediate');
+  const [ctlInput, setCtlInput] = useState('45');
+  const [showAdvancedCtl, setShowAdvancedCtl] = useState(false);
+  const [fthrInput, setFthrInput] = useState('168');
+  const [maxHrInput, setMaxHrInput] = useState('188');
+  const [cyclingFtpInput, setCyclingFtpInput] = useState('220');
+  const [runningPaceInput, setRunningPaceInput] = useState('04:50');
+  const [swimCssInput, setSwimCssInput] = useState('01:45');
+  const [weightInput, setWeightInput] = useState('70');
+
+  const handleSelectFitnessLevel = (level: FitnessLevel) => {
+    setFitnessLevel(level);
+    const preset = FITNESS_LEVEL_PRESETS[level];
+    setCtlInput(String(preset.defaultCtl));
+    setFthrInput(String(preset.fthr));
+    setMaxHrInput(String(preset.maxHr));
+    setCyclingFtpInput(String(preset.cyclingFtp));
+    setRunningPaceInput(formatRunningPace(preset.runningPaceSecKm, units === 'Imperial'));
+    setSwimCssInput(formatSwimPace(preset.swimCssSec100m));
+  };
 
   // Sport Allocation Distribution State (Step 6)
   const [sportPercentages, setSportPercentages] = useState<Record<string, number>>({
@@ -460,26 +586,33 @@ export default function WizardScreen() {
     const dist = parseFloat(goalDistance);
     if (!dist || dist <= 0 || !totalSecs || totalSecs <= 0) return null;
 
-    if (goalSport === 'swimming') {
-      // Swimming standard pace: /100m (or /100yd)
-      const isImp = units === 'Imperial';
-      const actualUnits = dist < 50 ? (isImp ? dist * 1760 : dist * 1000) : dist;
-      const hundredUnits = actualUnits / 100;
-      if (hundredUnits <= 0) return null;
-      const secPer100 = totalSecs / hundredUnits;
-      const paceMin = Math.floor(secPer100 / 60);
-      const paceSec = Math.floor(secPer100 % 60);
-      return `${paceMin}:${paceSec < 10 ? '0' : ''}${paceSec} /100${isImp ? 'yd' : 'm'}`;
-    } else if (goalSport === 'running') {
-      const paceSeconds = totalSecs / dist;
-      const paceMin = Math.floor(paceSeconds / 60);
-      const paceSec = Math.floor(paceSeconds % 60);
-      return `${paceMin}:${paceSec < 10 ? '0' : ''}${paceSec} /${units === 'Imperial' ? 'mi' : 'km'}`;
-    } else if (goalSport === 'cycling') {
+    if (goalSport === 'running') {
+      const paceSecs = totalSecs / dist;
+      const mins = Math.floor(paceSecs / 60);
+      const secs = Math.round(paceSecs % 60);
+      const unit = units === 'Imperial' ? 'mi' : 'km';
+      return `${mins}:${secs.toString().padStart(2, '0')} /${unit}`;
+    }
+
+    if (goalSport === 'cycling') {
       const hours = totalSecs / 3600;
       const speed = (dist / hours).toFixed(1);
-      return `${speed} ${units === 'Imperial' ? 'mph' : 'km/h'}`;
+      const unit = units === 'Imperial' ? 'mph' : 'km/h';
+      return `${speed} ${unit}`;
     }
+
+    if (goalSport === 'swimming') {
+      const isImp = units === 'Imperial';
+      const actualUnits = dist < 50 ? (isImp ? dist * 1760 : dist * 1000) : dist;
+      const hundreds = actualUnits / 100;
+      if (hundreds <= 0) return null;
+      const pacePerHundred = totalSecs / hundreds;
+      const mins = Math.floor(pacePerHundred / 60);
+      const secs = Math.round(pacePerHundred % 60);
+      const unit = isImp ? '100yd' : '100m';
+      return `${mins}:${secs.toString().padStart(2, '0')} /${unit}`;
+    }
+
     return null;
   };
 
@@ -487,6 +620,13 @@ export default function WizardScreen() {
     if (currentStepIndex > 0) {
       setStep(steps[currentStepIndex - 1]);
     }
+  };
+
+  const isCurrentStepValid = () => {
+    if (step === 1) return displayName.trim().length > 0;
+    if (step === 3) return SPORTS.filter(s => !!activities[s]).length > 0 && getSelectedMainFocusSports().length > 0;
+    if (step === 5) return goalName.trim().length > 0;
+    return true;
   };
 
   const handleNext = () => {
@@ -557,6 +697,15 @@ export default function WizardScreen() {
         goalPayload.notes = fullGoalNotes;
       }
 
+      const customCtl = Math.max(0, Math.round(parseFloat(ctlInput) || FITNESS_LEVEL_PRESETS[fitnessLevel].defaultCtl));
+      const customFthr = Math.max(100, Math.round(parseFloat(fthrInput) || 168));
+      const customMaxHr = Math.max(customFthr + 5, Math.round(parseFloat(maxHrInput) || 188));
+      const customCyclingFtp = Math.max(50, Math.round(parseFloat(cyclingFtpInput) || 200));
+      const customPaceSecKm = parseRunningPace(runningPaceInput, units === 'Imperial');
+      const customSwimCssSec = parseSwimPace(swimCssInput);
+      const customWeight = parseFloat(weightInput);
+      const weightInKg = !isNaN(customWeight) && customWeight > 0 ? (units === 'Imperial' ? (customWeight / 2.20462).toFixed(1) : customWeight.toFixed(1)) : '70.0';
+
       const updates: any = {
         displayName: displayName.trim(),
         units,
@@ -572,6 +721,16 @@ export default function WizardScreen() {
         goal: goalPayload,
         sportPercentages,
         sportSessionsPerWeek: sportSessions,
+        fitness_level: fitnessLevel,
+        ctl: customCtl,
+        atl: Math.round(customCtl * 0.9),
+        fthr: customFthr,
+        maxHr: customMaxHr,
+        ftpCycling: customCyclingFtp,
+        ftp: customCyclingFtp,
+        ftpPaceRunning: customPaceSecKm,
+        ftpPaceSwimming: customSwimCssSec,
+        weight: weightInKg,
         wizardCompleted: true,
       };
 
@@ -663,9 +822,16 @@ export default function WizardScreen() {
     const currentActiveFocuses = SPORTS.filter(s => !!mainFocus[s] && !!activities[s]);
     const isActive = !!mainFocus[sport];
 
-    if (isActive && currentActiveFocuses.length <= 1) {
-      Alert.alert('Restricted', 'You must have at least one main focus.');
-      return;
+    if (!isActive) {
+      if (currentActiveFocuses.length >= 3) {
+        Alert.alert('Maximum 3 Main Focus Sports', 'To ensure effective training adaptations and recovery, you can select up to 3 main focus sports.');
+        return;
+      }
+    } else {
+      if (currentActiveFocuses.length <= 1) {
+        Alert.alert('Restricted', 'You must have at least one main focus.');
+        return;
+      }
     }
 
     setMainFocus(prev => ({
@@ -2353,21 +2519,22 @@ export default function WizardScreen() {
                     loading={connectingStrava}
                     variant={profile?.stravaConnected ? 'glass' : 'glass-primary'}
                     shape="pill"
-                    size="sm"
+                    size="md"
                     glowColor={profile?.stravaConnected ? undefined : "#ea580c"}
-                    style={{ width: '100%', height: 42 }}
+                    style={{ width: '100%', height: 44 }}
+                    contentContainerStyle={{ height: 44, paddingVertical: 0, justifyContent: 'center', alignItems: 'center' }}
                   >
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                       {profile?.stravaConnected ? (
-                        <Text style={{ fontSize: 14, fontWeight: '600', color: colors.textSecondary }}>
+                        <Text style={{ fontSize: 14, fontWeight: '700', color: colors.textSecondary }}>
                           Disconnect Strava
                         </Text>
                       ) : (
                         <>
-                          <Text style={{ fontSize: 14, fontWeight: '700', color: '#ffffff' }}>
+                          <Text style={{ fontSize: 14, fontWeight: '700', color: isDark ? '#4ade80' : '#15803d' }}>
                             Connect with Strava
                           </Text>
-                          <ExternalLink size={16} color="#ffffff" strokeWidth={2.2} />
+                          <ExternalLink size={15} color={isDark ? '#4ade80' : '#15803d'} strokeWidth={2.2} />
                         </>
                       )}
                     </View>
@@ -2481,8 +2648,472 @@ export default function WizardScreen() {
             </View>
           )}
 
-          {/* STEP 10: Summary & Plan Review */}
+          {/* STEP 10: Current Fitness Level & Baseline Metrics */}
           {step === 10 && (
+            <View>
+              <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                <View
+                  style={{
+                    width: 68,
+                    height: 68,
+                    borderRadius: Radius.xl,
+                    backgroundColor: cardBackground,
+                    borderWidth: BorderWidth.hairline,
+                    borderColor: cardBorder,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: isDark ? 0.4 : 0.08,
+                    shadowRadius: 12,
+                  }}
+                >
+                  <Flame size={32} color="#f97316" strokeWidth={2} />
+                </View>
+              </View>
+
+              <View style={{ alignItems: 'center', marginBottom: 24 }}>
+                <Text style={{ fontSize: 26, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
+                  Current Fitness Level
+                </Text>
+                <Text style={{ fontSize: 14, color: colors.textSecondary, textAlign: 'center', fontWeight: '500', paddingHorizontal: 16 }}>
+                  Choose your training background or enter your current threshold figures.
+                </Text>
+              </View>
+
+              {/* Fitness Level Preset Cards */}
+              <View style={{ gap: 12, marginBottom: 24 }}>
+                {(Object.keys(FITNESS_LEVEL_PRESETS) as FitnessLevel[]).map((levelKey) => {
+                  const preset = FITNESS_LEVEL_PRESETS[levelKey];
+                  const isSelected = fitnessLevel === levelKey;
+
+                  return (
+                    <TouchableOpacity
+                      key={levelKey}
+                      onPress={() => handleSelectFitnessLevel(levelKey)}
+                      activeOpacity={0.8}
+                      style={{
+                        padding: 16,
+                        borderRadius: Radius.xl,
+                        backgroundColor: isSelected
+                          ? `${preset.color}15`
+                          : cardBackground,
+                        borderWidth: isSelected ? BorderWidth.thin : BorderWidth.hairline,
+                        borderColor: isSelected ? preset.color : cardBorder,
+                      }}
+                    >
+                      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                          <Text style={{ fontSize: 17, fontWeight: '800', color: colors.text }}>
+                            {preset.label}
+                          </Text>
+                          <View
+                            style={{
+                              paddingHorizontal: 8,
+                              paddingVertical: 2,
+                              borderRadius: Radius.pill,
+                              backgroundColor: `${preset.color}25`,
+                            }}
+                          >
+                            <Text style={{ fontSize: 10, fontWeight: '800', color: preset.color, textTransform: 'uppercase' }}>
+                              {preset.badge}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <View
+                          style={{
+                            width: 22,
+                            height: 22,
+                            borderRadius: Radius.pill,
+                            borderWidth: 2,
+                            borderColor: isSelected ? preset.color : colors.textSecondary,
+                            backgroundColor: isSelected ? preset.color : 'transparent',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          {isSelected && <Check size={14} color="#ffffff" strokeWidth={3} />}
+                        </View>
+                      </View>
+
+                      <Text style={{ fontSize: 13, color: colors.textSecondary, lineHeight: 18, marginBottom: 10 }}>
+                        {preset.description}
+                      </Text>
+
+                      {/* Quick Metric Pills */}
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+                        <View
+                          style={{
+                            paddingHorizontal: 8,
+                            paddingVertical: 3,
+                            borderRadius: Radius.md,
+                            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
+                          }}
+                        >
+                          <Text style={{ fontSize: 11, fontWeight: '700', color: colors.text }}>
+                            CTL ~{preset.defaultCtl}
+                          </Text>
+                        </View>
+                        {activities.cycling && (
+                          <View
+                            style={{
+                              paddingHorizontal: 8,
+                              paddingVertical: 3,
+                              borderRadius: Radius.md,
+                              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
+                            }}
+                          >
+                            <Text style={{ fontSize: 11, fontWeight: '700', color: colors.text }}>
+                              FTP {preset.cyclingFtp}W
+                            </Text>
+                          </View>
+                        )}
+                        {activities.running && (
+                          <View
+                            style={{
+                              paddingHorizontal: 8,
+                              paddingVertical: 3,
+                              borderRadius: Radius.md,
+                              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
+                            }}
+                          >
+                            <Text style={{ fontSize: 11, fontWeight: '700', color: colors.text }}>
+                              Pace {formatRunningPace(preset.runningPaceSecKm, units === 'Imperial')}/{units === 'Imperial' ? 'mi' : 'km'}
+                            </Text>
+                          </View>
+                        )}
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              {/* Current Figures Customization Form */}
+              <View
+                style={{
+                  borderRadius: Radius.xl,
+                  backgroundColor: cardBackground,
+                  borderWidth: BorderWidth.hairline,
+                  borderColor: cardBorder,
+                  padding: 18,
+                  marginBottom: 16,
+                  gap: 16,
+                }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <Sliders size={18} color={colors.primary} strokeWidth={2.2} />
+                  <Text style={{ fontSize: 16, fontWeight: '800', color: colors.text }}>
+                    Current Training Figures
+                  </Text>
+                </View>
+                <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: -10 }}>
+                  Adjust any figures to match your current threshold test data.
+                </Text>
+
+                {/* Heart Rate: FTHR & Max HR */}
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, marginBottom: 6, textTransform: 'uppercase' }}>
+                      Threshold HR (FTHR)
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        borderRadius: Radius.lg,
+                        backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.04)',
+                        borderWidth: BorderWidth.hairline,
+                        borderColor: cardBorder,
+                        paddingHorizontal: 12,
+                        height: 46,
+                      }}
+                    >
+                      <Heart size={16} color="#ef4444" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                      <TextInput
+                        value={fthrInput}
+                        onChangeText={setFthrInput}
+                        keyboardType="numeric"
+                        placeholder="168"
+                        placeholderTextColor={colors.textSecondary}
+                        style={{ flex: 1, fontSize: 15, fontWeight: '700', color: colors.text }}
+                      />
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>bpm</Text>
+                    </View>
+                  </View>
+
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, marginBottom: 6, textTransform: 'uppercase' }}>
+                      Max Heart Rate
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        borderRadius: Radius.lg,
+                        backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.04)',
+                        borderWidth: BorderWidth.hairline,
+                        borderColor: cardBorder,
+                        paddingHorizontal: 12,
+                        height: 46,
+                      }}
+                    >
+                      <Heart size={16} color="#ef4444" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                      <TextInput
+                        value={maxHrInput}
+                        onChangeText={setMaxHrInput}
+                        keyboardType="numeric"
+                        placeholder="188"
+                        placeholderTextColor={colors.textSecondary}
+                        style={{ flex: 1, fontSize: 15, fontWeight: '700', color: colors.text }}
+                      />
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>bpm</Text>
+                    </View>
+                  </View>
+                </View>
+
+                {/* Cycling FTP (if Cycling enabled) */}
+                {activities.cycling && (
+                  <View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase' }}>
+                        Cycling FTP (Functional Threshold Power)
+                      </Text>
+                      {weightInput && parseFloat(weightInput) > 0 && cyclingFtpInput && parseFloat(cyclingFtpInput) > 0 && (
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: '#06b6d4' }}>
+                          {(
+                            parseFloat(cyclingFtpInput) /
+                            (units === 'Imperial' ? parseFloat(weightInput) / 2.20462 : parseFloat(weightInput))
+                          ).toFixed(2)}{' '}
+                          W/kg
+                        </Text>
+                      )}
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        borderRadius: Radius.lg,
+                        backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.04)',
+                        borderWidth: BorderWidth.hairline,
+                        borderColor: cardBorder,
+                        paddingHorizontal: 12,
+                        height: 46,
+                      }}
+                    >
+                      <Bike size={16} color="#06b6d4" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                      <TextInput
+                        value={cyclingFtpInput}
+                        onChangeText={setCyclingFtpInput}
+                        keyboardType="numeric"
+                        placeholder="220"
+                        placeholderTextColor={colors.textSecondary}
+                        style={{ flex: 1, fontSize: 15, fontWeight: '700', color: colors.text }}
+                      />
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>Watts</Text>
+                    </View>
+                  </View>
+                )}
+
+                {/* Running Threshold Pace (if Running enabled) */}
+                {activities.running && (
+                  <View>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, marginBottom: 6, textTransform: 'uppercase' }}>
+                      Running Threshold Pace (mm:ss)
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        borderRadius: Radius.lg,
+                        backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.04)',
+                        borderWidth: BorderWidth.hairline,
+                        borderColor: cardBorder,
+                        paddingHorizontal: 12,
+                        height: 46,
+                      }}
+                    >
+                      <Footprints size={16} color="#22c55e" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                      <TextInput
+                        value={runningPaceInput}
+                        onChangeText={setRunningPaceInput}
+                        placeholder={units === 'Imperial' ? '07:45' : '04:50'}
+                        placeholderTextColor={colors.textSecondary}
+                        style={{ flex: 1, fontSize: 15, fontWeight: '700', color: colors.text }}
+                      />
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>
+                        /{units === 'Imperial' ? 'mi' : 'km'}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+
+                {/* Swim CSS (if Swimming enabled) */}
+                {activities.swimming && (
+                  <View>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, marginBottom: 6, textTransform: 'uppercase' }}>
+                      Critical Swim Speed (CSS mm:ss)
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        borderRadius: Radius.lg,
+                        backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.04)',
+                        borderWidth: BorderWidth.hairline,
+                        borderColor: cardBorder,
+                        paddingHorizontal: 12,
+                        height: 46,
+                      }}
+                    >
+                      <Waves size={16} color="#3b82f6" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                      <TextInput
+                        value={swimCssInput}
+                        onChangeText={setSwimCssInput}
+                        placeholder="01:45"
+                        placeholderTextColor={colors.textSecondary}
+                        style={{ flex: 1, fontSize: 15, fontWeight: '700', color: colors.text }}
+                      />
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>
+                        /{units === 'Imperial' ? '100yd' : '100m'}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+
+                {/* Body Weight */}
+                <View>
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, marginBottom: 6, textTransform: 'uppercase' }}>
+                    Body Weight
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      borderRadius: Radius.lg,
+                      backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.04)',
+                      borderWidth: BorderWidth.hairline,
+                      borderColor: cardBorder,
+                      paddingHorizontal: 12,
+                      height: 46,
+                    }}
+                  >
+                    <Scale size={16} color="#eab308" strokeWidth={2.2} style={{ marginRight: 8 }} />
+                    <TextInput
+                      value={weightInput}
+                      onChangeText={setWeightInput}
+                      keyboardType="numeric"
+                      placeholder={units === 'Imperial' ? '154' : '70'}
+                      placeholderTextColor={colors.textSecondary}
+                      style={{ flex: 1, fontSize: 15, fontWeight: '700', color: colors.text }}
+                    />
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>
+                      {units === 'Imperial' ? 'lbs' : 'kg'}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Advanced Option: Manual CTL */}
+              <View
+                style={{
+                  borderRadius: Radius.xl,
+                  backgroundColor: cardBackground,
+                  borderWidth: BorderWidth.hairline,
+                  borderColor: cardBorder,
+                  overflow: 'hidden',
+                  marginBottom: 20,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => setShowAdvancedCtl(!showAdvancedCtl)}
+                  activeOpacity={0.8}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: 16,
+                  }}
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
+                    <Sliders size={18} color={colors.textSecondary} strokeWidth={2.2} />
+                    <View>
+                      <Text style={{ fontSize: 14, fontWeight: '700', color: colors.text }}>
+                        Advanced: Specify CTL Manually
+                      </Text>
+                      <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 1 }}>
+                        Current: {ctlInput} CTL
+                      </Text>
+                    </View>
+                  </View>
+                  {showAdvancedCtl ? (
+                    <ChevronUp size={20} color={colors.textSecondary} />
+                  ) : (
+                    <ChevronDown size={20} color={colors.textSecondary} />
+                  )}
+                </TouchableOpacity>
+
+                {showAdvancedCtl && (
+                  <View
+                    style={{
+                      paddingHorizontal: 16,
+                      paddingBottom: 16,
+                      borderTopWidth: 1,
+                      borderTopColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
+                      paddingTop: 12,
+                      gap: 12,
+                    }}
+                  >
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                      <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text, flex: 1 }}>
+                        Chronic Training Load (CTL / Fitness)
+                      </Text>
+                      <View
+                        style={{
+                          width: 80,
+                          height: 42,
+                          borderRadius: Radius.md,
+                          backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
+                          borderWidth: BorderWidth.hairline,
+                          borderColor: cardBorder,
+                          paddingHorizontal: 8,
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <TextInput
+                          value={ctlInput}
+                          onChangeText={setCtlInput}
+                          keyboardType="numeric"
+                          placeholder="45"
+                          placeholderTextColor={colors.textSecondary}
+                          style={{ fontSize: 16, fontWeight: '800', color: colors.text, textAlign: 'center' }}
+                        />
+                      </View>
+                    </View>
+
+                    <View
+                      style={{
+                        padding: 10,
+                        borderRadius: Radius.lg,
+                        backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.02)',
+                        flexDirection: 'row',
+                        alignItems: 'flex-start',
+                        gap: 8,
+                      }}
+                    >
+                      <Info size={14} color={colors.textSecondary} style={{ marginTop: 2 }} />
+                      <Text style={{ fontSize: 11, color: colors.textSecondary, lineHeight: 16, flex: 1 }}>
+                        CTL represents your rolling 42-day average daily training stress. If you use TrainingPeaks or Strava Fitness, enter your current score to ensure your initial plan load matches your exact conditioning.
+                      </Text>
+                    </View>
+                  </View>
+                )}
+              </View>
+            </View>
+          )}
+
+          {/* STEP 11: Summary & Plan Review */}
+          {step === 11 && (
             <View>
               <View style={{ alignItems: 'center', marginBottom: 20 }}>
                 <View
@@ -2603,6 +3234,22 @@ export default function WizardScreen() {
                       {isCardioSport && goalDuration ? ` • ${goalDuration}` : ''}
                       {targetPaceOrSpeed ? ` (${targetPaceOrSpeed})` : ''}
                       {goalNotes ? ` • ${goalNotes}` : ''}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)', paddingBottom: 10 }}>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Fitness Level</Text>
+                  <View style={{ alignItems: 'flex-end', flex: 1, marginLeft: 12 }}>
+                    <Text style={{ fontWeight: '700', color: colors.text, fontSize: 14, textTransform: 'capitalize' }}>
+                      {FITNESS_LEVEL_PRESETS[fitnessLevel].label} ({ctlInput} CTL)
+                    </Text>
+                    <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2, textAlign: 'right' }}>
+                      {[
+                        activities.cycling && cyclingFtpInput ? `FTP ${cyclingFtpInput}W` : null,
+                        activities.running && runningPaceInput ? `Pace ${runningPaceInput}/${units === 'Imperial' ? 'mi' : 'km'}` : null,
+                        fthrInput ? `FTHR ${fthrInput} bpm` : null,
+                      ].filter(Boolean).join(' • ')}
                     </Text>
                   </View>
                 </View>

@@ -49,6 +49,7 @@ export interface UserProfile {
   restHr?: number;
   weight?: string | number;
   primaryGoal?: string;
+  fitness_level?: string;
   trainingGoalType: string;
   goal?: {
     name: string;
