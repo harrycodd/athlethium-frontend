@@ -1,3 +1,4 @@
+import { callFunction } from './api';
 import { collection, query, where, onSnapshot, addDoc, updateDoc, doc, Timestamp, serverTimestamp, getDocs, getDoc, deleteDoc, deleteField } from "firebase/firestore";
 
 // ... (keep existing imports)
@@ -44,7 +45,8 @@ export interface Workout {
   plannedTss?: number;
   plannedDistance?: number;
   source?: string;
-  fit_file_url?: string;
+  fit_file_url?: string; // legacy public URL (no longer written)
+  fit_file_path?: string; // private Cloud Storage path, server-only access
   actual_time?: number;
   actual_tss?: number;
   completion_type?: string;
@@ -145,24 +147,9 @@ export const getAutoCalculatedFthr = async (userId: string) => {
   return { best, last, recommended };
 };
 
-const GENERATE_TRAINING_URL = 'https://europe-west2-athlethium-app.cloudfunctions.net/generate_training_session';
-
-export const generateTrainingSessionForDate = async (userId: string, date: string) => {
-  const response = await fetch(GENERATE_TRAINING_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      userId,
-      date,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || 'Failed to generate training session');
-  }
+export const generateTrainingSessionForDate = async (_userId: string, date: string) => {
+  // The backend takes the user from the ID token; _userId is kept for call-site compatibility.
+  await callFunction('generate_training_session', { date });
 };
 
 const hasWorkoutForDate = async (userId: string, date: string) => {
@@ -447,6 +434,7 @@ export const toggleWorkoutCompletion = async (workoutId: string, currentStatus: 
     data.actual_tss = deleteField();
     data.distance_m = deleteField();
     data.fit_file_url = deleteField();
+    data.fit_file_path = deleteField();
     data.fit_file_processed = deleteField();
     data.completion_type = deleteField();
   }

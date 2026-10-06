@@ -1,7 +1,9 @@
 import { File, UploadTask, UploadType } from 'expo-file-system';
 import { Platform } from 'react-native';
 
-const UPLOAD_FIT_URL = 'https://europe-west2-athlethium-app.cloudfunctions.net/upload_workout_fit';
+import { authHeaders, functionUrl } from './api';
+
+const UPLOAD_FIT_URL = functionUrl('upload_workout_fit');
 
 export interface UploadFitResult {
   success: boolean;
@@ -33,9 +35,7 @@ export async function uploadFitFile(
         uploadType: UploadType.MULTIPART,
         fieldName: 'file',
         parameters,
-        headers: {
-          Accept: 'application/json',
-        },
+        headers: await authHeaders({ Accept: 'application/json' }),
       });
 
       const uploadResult = await uploadTask.uploadAsync();
@@ -73,9 +73,7 @@ export async function uploadFitFile(
       const response = await fetch(UPLOAD_FIT_URL, {
         method: 'POST',
         body: formData,
-        headers: {
-          Accept: 'application/json',
-        },
+        headers: await authHeaders({ Accept: 'application/json' }),
       });
 
       if (!response.ok) {
