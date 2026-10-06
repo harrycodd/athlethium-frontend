@@ -15,7 +15,7 @@ import { Radius, BorderWidth } from '@/constants/theme';
 import { format, addWeeks, differenceInWeeks } from 'date-fns';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-type FitnessLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite';
+type FitnessLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite' | 'pro';
 
 const FITNESS_LEVEL_PRESETS: Record<
   FitnessLevel,
@@ -79,6 +79,18 @@ const FITNESS_LEVEL_PRESETS: Record<
     swimCssSec100m: 72, // 1:12/100m
     fthr: 176,
     maxHr: 195,
+  },
+  pro: {
+    label: 'Professional',
+    badge: 'Full-Time Athlete',
+    color: '#f59e0b',
+    defaultCtl: 130,
+    description: 'Full-time professional training 20-30 hrs/week, including double days.',
+    cyclingFtp: 400,
+    runningPaceSecKm: 195, // 3:15/km
+    swimCssSec100m: 65, // 1:05/100m
+    fthr: 178,
+    maxHr: 196,
   },
 };
 

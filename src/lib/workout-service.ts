@@ -47,6 +47,9 @@ export interface Workout {
   source?: string;
   fit_file_url?: string; // legacy public URL (no longer written)
   fit_file_path?: string; // private Cloud Storage path, server-only access
+  slot?: 'am' | 'pm'; // 'pm' = second session of a double day
+  session_kind?: string;
+  week_type?: string;
   actual_time?: number;
   actual_tss?: number;
   completion_type?: string;
@@ -328,11 +331,12 @@ export const subscribeToWorkouts = (userId: string, date: Date, callback: (worko
         ...doc.data()
       })) as Workout[];
 
-      // Deduplicate planned workouts that share identical date, sport, and name
+      // Deduplicate planned workouts that share identical date, sport, name and slot
+      // (a double day legitimately has two sessions, e.g. an AM and a PM easy ride)
       const seen = new Set<string>();
       const workouts: Workout[] = [];
       for (const w of rawWorkouts) {
-        const key = `${w.date}_${(w.sport || '').toLowerCase()}_${(w.name || '').toLowerCase()}`;
+        const key = `${w.date}_${(w.sport || '').toLowerCase()}_${(w.name || '').toLowerCase()}_${w.slot || 'am'}`;
         const isPlanned = !w.completed && w.status !== 'completed';
         if (isPlanned && seen.has(key)) {
           continue;
@@ -343,6 +347,8 @@ export const subscribeToWorkouts = (userId: string, date: Date, callback: (worko
         workouts.push(w);
       }
 
+      // Morning session first on double days
+      workouts.sort((a, b) => (a.slot === 'pm' ? 1 : 0) - (b.slot === 'pm' ? 1 : 0));
       callback(workouts);
     },
     (error) => {
