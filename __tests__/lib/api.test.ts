@@ -60,3 +60,31 @@ it('authHeaders merges extra headers', async () => {
 it('deviceTimeZone returns an IANA zone', () => {
   expect(deviceTimeZone()).toMatch(/\w+/);
 });
+
+describe('emulator mode', () => {
+  const original = { ...process.env };
+  afterEach(() => {
+    process.env = { ...original };
+  });
+
+  const loadApi = () => {
+    let api: typeof import('@/lib/api') | undefined;
+    jest.isolateModules(() => {
+      api = require('@/lib/api');
+    });
+    return api!;
+  };
+
+  it('production is the default', () => {
+    delete process.env.EXPO_PUBLIC_USE_EMULATORS;
+    delete process.env.EXPO_PUBLIC_FUNCTIONS_BASE_URL;
+    expect(loadApi().functionUrl('x')).toBe('https://europe-west2-athlethium-app.cloudfunctions.net/x');
+  });
+
+  it('targets the local demo project when emulators are enabled', () => {
+    process.env.EXPO_PUBLIC_USE_EMULATORS = 'true';
+    process.env.EXPO_PUBLIC_EMULATOR_HOST = '10.0.2.2';
+    delete process.env.EXPO_PUBLIC_FUNCTIONS_BASE_URL;
+    expect(loadApi().functionUrl('x')).toBe('http://10.0.2.2:5001/demo-athlethium/europe-west2/x');
+  });
+});

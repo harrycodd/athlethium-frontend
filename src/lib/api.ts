@@ -1,4 +1,5 @@
 import { auth } from './firebase';
+import { USE_EMULATORS, EMULATOR_HOST, EMULATOR_PROJECT_ID } from './emulators';
 
 /**
  * Authenticated client for Athlethium Cloud Functions.
@@ -6,7 +7,10 @@ import { auth } from './firebase';
  * from the token and rejects requests without one.
  */
 export const FUNCTIONS_BASE_URL =
-  process.env.EXPO_PUBLIC_FUNCTIONS_BASE_URL ?? 'https://europe-west2-athlethium-app.cloudfunctions.net';
+  process.env.EXPO_PUBLIC_FUNCTIONS_BASE_URL ??
+  (USE_EMULATORS
+    ? `http://${EMULATOR_HOST}:5001/${EMULATOR_PROJECT_ID}/europe-west2`
+    : 'https://europe-west2-athlethium-app.cloudfunctions.net');
 
 export const functionUrl = (name: string) => `${FUNCTIONS_BASE_URL}/${name}`;
 
