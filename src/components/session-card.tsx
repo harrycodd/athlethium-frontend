@@ -76,9 +76,6 @@ export default function SessionCard({
 
   return (
     <GlassCard
-      elevated={!completed}
-      intensityColor={completed ? colors.borderPrimary : undefined}
-      glowColor={completed ? colors.primaryGlow : undefined}
       style={{ marginBottom: 16 }}
     >
       <View className="flex-row items-start mb-3 justify-between">
@@ -91,7 +88,7 @@ export default function SessionCard({
               {displayName}
             </Text>
             <View className="flex-row items-center gap-2 mt-1 flex-wrap">
-              {intensity !== undefined && intensity !== null && (
+              {intensity !== undefined && intensity !== null && !['strength', 'stretching', 'yoga', 'rest'].includes(sportKey) && (
                 <Badge label={zoneToken.shortName} intensity={intensity} size="sm" />
               )}
               {durStr && (

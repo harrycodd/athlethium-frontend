@@ -6,12 +6,12 @@ import { useTheme } from '@/hooks/use-theme';
 
 export default function Index() {
   const { user, profile, loading } = useAuth();
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
 
   if (loading) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator color={colors.primary} size="large" />
+      <View style={{ flex: 1, backgroundColor: isDark ? '#101012' : '#ffffff', justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator color="#22c55e" size="large" />
       </View>
     );
   }

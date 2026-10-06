@@ -27,21 +27,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(currentUser);
 
       if (currentUser) {
-        // Set an immediate initial profile so screens never have null reference
-        setProfile(prev => prev || ({
-          uid: currentUser.uid,
-          email: currentUser.email,
-          displayName: currentUser.displayName || currentUser.email?.split('@')[0] || 'Athlete',
-          ...DEFAULT_PROFILE,
-          wizardCompleted: false,
-        } as UserProfile));
+        if (unsubProfile) unsubProfile();
 
-        // Ensure loading state is released promptly
+        // Safety fallback timer in case offline / slow network
         const safetyTimer = setTimeout(() => {
           setLoading(false);
-        }, 800);
+        }, 3000);
 
-        if (unsubProfile) unsubProfile();
         unsubProfile = subscribeToUserProfile(currentUser.uid, async (p) => {
           clearTimeout(safetyTimer);
           if (p === null) {

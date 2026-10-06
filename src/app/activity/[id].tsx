@@ -11,6 +11,8 @@ import { useAuth } from '@/hooks/use-auth';
 import { useTheme } from '@/hooks/use-theme';
 import { serverTimestamp } from 'firebase/firestore';
 
+import { calculateInAppRecordedTss, checkAndAutoUpdateFtp } from '@/lib/physiology-engine';
+
 import { ActivityControls } from '@/components/activity/activity-controls';
 import { ActivityHeader } from '@/components/activity/activity-header';
 import { ActivitySegment } from '@/components/activity/activity-segment';
@@ -67,7 +69,7 @@ export default function ActivityScreen() {
     return `${h > 0 ? h + ':' : ''}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const formatPace = (secondsPerKm: number) => {
+  const formatPace = (secondsPerKm?: number) => {
     if (!secondsPerKm || secondsPerKm === Infinity || secondsPerKm <= 0) return '--:--';
     const isImperial = profile?.units === 'Imperial';
     const sec = isImperial ? secondsPerKm * 1.60934 : secondsPerKm;
@@ -81,19 +83,40 @@ export default function ActivityScreen() {
 
     const results = tracker.finishWorkout();
     try {
+      const isStrengthOrMobility = ['strength', 'stretching', 'yoga', 'rest'].includes(workout?.sport?.toLowerCase() || '');
+      const finalTss = isStrengthOrMobility
+        ? 0
+        : calculateInAppRecordedTss(
+            workout,
+            tracker.totalTimeElapsed,
+            tracker.currentStepIndex + 1,
+            tracker.steps.length
+          );
+
+      const statsPayload = {
+        ...results,
+        totalTime: tracker.totalTimeElapsed,
+        distance: location.distance,
+        averagePace: location.currentPace,
+      };
+
       await updateWorkout(id, {
         status: 'completed',
         completed: true,
         completedAt: serverTimestamp(),
         time: tracker.totalTimeElapsed,
-        tss: (results as any)?.tss || workout.tss || 0,
-        stats: {
-          ...results,
-          totalTime: tracker.totalTimeElapsed,
-          distance: location.distance,
-          averagePace: location.currentPace,
-        },
+        actual_time: tracker.totalTimeElapsed,
+        tss: finalTss,
+        actual_tss: finalTss,
+        completion_type: 'app_recorded',
+        stats: statsPayload,
       });
+
+      // Automatically check for FTP / Threshold improvements
+      const ftpUpdate = await checkAndAutoUpdateFtp(profile, workout, statsPayload);
+      if (ftpUpdate.updated && ftpUpdate.message) {
+        Alert.alert('Threshold Breakthrough! 🏆', ftpUpdate.message);
+      }
     } catch (error) {
       console.error('Failed to save workout stats:', error);
     }

@@ -47,6 +47,7 @@ export interface Workout {
   fit_file_url?: string;
   actual_time?: number;
   actual_tss?: number;
+  completion_type?: string;
 }
 
 const toPositiveNumber = (value: any): number | null => {
@@ -428,10 +429,14 @@ export const toggleWorkoutCompletion = async (workoutId: string, currentStatus: 
 
   if (isNowCompleted) {
     data.completedAt = serverTimestamp();
-    // Copy plannedTime to time if we are manually completing via a simple toggle
-    if (workoutData?.plannedTime) {
-      data.time = workoutData.plannedTime;
-    }
+    const isStrengthOrMobility = ['strength', 'stretching', 'yoga', 'rest'].includes(workoutData?.sport?.toLowerCase() || '');
+    const plannedTss = isStrengthOrMobility ? 0 : (workoutData?.plannedTss ?? workoutData?.tss ?? 0);
+    data.tss = plannedTss;
+    data.actual_tss = plannedTss;
+    const finalTime = workoutData?.plannedTime || workoutData?.time || 0;
+    data.time = finalTime;
+    data.actual_time = finalTime;
+    data.completion_type = 'manual_toggle';
   } else {
     data.completedAt = null;
     data.stats = deleteField();

@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { BarChart } from 'react-native-gifted-charts';
 import WorkoutAnalysis from '@/components/workout-analysis';
 import * as DocumentPicker from 'expo-document-picker';
+import { uploadFitFile } from '@/lib/fit-uploader';
 import { cn } from '@/lib/utils';
 
 const screenWidth = Dimensions.get('window').width;
@@ -155,44 +156,22 @@ export default function SessionDetailsScreen() {
 
       setUploading(true);
 
-      const formData = new FormData();
-      formData.append('userId', user.uid);
-      if (id) {
-        formData.append('workoutId', id);
-      }
+      const uploadResult = await uploadFitFile(user.uid, file, id);
 
-      const fileData = {
-        uri: file.uri,
-        name: file.name,
-        type: 'application/octet-stream',
-      };
-
-      // @ts-ignore
-      formData.append('file', fileData);
-
-      const response = await fetch('https://europe-west2-athlethium-app.cloudfunctions.net/upload_workout_fit', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response.ok) {
-        Alert.alert('Success', 'Workout file uploaded successfully!');
+      if (uploadResult.success) {
+        Alert.alert('Success', 'Workout file uploaded and analyzed successfully!');
         if (router.canGoBack()) {
           router.back();
         } else {
           router.replace('/(tabs)');
         }
       } else {
-        const errorText = await response.text();
-        console.error('Upload failed:', errorText);
-        Alert.alert('Error', `Upload failed: ${errorText}`);
+        console.error('Upload failed:', uploadResult.error);
+        Alert.alert('Upload Error', uploadResult.error || 'Failed to upload workout file.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Upload error:', error);
-      Alert.alert('Error', 'An error occurred during file upload.');
+      Alert.alert('Error', error?.message || 'An error occurred during file upload.');
     } finally {
       setUploading(false);
     }
@@ -228,7 +207,14 @@ export default function SessionDetailsScreen() {
         updates.status = 'completed';
         updates.completed = true;
         updates.completedAt = Timestamp.now();
-        updates.time = durationSecs;
+        const isStrengthOrMobility = ['strength', 'stretching', 'yoga', 'rest'].includes(sport.toLowerCase());
+        const plannedTss = isStrengthOrMobility ? 0 : (workout.plannedTss ?? workout.tss ?? 0);
+        updates.tss = plannedTss;
+        updates.actual_tss = plannedTss;
+        const finalTime = durationSecs || workout.plannedTime || workout.time || 0;
+        updates.time = finalTime;
+        updates.actual_time = finalTime;
+        updates.completion_type = 'manual_save';
       }
 
       await updateWorkout(workout.id, updates);
@@ -467,7 +453,7 @@ export default function SessionDetailsScreen() {
               }}
             />
             <View className="flex-row items-center gap-2 mt-2 flex-wrap">
-              {workout?.intensity !== undefined && (
+              {workout?.intensity !== undefined && !['strength', 'stretching', 'yoga', 'rest'].includes(sport.toLowerCase()) && (
                 <Badge label={zoneToken.shortName} intensity={workout.intensity} size="sm" />
               )}
               <View 

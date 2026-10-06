@@ -49,6 +49,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { updateUserProfile } from '@/lib/user-service';
 import { getAutoCalculatedFthr, regenerateIncompleteGeneratedWorkouts } from '@/lib/workout-service';
 import { Radius, BorderWidth } from '@/constants/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
 
@@ -81,6 +82,7 @@ const formatRunningPace = (secondsPerKm?: number, isImperial: boolean = false) =
 };
 
 const parseRunningPace = (str: string, isImperial: boolean = false): number => {
+  if (!str) return isImperial ? 280 : 285;
   const clean = str.trim();
   const parts = clean.split(':');
   if (parts.length === 2) {
@@ -96,7 +98,7 @@ const parseRunningPace = (str: string, isImperial: boolean = false): number => {
     const totalSec = m * 60 + s;
     return isImperial ? Math.round(totalSec / 1.60934) : totalSec;
   }
-  return 285;
+  return isImperial ? 280 : 285;
 };
 
 const formatSwimPace = (secondsPer100m?: number) => {
@@ -107,6 +109,7 @@ const formatSwimPace = (secondsPer100m?: number) => {
 };
 
 const parseSwimPace = (str: string): number => {
+  if (!str) return 105;
   const clean = str.trim();
   const parts = clean.split(':');
   if (parts.length === 2) {
@@ -124,6 +127,7 @@ const parseSwimPace = (str: string): number => {
 };
 
 export default function SettingsScreen() {
+  const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
   const { user, profile } = useAuth();
 
@@ -345,7 +349,16 @@ export default function SettingsScreen() {
         redirectUri
       )}&response_type=code&approval_prompt=auto&scope=activity:read_all,profile:read_all&state=${state}`;
 
-      await WebBrowser.openAuthSessionAsync(authUrl, returnUrl);
+      const result = await WebBrowser.openAuthSessionAsync(authUrl, returnUrl);
+
+      if (result.type === 'success' && result.url) {
+        const url = Linking.parse(result.url);
+        if (url.queryParams?.success === 'true') {
+          Alert.alert('Success', 'Strava Connected Successfully!');
+        } else if (url.queryParams?.error) {
+          Alert.alert('Error', `Failed to connect to Strava: ${url.queryParams.error}`);
+        }
+      }
     } catch (e: any) {
       console.error(e);
       Alert.alert('Error', 'Authentication failed: ' + e.message);
@@ -491,15 +504,15 @@ export default function SettingsScreen() {
 
   return (
     <ScreenWrapper className="px-0" withTopInset={false} scrollable={false}>
-      {/* Top Header Bar matching Wizard */}
+      {/* Top Header Bar */}
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
           paddingHorizontal: 20,
-          paddingTop: 12,
-          paddingBottom: 12,
+          paddingTop: insets.top > 0 ? Math.round(insets.top * 0.5) : 8,
+          paddingBottom: 8,
           borderBottomWidth: BorderWidth.hairline,
           borderBottomColor: cardBorder,
         }}
@@ -508,22 +521,22 @@ export default function SettingsScreen() {
           onPress={() => router.back()}
           shape="pill"
           size="sm"
-          style={{ width: 78, height: 36 }}
-          contentContainerStyle={{ paddingHorizontal: 0, paddingVertical: 0, width: '100%', height: 36, justifyContent: 'center', alignItems: 'center' }}
+          style={{ width: 84, height: 38 }}
+          contentContainerStyle={{ paddingHorizontal: 0, paddingVertical: 0, width: '100%', height: 38, justifyContent: 'center', alignItems: 'center' }}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
             <ChevronLeft size={16} color={colors.text} strokeWidth={2.5} />
-            <Text style={{ fontSize: 13, fontWeight: '600', color: colors.text }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
               Back
             </Text>
           </View>
         </GlassButton>
 
-        <Text style={{ fontSize: 17, fontWeight: '700', color: colors.text, letterSpacing: -0.3 }}>
+        <Text style={{ fontSize: 21, fontWeight: '800', color: colors.text, letterSpacing: -0.4 }}>
           Settings
         </Text>
 
-        <View style={{ width: 78 }} />
+        <View style={{ width: 84 }} />
       </View>
 
       <KeyboardAvoidingView

@@ -17,6 +17,7 @@ import Text from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/hooks/use-auth';
 import { createWorkout } from '@/lib/workout-service';
+import { uploadFitFile } from '@/lib/fit-uploader';
 import { ActivityType } from '@/types/activity';
 import {
   ChevronLeft,
@@ -93,7 +94,10 @@ export default function AddTrainingScreen() {
     return (parts[0] * 3600) + (parts[1] * 60) + parts[2];
   };
 
+  const isStrengthOrMobility = ['strength', 'stretching', 'yoga'].includes(sport.toLowerCase());
+
   const calculateTSS = () => {
+    if (isStrengthOrMobility) return 0;
     const totalHours = getDurationInSeconds() / 3600;
     return Math.round(totalHours * effortLevel.factor);
   };
@@ -110,15 +114,18 @@ export default function AddTrainingScreen() {
       const durationSecs = getDurationInSeconds();
       const minutesFormatted = Math.floor(durationSecs / 60);
       const durationStr = `${minutesFormatted}m`;
-      const tss = calculateTSS();
+      const tss = isStrengthOrMobility ? 0 : calculateTSS();
       const dateString = format(selectedDate, 'yyyy-MM-dd');
+      const meta = isStrengthOrMobility
+        ? `${durationStr} • ${sport.toUpperCase()}`
+        : `${durationStr} • ${effortLevel.label} • ~${tss} TSS`;
 
       await createWorkout({
         userId: user.uid,
         sport,
         name: name.trim(),
         description: description.trim() || `Manually added ${sport} session`,
-        meta: `${durationStr} • ${effortLevel.label} • ~${tss} TSS`,
+        meta,
         date: dateString,
         completed: false,
         status: 'planned',
@@ -157,27 +164,9 @@ export default function AddTrainingScreen() {
       setUploading(true);
       const file = result.assets[0];
 
-      const formData = new FormData();
-      formData.append('userId', user!.uid);
+      const uploadResult = await uploadFitFile(user!.uid, file);
 
-      const fileData = {
-        uri: file.uri,
-        name: file.name,
-        type: 'application/octet-stream',
-      };
-
-      // @ts-ignore
-      formData.append('file', fileData);
-
-      const response = await fetch('https://upload-workout-fit-2stnjlmrwq-nw.a.run.app', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'application/json',
-        },
-      });
-
-      if (response.ok) {
+      if (uploadResult.success) {
         Alert.alert('Success', 'Workout uploaded and analyzed successfully!');
         if (router.canGoBack()) {
           router.back();
@@ -185,13 +174,12 @@ export default function AddTrainingScreen() {
           router.replace('/(tabs)');
         }
       } else {
-        const errorText = await response.text();
-        console.error('Upload failed:', errorText);
-        Alert.alert('Error', `Upload failed: ${errorText}`);
+        console.error('Upload failed:', uploadResult.error);
+        Alert.alert('Upload Error', uploadResult.error || 'Failed to upload workout.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Upload error:', error);
-      Alert.alert('Error', 'An error occurred during upload.');
+      Alert.alert('Error', error?.message || 'An error occurred during upload.');
     } finally {
       setUploading(false);
     }
@@ -320,36 +308,40 @@ export default function AddTrainingScreen() {
               </View>
 
               {/* Calculated TSS Badge */}
-              <View
-                style={{
-                  backgroundColor: theme.isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
-                  borderColor: theme.colors.border,
-                  borderWidth: BorderWidth.hairline,
-                  paddingHorizontal: 10,
-                  paddingVertical: 3,
-                  borderRadius: Radius.full,
-                }}
-              >
-                <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.textSecondary }}>
-                  ~{calculateTSS()} TSS
-                </Text>
-              </View>
+              {!isStrengthOrMobility && (
+                <View
+                  style={{
+                    backgroundColor: theme.isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
+                    borderColor: theme.colors.border,
+                    borderWidth: BorderWidth.hairline,
+                    paddingHorizontal: 10,
+                    paddingVertical: 3,
+                    borderRadius: Radius.full,
+                  }}
+                >
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.textSecondary }}>
+                    ~{calculateTSS()} TSS
+                  </Text>
+                </View>
+              )}
 
               {/* Effort Level Badge */}
-              <View
-                style={{
-                  backgroundColor: 'rgba(59, 130, 246, 0.12)',
-                  borderColor: 'rgba(59, 130, 246, 0.3)',
-                  borderWidth: BorderWidth.hairline,
-                  paddingHorizontal: 10,
-                  paddingVertical: 3,
-                  borderRadius: Radius.full,
-                }}
-              >
-                <Text style={{ fontSize: 11, fontWeight: '700', color: '#60a5fa' }}>
-                  {effortLevel.label}
-                </Text>
-              </View>
+              {!isStrengthOrMobility && (
+                <View
+                  style={{
+                    backgroundColor: 'rgba(59, 130, 246, 0.12)',
+                    borderColor: 'rgba(59, 130, 246, 0.3)',
+                    borderWidth: BorderWidth.hairline,
+                    paddingHorizontal: 10,
+                    paddingVertical: 3,
+                    borderRadius: Radius.full,
+                  }}
+                >
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: '#60a5fa' }}>
+                    {effortLevel.label}
+                  </Text>
+                </View>
+              )}
             </View>
           </View>
 
@@ -402,12 +394,14 @@ export default function AddTrainingScreen() {
                   icon={Tag}
                   onPress={() => setShowTypePicker(true)}
                 />
-                <PickerButton
-                  label="Effort Level"
-                  value={effortLevel.label}
-                  icon={Zap}
-                  onPress={() => setShowEffortPicker(true)}
-                />
+                {!isStrengthOrMobility && (
+                  <PickerButton
+                    label="Effort Level"
+                    value={effortLevel.label}
+                    icon={Zap}
+                    onPress={() => setShowEffortPicker(true)}
+                  />
+                )}
               </View>
 
               {/* Planned Duration */}

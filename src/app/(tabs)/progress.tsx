@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { View, ScrollView, TouchableOpacity, Dimensions, Modal, Switch, PanResponder } from 'react-native';
 import ScreenWrapper from '@/components/ui/screen-wrapper';
 import Header from '@/components/header';
@@ -13,6 +13,10 @@ import { Check, ChevronDown, X, Calendar } from 'lucide-react-native';
 import { cn } from '@/lib/utils';
 import { format, subDays } from 'date-fns';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Workout } from '@/lib/workout-service';
+import { calculateTrainingLoadTimeline } from '@/lib/physiology-engine';
 
 const screenWidth = Dimensions.get('window').width;
 const CHART_WIDTH = screenWidth;
@@ -22,9 +26,9 @@ const INITIAL_SPACING = 12;
 const END_SPACING = 12;
 
 const METRIC_CONFIG: Record<string, { label: string, color: string, group: 'training' | 'readiness' | 'body' }> = {
-  ctl: { label: 'Load (CTL)', color: '#10B981', group: 'training' },
+  ctl: { label: 'Fitness (CTL)', color: '#10B981', group: 'training' },
   atl: { label: 'Fatigue (ATL)', color: '#F97316', group: 'training' },
-  form: { label: 'Form', color: '#3B82F6', group: 'training' },
+  form: { label: 'Form (TSB)', color: '#3B82F6', group: 'training' },
   sleep: { label: 'Sleep', color: '#6366F1', group: 'readiness' },
   physical: { label: 'Physical', color: '#8B5CF6', group: 'readiness' },
   mental: { label: 'Mental', group: 'readiness', color: '#A855F7' },
@@ -51,59 +55,25 @@ export default function ProgressScreen() {
   const [showPresetDropdown, setShowPresetDropdown] = useState(false);
   const [chartHeight, setChartHeight] = useState(220);
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
 
-  // Generate dynamic data from profile.dailyMetricsHistory
+  // Subscribe to user workouts for dynamic physiological calculation
+  useEffect(() => {
+    if (!profile?.uid) return;
+    const workoutRef = collection(db, "workouts");
+    const q = query(workoutRef, where("userId", "==", profile.uid));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }) as Workout);
+      setWorkouts(docs);
+    });
+    return () => unsubscribe();
+  }, [profile?.uid]);
+
+  // Generate dynamic data calculated via Banister EWMA model
   const dynamicData = useMemo(() => {
-    let daysToLookBack = activeRange === '7d' ? 7 : activeRange === '14d' ? 14 : 28;
-    const today = new Date();
-    const isImperial = profile?.units === 'Imperial';
-
-    // Track the latest load values to "fill forward" for continuous lines
-    // We default to the user's current profile values if no history is found yet
-    let lastKnownLoad = {
-      ctl: profile?.ctl || 0,
-      atl: profile?.atl || 0,
-      form: (profile?.ctl || 0) - (profile?.atl || 0)
-    };
-
-    // We process from furthest back to today
-    const tempDays = [];
-    for (let i = daysToLookBack - 1; i >= 0; i--) {
-      const targetDate = subDays(today, i);
-      const dateKey = format(targetDate, 'yyyy-MM-dd');
-      const dayMetrics = profile?.dailyMetricsHistory?.[dateKey] || {};
-
-      // Load metrics carry forward if missing for a day
-      if (dayMetrics.ctl !== undefined) lastKnownLoad.ctl = dayMetrics.ctl;
-      if (dayMetrics.atl !== undefined) lastKnownLoad.atl = dayMetrics.atl;
-      if (dayMetrics.form !== undefined) lastKnownLoad.form = dayMetrics.form;
-
-      let weightVal = dayMetrics.weight ? parseFloat(dayMetrics.weight) : null;
-      if (weightVal !== null && isImperial) {
-        weightVal *= 2.20462; // kg to lbs conversion
-      }
-
-      const metrics: Record<string, number | null> = {
-        ctl: lastKnownLoad.ctl,
-        atl: lastKnownLoad.atl,
-        form: lastKnownLoad.form,
-        sleep: dayMetrics.sleep || null,
-        physical: dayMetrics.physicallyFeeling || null,
-        mental: dayMetrics.mentallyFeeling || null,
-        weight: weightVal,
-        injury: (dayMetrics.injury && dayMetrics.injury !== 'None') ? 1 : (dayMetrics.injury === 'None' ? 0 : null),
-        illness: (dayMetrics.illness && dayMetrics.illness !== 'None') ? 1 : (dayMetrics.illness === 'None' ? 0 : null),
-      };
-
-      tempDays.push({
-        date: dateKey,
-        label: String(i + 1),
-        metrics
-      });
-    }
-
-    return tempDays;
-  }, [profile, activeRange]);
+    const daysToLookBack = activeRange === '7d' ? 7 : activeRange === '14d' ? 14 : 28;
+    return calculateTrainingLoadTimeline(profile, workouts, daysToLookBack);
+  }, [profile, workouts, activeRange]);
 
   const chartSpacing = useMemo(() => {
     const count = dynamicData.length;

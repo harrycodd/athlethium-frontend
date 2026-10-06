@@ -30,11 +30,11 @@ function RootLayoutNav() {
     if (!user && !inAuthGroup) {
       // Redirect to the login page if the user is not authenticated
       router.replace('/(auth)/login');
-    } else if (user) {
-      if (!profile?.wizardCompleted && !isWizard) {
-        // Redirect to setup wizard if not completed
+    } else if (user && profile) {
+      if (!profile.wizardCompleted && !isWizard) {
+        // Redirect to setup wizard only if explicitly not completed
         router.replace('/wizard');
-      } else if (profile?.wizardCompleted && (inAuthGroup || isWizard || isRoot)) {
+      } else if (profile.wizardCompleted && (inAuthGroup || isWizard || isRoot)) {
         // Redirect to main tabs if wizard is completed
         router.replace('/(tabs)');
       }
