@@ -2,12 +2,14 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { 
   getAuth, 
   initializeAuth, 
+  connectAuthEmulator,
   // @ts-ignore
   getReactNativePersistence 
 } from "firebase/auth";
-import { getFirestore, initializeFirestore, memoryLocalCache } from "firebase/firestore";
+import { getFirestore, initializeFirestore, memoryLocalCache, connectFirestoreEmulator } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
+import { USE_EMULATORS, EMULATOR_HOST, EMULATOR_PROJECT_ID } from "./emulators";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,7 +18,8 @@ const firebaseConfig = {
   projectId: "athlethium-app",
   storageBucket: "athlethium-app.firebasestorage.app",
   messagingSenderId: "420163252166",
-  appId: "1:420163252166:web:845372b921b687e19b4cc7"
+  appId: "1:420163252166:web:845372b921b687e19b4cc7",
+  ...(USE_EMULATORS ? { projectId: EMULATOR_PROJECT_ID } : {}),
 };
 
 // Initialize Firebase App safely (prevent duplicate initializeApp errors)
@@ -44,6 +47,15 @@ try {
   });
 } catch (e) {
   db = getFirestore(app);
+}
+
+if (USE_EMULATORS) {
+  try {
+    connectAuthEmulator(auth, `http://${EMULATOR_HOST}:9099`, { disableWarnings: true });
+    connectFirestoreEmulator(db, EMULATOR_HOST, 8080);
+  } catch {
+    // Already connected (fast refresh re-runs this module).
+  }
 }
 
 export { auth, db, app };

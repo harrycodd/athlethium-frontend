@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { UserProfile, subscribeToUserProfile, createUserProfile, DEFAULT_PROFILE } from '@/lib/user-service';
+import { UserProfile, subscribeToUserProfile, createUserProfile, updateUserProfile, DEFAULT_PROFILE } from '@/lib/user-service';
+import { deviceTimeZone } from '@/lib/api';
 
 interface AuthContextType {
   user: User | null;
@@ -49,6 +50,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
           } else {
             setProfile(p);
+            // Keep the athlete's time zone current so "today" matches their calendar day.
+            const tz = deviceTimeZone();
+            if (tz && p.timezone !== tz) {
+              updateUserProfile(currentUser.uid, { timezone: tz }).catch((err) =>
+                console.warn("Could not update time zone:", err)
+              );
+            }
           }
           setLoading(false);
         });

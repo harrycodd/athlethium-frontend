@@ -51,7 +51,7 @@ import { getAutoCalculatedFthr, regenerateIncompleteGeneratedWorkouts } from '@/
 import { Radius, BorderWidth } from '@/constants/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
-import * as Linking from 'expo-linking';
+import { connectStrava, disconnectStrava } from '@/lib/strava';
 
 // Ensure WebBrowser completes its auth session if necessary
 WebBrowser.maybeCompleteAuthSession();
@@ -324,13 +324,12 @@ export default function SettingsScreen() {
         {
           text: 'Disconnect',
           style: 'destructive',
-          onPress: () => {
-            updateProfile({
-              stravaConnected: false,
-              stravaAccessToken: null,
-              stravaRefreshToken: null,
-              stravaAthleteId: null,
-            });
+          onPress: async () => {
+            try {
+              await disconnectStrava();
+            } catch (e: any) {
+              Alert.alert('Error', 'Could not disconnect Strava: ' + (e?.message || ''));
+            }
           },
         },
       ]);
@@ -339,29 +338,15 @@ export default function SettingsScreen() {
 
     try {
       setConnectingStrava(true);
-      const STRAVA_CLIENT_ID = '157155';
-      const returnUrl = Linking.createURL('/settings');
-      const stateObj = JSON.stringify({ uid: user.uid, return_url: returnUrl });
-      const state = encodeURIComponent(stateObj);
-      const redirectUri = 'https://europe-west2-athlethium-app.cloudfunctions.net/strava_callback';
-
-      const authUrl = `https://www.strava.com/oauth/mobile/authorize?client_id=${STRAVA_CLIENT_ID}&redirect_uri=${encodeURIComponent(
-        redirectUri
-      )}&response_type=code&approval_prompt=auto&scope=activity:read_all,profile:read_all&state=${state}`;
-
-      const result = await WebBrowser.openAuthSessionAsync(authUrl, returnUrl);
-
-      if (result.type === 'success' && result.url) {
-        const url = Linking.parse(result.url);
-        if (url.queryParams?.success === 'true') {
-          Alert.alert('Success', 'Strava Connected Successfully!');
-        } else if (url.queryParams?.error) {
-          Alert.alert('Error', `Failed to connect to Strava: ${url.queryParams.error}`);
-        }
+      const result = await connectStrava('/settings');
+      if (result.status === 'connected') {
+        Alert.alert('Success', 'Strava Connected Successfully!');
+      } else if (result.status === 'error') {
+        Alert.alert('Error', `Failed to connect to Strava: ${result.error}`);
       }
     } catch (e: any) {
       console.error(e);
-      Alert.alert('Error', 'Authentication failed: ' + e.message);
+      Alert.alert('Error', 'Authentication failed: ' + (e?.message || ''));
     } finally {
       setConnectingStrava(false);
     }
@@ -395,6 +380,15 @@ export default function SettingsScreen() {
       if (passwordForReauth && currentUser.email) {
         const credential = EmailAuthProvider.credential(currentUser.email, passwordForReauth);
         await reauthenticateWithCredential(currentUser, credential);
+      }
+
+      // 1b. Revoke Strava and delete server-held tokens while the account still exists
+      if (profile?.stravaConnected) {
+        try {
+          await disconnectStrava();
+        } catch (stravaErr) {
+          console.warn("Error disconnecting Strava:", stravaErr);
+        }
       }
 
       // 2. Delete user's workouts collection in Firestore

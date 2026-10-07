@@ -290,6 +290,7 @@ export default function SessionDetailsScreen() {
                 actual_tss: null,
                 distance_m: null,
                 fit_file_url: null,
+                fit_file_path: null,
                 fit_file_processed: null,
                 completion_type: null,
                 source: null,

@@ -619,7 +619,7 @@ export default function GoalCountdown({
               {goal?.description ? (
                 <View className="mt-3 pt-3 border-t border-border/40">
                   <Text variant="muted" className="text-xs italic">
-                    "{goal.description}"
+                    &ldquo;{goal.description}&rdquo;
                   </Text>
                 </View>
               ) : null}

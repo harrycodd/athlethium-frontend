@@ -1,3 +1,4 @@
+import { deviceTimeZone } from './api';
 import { doc, getDoc, setDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -31,6 +32,7 @@ export interface UserProfile {
   stravaRefreshToken?: string | null;
   stravaAthleteId?: string | null;
   stravaExpiresAt?: number | null;
+  timezone?: string; // IANA zone used by the backend to decide the athlete's "today"
   garminConnected: boolean;
   wahooConnected: boolean;
   lastSyncAt?: any;
@@ -166,6 +168,7 @@ export const createUserProfile = async (uid: string, email: string | null, displ
       email,
       displayName,
       ...DEFAULT_PROFILE,
+      timezone: deviceTimeZone(),
     } as UserProfile;
 
     await setDoc(docRef, removeUndefinedFields(newProfile));
