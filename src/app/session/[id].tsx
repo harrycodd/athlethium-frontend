@@ -18,6 +18,7 @@ import { GlassButton } from '@/components/ui/glass-button';
 import { Badge } from '@/components/ui/badge';
 import { BarChart } from 'react-native-gifted-charts';
 import WorkoutAnalysis from '@/components/workout-analysis';
+import StrengthLog from '@/components/strength-log';
 import * as DocumentPicker from 'expo-document-picker';
 import { uploadFitFile } from '@/lib/fit-uploader';
 import { cn } from '@/lib/utils';
@@ -56,7 +57,8 @@ export default function SessionDetailsScreen() {
 
   const router = useRouter();
   const theme = useTheme();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const imperial = profile?.units === 'Imperial';
 
   const [activeTab, setActiveTab] = useState<'details' | 'structure' | 'analysis'>((tab as 'analysis') || 'details');
   const [loading, setLoading] = useState(true);
@@ -574,6 +576,13 @@ export default function SessionDetailsScreen() {
             <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
               {activeTab === 'details' ? (
                 <View>
+                  {workout?.sport === 'strength' && (
+                    <StrengthLog
+                      workout={workout}
+                      imperial={imperial}
+                      onSaved={(logged) => setWorkout({ ...workout, logged_sets: logged })}
+                    />
+                  )}
                   <View className="flex-row gap-2 items-stretch">
                     <PickerButton
                       label="Date"
