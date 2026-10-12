@@ -1,1 +1,420 @@
-{}
+{
+  "stepOf": "ステップ {{current}}/{{total}}",
+  "hoursPerWeek": "時間/週",
+  "sports": {
+    "stretching": "ストレッチ"
+  },
+  "units": {
+    "metric": "メートル法",
+    "imperial": "ヤード・ポンド法",
+    "metricHint": "km / kg / °C",
+    "imperialHint": "mi / lbs / °F"
+  },
+  "weekdays": {
+    "Monday": "月曜日",
+    "Tuesday": "火曜日",
+    "Wednesday": "水曜日",
+    "Thursday": "木曜日",
+    "Friday": "金曜日",
+    "Saturday": "土曜日",
+    "Sunday": "日曜日"
+  },
+  "goals": {
+    "generalFitness": "総合フィットネス",
+    "ironman": "アイアンマン",
+    "halfIronman": "ハーフアイアンマン（70.3）",
+    "olympicTriathlon": "オリンピックディスタンス・トライアスロン",
+    "sprintTriathlon": "スプリント・トライアスロン",
+    "aquathlon": "アクアスロン",
+    "swimRun": "スイムラン",
+    "duathlon": "デュアスロン",
+    "marathon": "マラソン",
+    "halfMarathon": "ハーフマラソン",
+    "run10k": "10K",
+    "run5k": "5K",
+    "centuryRide": "センチュリーライド",
+    "tt40k": "40km TT",
+    "tt10Mile": "10マイル TT",
+    "freestyle1500m": "1500m自由形",
+    "individualMedley400m": "400m個人メドレー",
+    "strokeSpecialization200m": "200m専門種目",
+    "sprintEvent100m": "100mスプリント種目",
+    "openWater1_5k": "オープンウォーター 1.5km",
+    "openWater5k": "オープンウォーター 5km",
+    "openWater10k": "オープンウォーター 10km",
+    "functionalStrength": "ファンクショナル筋力＆コンディショニング",
+    "fullBodyFlexibility": "全身の柔軟性",
+    "frontSplitsMastery": "前後開脚の習得",
+    "middleSplitsMastery": "左右開脚の習得"
+  },
+  "levels": {
+    "beginner": {
+      "label": "初級",
+      "badge": "これから始める",
+      "description": "体系的なトレーニングは初めて、または休止明けの方（週1〜3時間程度）。"
+    },
+    "intermediate": {
+      "label": "中級",
+      "badge": "継続中のアスリート",
+      "description": "週4〜8時間のトレーニングを継続し、有酸素の基礎ができている方。"
+    },
+    "advanced": {
+      "label": "上級",
+      "badge": "本格派の競技者",
+      "description": "長年にわたり定期的に持久系トレーニングを行い、練習量も多い方（週8〜14時間以上）。"
+    },
+    "elite": {
+      "label": "エリート / 全国レベル",
+      "badge": "ハイパフォーマンス",
+      "description": "エリートまたはエイジグループで表彰台を狙う競技者で、豊富な高ボリュームの練習経験がある方（週14〜20時間以上）。"
+    },
+    "pro": {
+      "label": "プロ",
+      "badge": "フルタイムアスリート",
+      "description": "二部練を含め、週20〜30時間トレーニングするフルタイムのプロ選手。"
+    }
+  },
+  "equipment": {
+    "dumbbells": "ダンベル",
+    "kettlebell": "ケトルベル",
+    "pullUpBar": "懸垂バー",
+    "squatRack": "スクワットラック",
+    "bench": "ベンチ",
+    "dipBar": "ディップスバー",
+    "cable": "ケーブル",
+    "latPulldown": "ラットプルダウン",
+    "flyMachine": "フライマシン",
+    "resistanceBands": "トレーニングチューブ",
+    "medicineBall": "メディシンボール"
+  },
+  "milestones": {
+    "stretching": {
+      "fullFrontSplits": {
+        "label": "完全な前後開脚",
+        "note": "床までの前後開脚の柔軟性"
+      },
+      "middleSplits": {
+        "label": "左右開脚",
+        "note": "左右開脚の股関節外転可動域"
+      },
+      "palmsToFloor": {
+        "label": "手のひらを床に",
+        "note": "ハムストリングと背面の柔軟性"
+      },
+      "deepSquat": {
+        "label": "ディープスクワットの可動性",
+        "note": "足首と股関節を深く開く可動性"
+      },
+      "pigeonPose": {
+        "label": "鳩のポーズ 90°",
+        "note": "臀部と深層外旋筋の柔軟性"
+      },
+      "ankleDorsiflexion": {
+        "label": "足首の背屈",
+        "note": "足首の全可動域"
+      },
+      "thoracicBridge": {
+        "label": "ブリッジ（胸椎）",
+        "note": "完全な後屈と胸椎の伸展"
+      },
+      "lSit": {
+        "label": "Lシットの可動性",
+        "note": "体幹の圧縮力と股関節屈筋の可動域"
+      },
+      "spinalTwists": {
+        "label": "背骨の伸張とツイスト",
+        "note": "背骨の可動性と回旋バランス"
+      },
+      "overheadShoulder": {
+        "label": "頭上への肩の可動性",
+        "note": "180°の能動的な肩の屈曲"
+      },
+      "chestOpener": {
+        "label": "胸と肩前部のストレッチ",
+        "note": "大胸筋と上腕二頭筋腱の柔軟性"
+      },
+      "thoracicExtension": {
+        "label": "胸椎の伸展",
+        "note": "上背部の姿勢と可動性"
+      },
+      "fullBodyFlow": {
+        "label": "全身モビリティフロー",
+        "note": "毎日の総合モビリティルーティン"
+      },
+      "fullBodyMastery": {
+        "label": "全身の柔軟性の習得",
+        "note": "複数関節にわたる総合的な柔軟性"
+      }
+    },
+    "strength": {
+      "pullUps": {
+        "label": "厳密な懸垂10回",
+        "note": "厳密なフォームで連続10回"
+      },
+      "pushUps": {
+        "label": "腕立て伏せ50回連続",
+        "note": "休まず50回の腕立て伏せ"
+      },
+      "benchPress": {
+        "label": "体重ベンチプレス",
+        "note": "体重と同じ重量のベンチプレス"
+      },
+      "handstandPushUps": {
+        "label": "逆立ち腕立て伏せ",
+        "note": "壁を使った厳密な逆立ち腕立て伏せ"
+      },
+      "muscleUp": {
+        "label": "マッスルアップの習得",
+        "note": "バー / リングでの厳密なマッスルアップ"
+      },
+      "overheadPress": {
+        "label": "オーバーヘッドプレス（体重の0.75倍）",
+        "note": "バーベルでの厳密なオーバーヘッドプレス"
+      },
+      "squat": {
+        "label": "体重の1.5倍スクワット",
+        "note": "体重の1.5倍のバーベルバックスクワット"
+      },
+      "deadlift": {
+        "label": "体重の2倍デッドリフト",
+        "note": "体重の2倍のコンベンショナルデッドリフト"
+      },
+      "pistolSquats": {
+        "label": "ピストルスクワット（片脚）",
+        "note": "片脚につき正しいフォームで5回"
+      },
+      "bulgarianSplitSquat": {
+        "label": "高重量ブルガリアンスクワット",
+        "note": "片脚の筋力と安定性"
+      },
+      "plank": {
+        "label": "プランク3分キープ",
+        "note": "180秒連続の厳密な体幹プランク"
+      },
+      "dragonFlag": {
+        "label": "ドラゴンフラッグの習得",
+        "note": "自重での厳密なドラゴンフラッグ"
+      },
+      "hangingLegRaises": {
+        "label": "ハンギングレッグレイズ（15回）",
+        "note": "つま先をバーまで上げる厳密なレッグレイズ"
+      },
+      "abWheel": {
+        "label": "膝をつかない腹筋ローラー",
+        "note": "完全に伸ばしきる腹筋ローラー"
+      },
+      "cleanAndJerk": {
+        "label": "クリーン＆ジャークのベンチマーク",
+        "note": "ウエイトリフティングのベンチマーク"
+      },
+      "functionalStrength": {
+        "label": "ファンクショナル筋力の習得",
+        "note": "全身のファンクショナルな筋力とパワー"
+      }
+    }
+  },
+  "defaults": {
+    "goalName": "マイフィットネス目標",
+    "goalNameForType": "{{goal}}目標",
+    "swimGoalName": "1500mスイム目標",
+    "customMilestoneNotes": "カスタムマイルストーン目標"
+  },
+  "goalEvent": {
+    "description": "{{goal}}のメイン目標",
+    "metaGoal": "目標",
+    "metaTarget": "目標 {{time}}"
+  },
+  "alerts": {
+    "required": "入力必須",
+    "nameRequired": "続けるには名前を入力してください。",
+    "sportRequired": "有効な種目を1つ以上選択してください。",
+    "focusRequired": "有効な種目の中から重点種目を選択してください。",
+    "goalNameRequired": "目標名を入力または選択してください。",
+    "finishFailed": "セットアップウィザードを完了できませんでした",
+    "restricted": "操作できません",
+    "oneActiveSport": "有効な種目が1つ以上必要です。",
+    "enableSportFirst": "先にこの種目を有効にしてください。",
+    "oneMainFocus": "重点種目が1つ以上必要です。",
+    "maxFocus": {
+      "title": "重点種目は最大3つまで",
+      "message": "トレーニング効果とリカバリーを確保するため、重点種目は最大3つまで選択できます。"
+    },
+    "disconnectStrava": {
+      "title": "Stravaの接続を解除",
+      "message": "Stravaアカウントとの接続を解除しますか？",
+      "confirm": "接続解除"
+    },
+    "stravaConnected": "Stravaと接続しました！",
+    "stravaFailed": "Stravaに接続できませんでした：{{error}}",
+    "authFailed": "認証に失敗しました：{{message}}",
+    "minimumTarget": {
+      "title": "目標時間の下限です",
+      "message": "トレーニング可能時間の合計を週間目標時間（{{hours}}時間）より少なくすることはできません。"
+    }
+  },
+  "steps": {
+    "name": {
+      "title": "ようこそ",
+      "subtitle": "トレーニング中はどのようにお呼びしましょうか？",
+      "placeholder": "名前を入力"
+    },
+    "preferences": {
+      "title": "基本設定",
+      "subtitle": "単位と週間目標トレーニング時間を選択してください。",
+      "unitsLabel": "単位",
+      "weeklyHoursLabel": "週間目標トレーニング時間",
+      "dailyAverage": "1日平均 約{{hours}}時間"
+    },
+    "sports": {
+      "title": "種目と重点",
+      "subtitle": "取り組む種目を有効にし、星をタップして重点種目を選択してください。"
+    },
+    "primaryGoal": {
+      "title": "メイン目標",
+      "subtitle": "トレーニング全体の目標を選択してください。"
+    },
+    "goal": {
+      "title": "目標を設定",
+      "subtitle": "重点種目の具体的なマイルストーンや日付を目標にしましょう。",
+      "mainFocusSport": "重点種目",
+      "focusedOnly": "★ 重点種目のみ",
+      "focusedSport": "★ {{sport}}",
+      "flexibilityMilestoneLabel": "柔軟性のマイルストーン / 重点",
+      "strengthBenchmarkLabel": "筋力のベンチマーク / 重点",
+      "selectFlexibilityMilestone": "柔軟性のマイルストーンを選択",
+      "selectStrengthBenchmark": "筋力のベンチマークを選択",
+      "category": "カテゴリー：{{category}}",
+      "allFocusAreas": "すべての部位",
+      "categoryValues": {
+        "legs": "脚",
+        "core": "体幹",
+        "upper": "上半身",
+        "other": "その他"
+      },
+      "targetAreaLabel": "アルゴリズムの対象部位",
+      "nameLabelStretching": "カスタム目標 / マイルストーン名",
+      "nameLabelStrength": "カスタム目標 / ベンチマーク名",
+      "nameLabel": "目標 / イベント名",
+      "namePlaceholderStretching": "例：前後開脚、床に手のひら、カスタム",
+      "namePlaceholderStrength": "例：厳密な懸垂10回、スクワット100kg、カスタム",
+      "namePlaceholder": "例：秋のマラソン、サブ4目標",
+      "swimDistanceLabel": "目標スイム距離（メートル / ヤード）",
+      "distanceLabelMiles": "目標距離（マイル）",
+      "distanceLabelKm": "目標距離（キロメートル）",
+      "yards": "ヤード",
+      "meters": "メートル",
+      "imperialMi": "ヤード・ポンド法（mi）",
+      "metricKm": "メートル法（km）",
+      "presetHalf": "ハーフ {{distance}}",
+      "presetFull": "フル {{distance}}",
+      "presetTimeTrial": "{{distance}}（TT）",
+      "distancePlaceholderSwim": "距離（メートル/ヤード、例：1500）",
+      "distancePlaceholderMiles": "距離（マイル、例：26.2）",
+      "distancePlaceholderKm": "距離（km、例：42.2）",
+      "finishTimeLabel": "目標フィニッシュタイム（HH:MM:SS）",
+      "eventDateLabel": "目標イベント日",
+      "weeksAway_other": "あと{{count}}週間",
+      "weeksPreset": "+{{weeks}}週",
+      "changeDate": "日付を変更",
+      "selectTargetDate": "目標日を選択",
+      "notesLabelStretching": "モビリティの重点 / メモ（任意）",
+      "notesLabelStrength": "ベンチマーク指標 / メモ（任意）",
+      "notesLabel": "目標メモ（任意）",
+      "notesPlaceholderStretching": "例：毎日15分の股関節モビリティ、床まで届く",
+      "notesPlaceholderStrength": "例：厳密に10回、1RM 100 kg目標",
+      "notesPlaceholder": "例：3:45切り、ネガティブスプリットで走る"
+    },
+    "distribution": {
+      "title": "トレーニング配分",
+      "subtitle": "週{{hours}}時間のうち、各種目に割り当てる時間の割合またはセッション数を設定してください。",
+      "percentageMode": "時間配分（%）",
+      "sessionsMode": "週間セッション数",
+      "totalAllocated": "配分合計",
+      "mainFocus": "★ 重点種目",
+      "hoursPerWeek": "（{{hours}}時間/週）",
+      "sessionsPerWeek_other": "回/週"
+    },
+    "availability": {
+      "title": "1日のトレーニング可能時間（標準）",
+      "subtitle": "通常のトレーニング可能時間を設定してください。特定の日はトレーニングカレンダーでいつでも変更できます。",
+      "totalCapacity": "合計トレーニング可能時間",
+      "target": "目標：{{hours}}時間",
+      "restDay": "休養日",
+      "hours": "{{hours}}時間"
+    },
+    "equipment": {
+      "title": "筋トレ器具",
+      "subtitle": "ワークアウトで使える器具を選択してください。"
+    },
+    "integrations": {
+      "title": "外部サービス連携",
+      "subtitle": "トレーニングプラットフォームと接続して、アクティビティ、GPS、パワーデータを自動で同期します。",
+      "stravaSubtitle": "ライド、ラン、スイム、GPSアクティビティ",
+      "connected": "接続済み",
+      "stravaDescription": "完了したワークアウト、パワーカーブ、心拍数、GPSトラックを自動で取り込みます。",
+      "disconnectStrava": "Stravaの接続を解除",
+      "connectStrava": "Stravaと接続",
+      "garminSubtitle": "Edge、Forerunner、Fenixデバイス",
+      "wahooSubtitle": "ELEMNT GPSサイクルコンピューター",
+      "comingSoon": "近日対応",
+      "settingsHint": "アカウントの接続・解除・管理は、設定からいつでも行えます。"
+    },
+    "fitness": {
+      "title": "現在のフィットネスレベル",
+      "subtitle": "トレーニング経験を選ぶか、現在の閾値を入力してください。",
+      "pace": "ペース {{pace}}/{{unit}}",
+      "figuresTitle": "現在のトレーニング指標",
+      "figuresSubtitle": "最新の閾値テストの結果に合わせて数値を調整してください。",
+      "thresholdHr": "閾値心拍数（FTHR）",
+      "maxHr": "最大心拍数",
+      "cyclingFtp": "サイクリングFTP（機能的閾値パワー）",
+      "watts": "ワット",
+      "runningPace": "ランニング閾値ペース（mm:ss）",
+      "swimCss": "クリティカルスイムスピード（CSS mm:ss）",
+      "bodyWeight": "体重",
+      "advancedCtl": "詳細設定：CTLを手動で指定",
+      "currentCtl": "現在：{{ctl}} CTL",
+      "ctlLabel": "慢性トレーニング負荷（CTL / フィットネス）",
+      "ctlInfo": "CTLは、1日あたりのトレーニングストレスの直近42日間の平均です。TrainingPeaksやStravaのフィットネスを利用している場合は、現在の値を入力してください。初期プランの負荷を現在のコンディションに正確に合わせられます。"
+    },
+    "summary": {
+      "title": "準備完了",
+      "subtitle": "パーソナライズされたプロフィール設定を確認してください。",
+      "athleteName": "アスリート名",
+      "units": "単位",
+      "weeklyHours": "週間目標時間",
+      "hours_other": "{{count}}時間",
+      "mainFocus": "重点種目",
+      "primaryGoal": "メイン目標",
+      "timeDistribution": "時間配分",
+      "weeklyTotal": "週合計 {{hours}}時間",
+      "sportBreakdown": "（{{hours}}時間 • 週{{sessions}}回）",
+      "targetMilestone": "目標マイルストーン",
+      "fitnessLevel": "フィットネスレベル",
+      "fitnessLevelValue": "{{level}}（{{ctl}} CTL）",
+      "integrations": "連携",
+      "stravaConnected": "Strava接続済み",
+      "standalone": "連携なし",
+      "generating": "パーソナライズされたトレーニングプランを作成中..."
+    }
+  },
+  "bodyAreas": {
+    "all": "全身",
+    "core": "体幹",
+    "upper": "上半身",
+    "lower": "下半身 / 脚"
+  },
+  "milestonePicker": {
+    "selectFlexibilityTarget": "柔軟性の目標を選択",
+    "selectStrengthBenchmark": "筋力のベンチマークを選択",
+    "categories": {
+      "all": "すべての部位",
+      "legs": "脚",
+      "core": "体幹",
+      "upper": "上半身",
+      "other": "その他 / カスタム"
+    },
+    "otherTitle": "その他 / カスタム目標",
+    "otherDescription": "対象部位を選択し、カスタム動作を入力してください"
+  }
+}

@@ -1,1 +1,9 @@
-{}
+{
+  "greeting": "おはようございます、{{name}}さん",
+  "defaultName": "アスリート",
+  "onTrack": "週間目標に向けて順調です。",
+  "targetGoal": "目標",
+  "todaysSession": "今日のセッション",
+  "logExtra": "追加を記録",
+  "noWorkoutsToday": "今日予定されているワークアウトはありません。"
+}

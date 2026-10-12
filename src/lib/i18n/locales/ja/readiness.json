@@ -1,1 +1,25 @@
-{}
+{
+  "dailyReadiness": "デイリーレディネス",
+  "recordStats": "今日の状態を記録しましょう",
+  "history": "履歴",
+  "noEntry": "記録なし",
+  "viewingPast": "過去のレディネスを表示中",
+  "physicalFeeling": "身体の調子",
+  "mentalFeeling": "メンタルの調子",
+  "sleepQuality": "睡眠の質",
+  "injury": "ケガ",
+  "illness": "体調不良",
+  "weightWithUnit": "体重（{{unit}}）",
+  "notes": "メモ",
+  "notesPlaceholder": "今日の調子はいかがですか？",
+  "noNotes": "メモはありません。",
+  "save": "レディネスを保存",
+  "options": {
+    "none": "なし",
+    "minor": "軽度",
+    "moderate": "中程度",
+    "severe": "重度",
+    "mild": "軽い",
+    "sick": "病気"
+  }
+}

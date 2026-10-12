@@ -1,1 +1,49 @@
-{}
+{
+  "upload": "Carica",
+  "namePlaceholder": "Nome seduta",
+  "tssBadge": "~{{tss}} TSS",
+  "sports": {
+    "stretching": "Stretching",
+    "other": "Altro"
+  },
+  "eventTypes": {
+    "session": "Seduta",
+    "event": "Evento",
+    "goal": "Obiettivo"
+  },
+  "effortLevels": {
+    "recovery": "Recupero (Z1)",
+    "steady": "Fondo (Z2)",
+    "threshold": "Soglia (Z3/4)",
+    "hard": "VO2max / Intenso (Z5)"
+  },
+  "uploading": {
+    "title": "Caricamento allenamento",
+    "message": "Analisi del file FIT e calcolo delle statistiche in corso. Può volerci qualche secondo..."
+  },
+  "fields": {
+    "date": "Data",
+    "sport": "Sport",
+    "type": "Tipo",
+    "effortLevel": "Intensità",
+    "plannedDuration": "Durata prevista",
+    "description": "Descrizione e obiettivi",
+    "descriptionPlaceholder": "Quali sono gli obiettivi o le note per questa seduta?"
+  },
+  "saving": "Salvataggio...",
+  "addToPlan": "Aggiungi al piano",
+  "pickers": {
+    "sport": "Scegli sport",
+    "eventType": "Scegli tipo",
+    "effortLevel": "Scegli intensità"
+  },
+  "alerts": {
+    "requiredTitle": "Campo obbligatorio",
+    "nameRequired": "Inserisci un nome per la seduta",
+    "saveFailed": "Impossibile salvare la seduta",
+    "uploadSuccess": "Allenamento caricato e analizzato!",
+    "uploadErrorTitle": "Errore di caricamento",
+    "uploadFailed": "Impossibile caricare l'allenamento.",
+    "uploadException": "Si è verificato un errore durante il caricamento."
+  }
+}

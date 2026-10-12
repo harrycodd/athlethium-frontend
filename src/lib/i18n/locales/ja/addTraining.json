@@ -1,1 +1,49 @@
-{}
+{
+  "upload": "アップロード",
+  "namePlaceholder": "セッション名",
+  "tssBadge": "約{{tss}} TSS",
+  "sports": {
+    "stretching": "ストレッチ",
+    "other": "その他"
+  },
+  "eventTypes": {
+    "session": "セッション",
+    "event": "イベント",
+    "goal": "目標"
+  },
+  "effortLevels": {
+    "recovery": "リカバリー（ゾーン1）",
+    "steady": "一定強度（ゾーン2）",
+    "threshold": "閾値（ゾーン3/4）",
+    "hard": "VO2max / 高強度（ゾーン5）"
+  },
+  "uploading": {
+    "title": "ワークアウトをアップロード中",
+    "message": "FITファイルを解析し、分析データを作成しています。数秒かかる場合があります..."
+  },
+  "fields": {
+    "date": "日付",
+    "sport": "種目",
+    "type": "タイプ",
+    "effortLevel": "強度",
+    "plannedDuration": "予定時間",
+    "description": "説明と目標",
+    "descriptionPlaceholder": "このセッションの目標やメモは？"
+  },
+  "saving": "保存中...",
+  "addToPlan": "プランに追加",
+  "pickers": {
+    "sport": "種目を選択",
+    "eventType": "イベントタイプを選択",
+    "effortLevel": "強度を選択"
+  },
+  "alerts": {
+    "requiredTitle": "入力必須",
+    "nameRequired": "セッション名を入力してください",
+    "saveFailed": "トレーニングセッションを保存できませんでした",
+    "uploadSuccess": "ワークアウトのアップロードと分析が完了しました！",
+    "uploadErrorTitle": "アップロードエラー",
+    "uploadFailed": "ワークアウトをアップロードできませんでした。",
+    "uploadException": "アップロード中にエラーが発生しました。"
+  }
+}

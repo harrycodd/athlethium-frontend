@@ -1,1 +1,38 @@
-{}
+{
+  "save": "保存",
+  "cancel": "キャンセル",
+  "loading": "読み込み中...",
+  "error": "エラー",
+  "success": "完了",
+  "start": "セッション開始",
+  "details": "詳細",
+  "complete": "完了",
+  "analyse": "分析を見る",
+  "delete": "削除",
+  "ok": "OK",
+  "done": "完了",
+  "next": "次へ",
+  "back": "戻る",
+  "close": "閉じる",
+  "edit": "編集",
+  "retry": "再試行",
+  "yes": "はい",
+  "no": "いいえ",
+  "none": "なし",
+  "sports": {
+    "cycling": "サイクリング",
+    "running": "ランニング",
+    "swimming": "スイミング",
+    "strength": "筋トレ",
+    "stretching": "ストレッチ",
+    "rest": "休養"
+  },
+  "language": "言語",
+  "toggleComplete": {
+    "redoTitle": "ワークアウトをやり直す",
+    "completeTitle": "ワークアウトを完了",
+    "redoMessage": "このワークアウトをやり直し、未完了に戻しますか？",
+    "completeMessage": "このワークアウトを完了にしますか？",
+    "redo": "やり直す"
+  }
+}

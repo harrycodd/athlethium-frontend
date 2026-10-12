@@ -1,1 +1,78 @@
-{}
+{
+  "title": "推移",
+  "subtitle": "フィットネス指標の推移を確認しましょう",
+  "range": {
+    "days_other": "{{count}}日"
+  },
+  "interactiveChart": "インタラクティブグラフ",
+  "presets": {
+    "load": "負荷",
+    "readiness": "レディネス",
+    "custom": "カスタム",
+    "fitnessFatigue": "フィットネスと疲労",
+    "dailyReadiness": "デイリーレディネス",
+    "customEllipsis": "カスタム..."
+  },
+  "axis": {
+    "readiness": "レディネス",
+    "trainingLoad": "トレーニング負荷",
+    "weightWithUnit": "体重（{{unit}}）"
+  },
+  "axisBadge": {
+    "L": "左",
+    "R": "右",
+    "S": "換算"
+  },
+  "today": "今日",
+  "metricValueLabel": "{{label}}：",
+  "selectAtLeastOne": "表示する指標を1つ以上選択してください。",
+  "editMetrics": "指標を編集...",
+  "apply": "適用",
+  "customGraph": {
+    "title": "カスタムグラフ",
+    "subtitle": "指標を最大5つまで選択（{{selected}}/5 選択中）"
+  },
+  "groups": {
+    "training": "トレーニング負荷",
+    "readiness": "デイリーレディネス",
+    "body": "身体指標"
+  },
+  "metrics": {
+    "ctl": {
+      "label": "フィットネス（CTL）",
+      "short": "フィットネス"
+    },
+    "atl": {
+      "label": "疲労（ATL）",
+      "short": "疲労"
+    },
+    "form": {
+      "label": "コンディション（TSB）",
+      "short": "コンディション"
+    },
+    "sleep": {
+      "label": "睡眠",
+      "short": "睡眠"
+    },
+    "physical": {
+      "label": "身体",
+      "short": "身体"
+    },
+    "mental": {
+      "label": "メンタル",
+      "short": "メンタル"
+    },
+    "weight": {
+      "label": "体重",
+      "short": "体重"
+    },
+    "injury": {
+      "label": "ケガ",
+      "short": "ケガ"
+    },
+    "illness": {
+      "label": "体調不良",
+      "short": "体調不良"
+    }
+  }
+}
