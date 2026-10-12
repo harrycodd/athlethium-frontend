@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, ScrollView, Alert, Switch, Pressable, KeyboardAvoidingView, Platform, ActivityIndicator, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { connectStrava, disconnectStrava } from '@/lib/strava';
 import ScreenWrapper from '@/components/ui/screen-wrapper';
 import Text from '@/components/ui/text';
@@ -14,17 +16,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Radius, BorderWidth } from '@/constants/theme';
 import { format, addWeeks, differenceInWeeks } from 'date-fns';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { formatDate } from '@/lib/i18n/format';
 
 type FitnessLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite' | 'pro';
 
 const FITNESS_LEVEL_PRESETS: Record<
   FitnessLevel,
   {
-    label: string;
-    badge: string;
+    labelKey: string;
+    badgeKey: string;
     color: string;
     defaultCtl: number;
-    description: string;
+    descriptionKey: string;
     cyclingFtp: number;
     runningPaceSecKm: number;
     swimCssSec100m: number;
@@ -33,11 +36,11 @@ const FITNESS_LEVEL_PRESETS: Record<
   }
 > = {
   beginner: {
-    label: 'Beginner',
-    badge: 'Starting Out',
+    labelKey: 'levels.beginner.label',
+    badgeKey: 'levels.beginner.badge',
     color: '#22c55e',
     defaultCtl: 18,
-    description: 'New to structured training or resuming after a break (1-3 hrs/week baseline).',
+    descriptionKey: 'levels.beginner.description',
     cyclingFtp: 150,
     runningPaceSecKm: 375, // 6:15/km
     swimCssSec100m: 135, // 2:15/100m
@@ -45,11 +48,11 @@ const FITNESS_LEVEL_PRESETS: Record<
     maxHr: 185,
   },
   intermediate: {
-    label: 'Intermediate',
-    badge: 'Consistent Athlete',
+    labelKey: 'levels.intermediate.label',
+    badgeKey: 'levels.intermediate.badge',
     color: '#06b6d4',
     defaultCtl: 45,
-    description: 'Consistently training 4-8 hrs/week with established aerobic foundation.',
+    descriptionKey: 'levels.intermediate.description',
     cyclingFtp: 220,
     runningPaceSecKm: 290, // 4:50/km
     swimCssSec100m: 105, // 1:45/100m
@@ -57,11 +60,11 @@ const FITNESS_LEVEL_PRESETS: Record<
     maxHr: 188,
   },
   advanced: {
-    label: 'Advanced',
-    badge: 'Dedicated Competitor',
+    labelKey: 'levels.advanced.label',
+    badgeKey: 'levels.advanced.badge',
     color: '#a855f7',
     defaultCtl: 75,
-    description: 'Years of regular endurance workouts & high-volume training (8-14+ hrs/week).',
+    descriptionKey: 'levels.advanced.description',
     cyclingFtp: 285,
     runningPaceSecKm: 240, // 4:00/km
     swimCssSec100m: 85, // 1:25/100m
@@ -69,11 +72,11 @@ const FITNESS_LEVEL_PRESETS: Record<
     maxHr: 192,
   },
   elite: {
-    label: 'Elite / National',
-    badge: 'High Performance',
+    labelKey: 'levels.elite.label',
+    badgeKey: 'levels.elite.badge',
     color: '#ef4444',
     defaultCtl: 100,
-    description: 'Elite / age-group podium competitor with extensive high-volume background (14-20+ hrs/week).',
+    descriptionKey: 'levels.elite.description',
     cyclingFtp: 350,
     runningPaceSecKm: 210, // 3:30/km
     swimCssSec100m: 72, // 1:12/100m
@@ -81,11 +84,11 @@ const FITNESS_LEVEL_PRESETS: Record<
     maxHr: 195,
   },
   pro: {
-    label: 'Professional',
-    badge: 'Full-Time Athlete',
+    labelKey: 'levels.pro.label',
+    badgeKey: 'levels.pro.badge',
     color: '#f59e0b',
     defaultCtl: 130,
-    description: 'Full-time professional training 20-30 hrs/week, including double days.',
+    descriptionKey: 'levels.pro.description',
     cyclingFtp: 400,
     runningPaceSecKm: 195, // 3:15/km
     swimCssSec100m: 65, // 1:05/100m
@@ -136,17 +139,17 @@ const parseSwimPace = (paceStr: string): number => {
 const SPORTS = ['running', 'cycling', 'swimming', 'strength', 'stretching'] as const;
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 const EQUIPMENT_LIST = [
-  { id: 'dumbbells', label: 'Dumbbells' },
-  { id: 'kettlebell', label: 'Kettlebell' },
-  { id: 'pullUpBar', label: 'Pull-up Bar' },
-  { id: 'squatRack', label: 'Squat Rack' },
-  { id: 'bench', label: 'Bench' },
-  { id: 'dipBar', label: 'Dip Bar' },
-  { id: 'cable', label: 'Cable' },
-  { id: 'latPulldown', label: 'Lat Pulldown' },
-  { id: 'flyMachine', label: 'Fly Machine' },
-  { id: 'resistanceBands', label: 'Resistance Bands' },
-  { id: 'medicineBall', label: 'Medicine Ball' },
+  { id: 'dumbbells', labelKey: 'equipment.dumbbells' },
+  { id: 'kettlebell', labelKey: 'equipment.kettlebell' },
+  { id: 'pullUpBar', labelKey: 'equipment.pullUpBar' },
+  { id: 'squatRack', labelKey: 'equipment.squatRack' },
+  { id: 'bench', labelKey: 'equipment.bench' },
+  { id: 'dipBar', labelKey: 'equipment.dipBar' },
+  { id: 'cable', labelKey: 'equipment.cable' },
+  { id: 'latPulldown', labelKey: 'equipment.latPulldown' },
+  { id: 'flyMachine', labelKey: 'equipment.flyMachine' },
+  { id: 'resistanceBands', labelKey: 'equipment.resistanceBands' },
+  { id: 'medicineBall', labelKey: 'equipment.medicineBall' },
 ] as const;
 
 type TargetCategory = 'all' | 'legs' | 'core' | 'upper' | 'other';
@@ -154,58 +157,58 @@ type BodyArea = 'core' | 'upper' | 'lower' | 'all';
 
 interface MilestoneOption {
   category: 'legs' | 'core' | 'upper' | 'all';
-  label: string;
-  note: string;
+  labelKey: string;
+  noteKey: string;
 }
 
 const STRETCHING_MILESTONES: MilestoneOption[] = [
   // Legs
-  { category: 'legs', label: 'Full Front Splits', note: 'Flat ground front splits mobility' },
-  { category: 'legs', label: 'Side / Middle Splits', note: 'Center splits hip abduction range' },
-  { category: 'legs', label: 'Palms to Floor', note: 'Hamstring & posterior chain flexibility' },
-  { category: 'legs', label: 'Deep Squat Mobility', note: 'Deep ankle & hip opener mobility' },
-  { category: 'legs', label: 'Pigeon Pose 90°', note: 'Glute & deep rotator hip flexibility' },
-  { category: 'legs', label: 'Ankle Dorsiflexion', note: 'Full ankle range of motion' },
+  { category: 'legs', labelKey: 'milestones.stretching.fullFrontSplits.label', noteKey: 'milestones.stretching.fullFrontSplits.note' },
+  { category: 'legs', labelKey: 'milestones.stretching.middleSplits.label', noteKey: 'milestones.stretching.middleSplits.note' },
+  { category: 'legs', labelKey: 'milestones.stretching.palmsToFloor.label', noteKey: 'milestones.stretching.palmsToFloor.note' },
+  { category: 'legs', labelKey: 'milestones.stretching.deepSquat.label', noteKey: 'milestones.stretching.deepSquat.note' },
+  { category: 'legs', labelKey: 'milestones.stretching.pigeonPose.label', noteKey: 'milestones.stretching.pigeonPose.note' },
+  { category: 'legs', labelKey: 'milestones.stretching.ankleDorsiflexion.label', noteKey: 'milestones.stretching.ankleDorsiflexion.note' },
 
   // Core
-  { category: 'core', label: 'Thoracic Bridge', note: 'Full backbend & thoracic spine extension' },
-  { category: 'core', label: 'L-Sit Mobility', note: 'Core compression & hip flexor range' },
-  { category: 'core', label: 'Spinal Decompression & Twists', note: 'Spine mobility and rotational balance' },
+  { category: 'core', labelKey: 'milestones.stretching.thoracicBridge.label', noteKey: 'milestones.stretching.thoracicBridge.note' },
+  { category: 'core', labelKey: 'milestones.stretching.lSit.label', noteKey: 'milestones.stretching.lSit.note' },
+  { category: 'core', labelKey: 'milestones.stretching.spinalTwists.label', noteKey: 'milestones.stretching.spinalTwists.note' },
 
   // Upper Body
-  { category: 'upper', label: 'Overhead Shoulder Mobility', note: '180° active overhead shoulder flexion' },
-  { category: 'upper', label: 'Chest & Anterior Shoulder Opener', note: 'Pectoral and bicep tendon flexibility' },
-  { category: 'upper', label: 'Thoracic Extension', note: 'Upper back postural mobility' },
+  { category: 'upper', labelKey: 'milestones.stretching.overheadShoulder.label', noteKey: 'milestones.stretching.overheadShoulder.note' },
+  { category: 'upper', labelKey: 'milestones.stretching.chestOpener.label', noteKey: 'milestones.stretching.chestOpener.note' },
+  { category: 'upper', labelKey: 'milestones.stretching.thoracicExtension.label', noteKey: 'milestones.stretching.thoracicExtension.note' },
 
   // All / Full Body
-  { category: 'all', label: 'Full Body Mobility Flow', note: 'Complete daily mobility routine' },
-  { category: 'all', label: 'Full Body Flexibility Mastery', note: 'Comprehensive multi-joint flexibility' },
+  { category: 'all', labelKey: 'milestones.stretching.fullBodyFlow.label', noteKey: 'milestones.stretching.fullBodyFlow.note' },
+  { category: 'all', labelKey: 'milestones.stretching.fullBodyMastery.label', noteKey: 'milestones.stretching.fullBodyMastery.note' },
 ];
 
 const STRENGTH_MILESTONES: MilestoneOption[] = [
   // Upper Body
-  { category: 'upper', label: '10 Strict Pull-ups', note: '10 consecutive strict reps' },
-  { category: 'upper', label: '50 Push-ups unbroken', note: '50 unbroken push-ups' },
-  { category: 'upper', label: 'Bodyweight Bench Press', note: '1x bodyweight bench press' },
-  { category: 'upper', label: 'Handstand Push-ups', note: 'Strict handstand push-ups against wall' },
-  { category: 'upper', label: 'Muscle-Up Mastery', note: 'Strict bar / ring muscle-ups' },
-  { category: 'upper', label: 'Overhead Press (0.75x BW)', note: 'Strict barbell overhead press' },
+  { category: 'upper', labelKey: 'milestones.strength.pullUps.label', noteKey: 'milestones.strength.pullUps.note' },
+  { category: 'upper', labelKey: 'milestones.strength.pushUps.label', noteKey: 'milestones.strength.pushUps.note' },
+  { category: 'upper', labelKey: 'milestones.strength.benchPress.label', noteKey: 'milestones.strength.benchPress.note' },
+  { category: 'upper', labelKey: 'milestones.strength.handstandPushUps.label', noteKey: 'milestones.strength.handstandPushUps.note' },
+  { category: 'upper', labelKey: 'milestones.strength.muscleUp.label', noteKey: 'milestones.strength.muscleUp.note' },
+  { category: 'upper', labelKey: 'milestones.strength.overheadPress.label', noteKey: 'milestones.strength.overheadPress.note' },
 
   // Legs
-  { category: 'legs', label: '1.5x BW Squat', note: '1.5x bodyweight barbell back squat' },
-  { category: 'legs', label: '2x BW Deadlift', note: '2x bodyweight conventional deadlift' },
-  { category: 'legs', label: 'Pistol Squats (Single Leg)', note: '5 clean reps per leg' },
-  { category: 'legs', label: 'Bulgarian Split Squat Heavy', note: 'Single-leg strength & stability' },
+  { category: 'legs', labelKey: 'milestones.strength.squat.label', noteKey: 'milestones.strength.squat.note' },
+  { category: 'legs', labelKey: 'milestones.strength.deadlift.label', noteKey: 'milestones.strength.deadlift.note' },
+  { category: 'legs', labelKey: 'milestones.strength.pistolSquats.label', noteKey: 'milestones.strength.pistolSquats.note' },
+  { category: 'legs', labelKey: 'milestones.strength.bulgarianSplitSquat.label', noteKey: 'milestones.strength.bulgarianSplitSquat.note' },
 
   // Core
-  { category: 'core', label: '3-Minute Plank Hold', note: '180s continuous strict core plank' },
-  { category: 'core', label: 'Dragon Flag Mastery', note: 'Strict bodyweight dragon flag' },
-  { category: 'core', label: 'Hanging Leg Raises (15 reps)', note: 'Toes-to-bar strict leg raises' },
-  { category: 'core', label: 'Ab Wheel Rollouts from Toes', note: 'Full extension ab wheel rollouts' },
+  { category: 'core', labelKey: 'milestones.strength.plank.label', noteKey: 'milestones.strength.plank.note' },
+  { category: 'core', labelKey: 'milestones.strength.dragonFlag.label', noteKey: 'milestones.strength.dragonFlag.note' },
+  { category: 'core', labelKey: 'milestones.strength.hangingLegRaises.label', noteKey: 'milestones.strength.hangingLegRaises.note' },
+  { category: 'core', labelKey: 'milestones.strength.abWheel.label', noteKey: 'milestones.strength.abWheel.note' },
 
   // All / Full Body
-  { category: 'all', label: 'Clean & Jerk Benchmark', note: 'Olympic weightlifting benchmark' },
-  { category: 'all', label: 'Functional Strength Mastery', note: 'Full body functional strength & power' },
+  { category: 'all', labelKey: 'milestones.strength.cleanAndJerk.label', noteKey: 'milestones.strength.cleanAndJerk.note' },
+  { category: 'all', labelKey: 'milestones.strength.functionalStrength.label', noteKey: 'milestones.strength.functionalStrength.note' },
 ];
 
 const SPORT_COLORS: Record<string, string> = {
@@ -215,6 +218,42 @@ const SPORT_COLORS: Record<string, string> = {
   strength: '#eab308',
   stretching: '#ec4899',
 };
+
+// Goal types are stored as English values (trainingGoalType); only their display label is translated.
+const GOAL_LABEL_KEYS: Record<string, string> = {
+  'General Fitness': 'goals.generalFitness',
+  'Ironman': 'goals.ironman',
+  'Half Ironman (70.3)': 'goals.halfIronman',
+  'Olympic Triathlon': 'goals.olympicTriathlon',
+  'Sprint Triathlon': 'goals.sprintTriathlon',
+  'Aquathlon': 'goals.aquathlon',
+  'SwimRun': 'goals.swimRun',
+  'Duathlon': 'goals.duathlon',
+  'Marathon': 'goals.marathon',
+  'Half Marathon': 'goals.halfMarathon',
+  '10K': 'goals.run10k',
+  '5K': 'goals.run5k',
+  'Century Ride': 'goals.centuryRide',
+  '40K TT': 'goals.tt40k',
+  '10 Mile TT': 'goals.tt10Mile',
+  '1500m Freestyle': 'goals.freestyle1500m',
+  '400m Individual Medley': 'goals.individualMedley400m',
+  '200m Stroke Specialization': 'goals.strokeSpecialization200m',
+  '100m Sprint Event': 'goals.sprintEvent100m',
+  'Open Water 1.5K': 'goals.openWater1_5k',
+  'Open Water 5K': 'goals.openWater5k',
+  'Open Water 10K': 'goals.openWater10k',
+  'Functional Strength & Conditioning': 'goals.functionalStrength',
+  'Full Body Flexibility': 'goals.fullBodyFlexibility',
+  'Front Splits Mastery': 'goals.frontSplitsMastery',
+  'Middle Splits Mastery': 'goals.middleSplitsMastery',
+};
+
+const goalLabel = (t: TFunction, goal: string) => (GOAL_LABEL_KEYS[goal] ? t(GOAL_LABEL_KEYS[goal]) : goal);
+
+// Sport codes stay as stored; 'stretching' is shown as "Stretching" here (common uses "Mobility").
+const sportLabel = (t: TFunction, sport: string) =>
+  sport === 'stretching' ? t('sports.stretching') : t(`common:sports.${sport}`);
 
 const getDynamicGoals = (focused_sports: string[] = []) => {
   const goals = ['General Fitness'];
@@ -321,6 +360,7 @@ const getSteps = (hasStrength: boolean) => {
 };
 
 export default function WizardScreen() {
+  const { t } = useTranslation('wizard');
   const { colors, isDark } = useTheme();
   const router = useRouter();
   const { user, profile } = useAuth();
@@ -351,7 +391,7 @@ export default function WizardScreen() {
   const [trainingGoalType, setTrainingGoalType] = useState('General Fitness');
 
   // Goal Event setup states
-  const [goalName, setGoalName] = useState('My Fitness Target');
+  const [goalName, setGoalName] = useState(() => t('defaults.goalName'));
   const [goalSport, setGoalSport] = useState('running');
   const [goalDistance, setGoalDistance] = useState('');
   const [goalDuration, setGoalDuration] = useState('01:00:00');
@@ -460,7 +500,7 @@ export default function WizardScreen() {
       }
       if (profile.trainingGoalType) {
         setTrainingGoalType(profile.trainingGoalType);
-        setGoalName(`${profile.trainingGoalType} Target`);
+        setGoalName(t('defaults.goalNameForType', { goal: goalLabel(t, profile.trainingGoalType) }));
         const defDist = getDefaultDistanceForGoal(profile.trainingGoalType, profile.units || 'Metric');
         const defDur = getDefaultDurationForGoal(profile.trainingGoalType);
         if (defDist) setGoalDistance(defDist);
@@ -507,6 +547,7 @@ export default function WizardScreen() {
         });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   const getSelectedMainFocusSports = () => {
@@ -522,7 +563,7 @@ export default function WizardScreen() {
     const goals = getDynamicGoals(activeFocus);
     if (!goals.includes(trainingGoalType)) {
       setTrainingGoalType('General Fitness');
-      setGoalName('General Fitness Target');
+      setGoalName(t('defaults.goalNameForType', { goal: goalLabel(t, 'General Fitness') }));
       setGoalDistance('');
       setGoalDuration('01:00:00');
     }
@@ -569,7 +610,7 @@ export default function WizardScreen() {
 
   const handleSelectGoalType = (goal: string) => {
     setTrainingGoalType(goal);
-    setGoalName(`${goal} Target`);
+    setGoalName(t('defaults.goalNameForType', { goal: goalLabel(t, goal) }));
     const defDist = getDefaultDistanceForGoal(goal, units);
     const defDur = getDefaultDurationForGoal(goal);
     if (defDist) setGoalDistance(defDist);
@@ -642,23 +683,23 @@ export default function WizardScreen() {
 
   const handleNext = () => {
     if (step === 1 && !displayName.trim()) {
-      Alert.alert('Required', 'Please enter your name to proceed.');
+      Alert.alert(t('alerts.required'), t('alerts.nameRequired'));
       return;
     }
     if (step === 3) {
       const activeSports = SPORTS.filter(s => !!activities[s]);
       if (activeSports.length === 0) {
-        Alert.alert('Required', 'Please select at least one active sport.');
+        Alert.alert(t('alerts.required'), t('alerts.sportRequired'));
         return;
       }
       const focusSports = getSelectedMainFocusSports();
       if (focusSports.length === 0) {
-        Alert.alert('Required', 'Please select a Main Focus(es) from your active sports.');
+        Alert.alert(t('alerts.required'), t('alerts.focusRequired'));
         return;
       }
     }
     if (step === 5 && !goalName.trim()) {
-      Alert.alert('Required', 'Please enter or select a name for your goal.');
+      Alert.alert(t('alerts.required'), t('alerts.goalNameRequired'));
       return;
     }
     if (currentStepIndex < steps.length - 1) {
@@ -750,18 +791,18 @@ export default function WizardScreen() {
       // Create initial Goal event in workouts collection
       try {
         const metaDetails = [
-          'Goal',
-          format(goalDate, 'MMM d, yyyy'),
+          t('goalEvent.metaGoal'),
+          formatDate(goalDate, 'MMM d, yyyy'),
           numericDistance ? `${numericDistance} ${units === 'Imperial' ? 'mi' : 'km'}` : null,
-          totalGoalSeconds > 0 ? `Target ${goalDuration}` : null,
+          totalGoalSeconds > 0 ? t('goalEvent.metaTarget', { time: goalDuration }) : null,
           calculatedPace ? `(${calculatedPace})` : null
         ].filter(Boolean).join(' • ');
 
         const goalWorkoutDoc: any = {
           userId: user.uid,
           sport: goalSport as any,
-          name: goalName.trim() || `${trainingGoalType} Target`,
-          description: fullGoalNotes || `Primary ${trainingGoalType} milestone target`,
+          name: goalName.trim() || t('defaults.goalNameForType', { goal: goalLabel(t, trainingGoalType) }),
+          description: fullGoalNotes || t('goalEvent.description', { goal: goalLabel(t, trainingGoalType) }),
           meta: metaDetails,
           date: formattedGoalDate,
           completed: false,
@@ -791,7 +832,7 @@ export default function WizardScreen() {
       router.replace('/(tabs)');
     } catch (error) {
       console.error('Wizard finish error:', error);
-      Alert.alert('Error', 'Failed to complete setup wizard');
+      Alert.alert(t('common:error'), t('alerts.finishFailed'));
     } finally {
       setSaving(false);
     }
@@ -801,7 +842,7 @@ export default function WizardScreen() {
     const nextVal = !activities[sport];
     const activeCount = SPORTS.filter(s => !!activities[s]).length;
     if (!nextVal && activeCount <= 1) {
-      Alert.alert('Restricted', 'You must have at least one active sport.');
+      Alert.alert(t('alerts.restricted'), t('alerts.oneActiveSport'));
       return;
     }
 
@@ -826,7 +867,7 @@ export default function WizardScreen() {
 
   const toggleMainFocus = (sport: typeof SPORTS[number]) => {
     if (!activities[sport]) {
-      Alert.alert('Restricted', 'Please enable this sport in active sports first.');
+      Alert.alert(t('alerts.restricted'), t('alerts.enableSportFirst'));
       return;
     }
 
@@ -835,12 +876,12 @@ export default function WizardScreen() {
 
     if (!isActive) {
       if (currentActiveFocuses.length >= 3) {
-        Alert.alert('Maximum 3 Main Focus Sports', 'To ensure effective training adaptations and recovery, you can select up to 3 main focus sports.');
+        Alert.alert(t('alerts.maxFocus.title'), t('alerts.maxFocus.message'));
         return;
       }
     } else {
       if (currentActiveFocuses.length <= 1) {
-        Alert.alert('Restricted', 'You must have at least one main focus.');
+        Alert.alert(t('alerts.restricted'), t('alerts.oneMainFocus'));
         return;
       }
     }
@@ -856,12 +897,12 @@ export default function WizardScreen() {
 
     if (profile?.stravaConnected) {
       Alert.alert(
-        "Disconnect Strava",
-        "Are you sure you want to disconnect your Strava account?",
+        t('alerts.disconnectStrava.title'),
+        t('alerts.disconnectStrava.message'),
         [
-          { text: "Cancel", style: "cancel" },
+          { text: t('common:cancel'), style: "cancel" },
           {
-            text: "Disconnect",
+            text: t('alerts.disconnectStrava.confirm'),
             style: "destructive",
             onPress: async () => {
               try {
@@ -880,13 +921,13 @@ export default function WizardScreen() {
       setConnectingStrava(true);
       const result = await connectStrava('/wizard');
       if (result.status === 'connected') {
-        Alert.alert("Success", "Strava Connected Successfully!");
+        Alert.alert(t('common:success'), t('alerts.stravaConnected'));
       } else if (result.status === 'error') {
-        Alert.alert("Error", `Failed to connect to Strava: ${result.error}`);
+        Alert.alert(t('common:error'), t('alerts.stravaFailed', { error: result.error }));
       }
     } catch (e: any) {
       console.error(e);
-      Alert.alert("Error", "Authentication failed: " + (e?.message || ''));
+      Alert.alert(t('common:error'), t('alerts.authFailed', { message: e?.message || '' }));
     } finally {
       setConnectingStrava(false);
     }
@@ -959,7 +1000,7 @@ export default function WizardScreen() {
             }}
           >
             <Text style={{ fontSize: 12, fontWeight: '700', letterSpacing: 0.3, color: colors.text, includeFontPadding: false }}>
-              {`Step ${displayStepNumber} of ${totalSteps}`}
+              {t('stepOf', { current: displayStepNumber, total: totalSteps })}
             </Text>
           </View>
         </View>
@@ -977,7 +1018,7 @@ export default function WizardScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
                 <ChevronLeft size={16} color={colors.text} strokeWidth={2.5} />
                 <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text, includeFontPadding: false }}>
-                  Back
+                  {t('common:back')}
                 </Text>
               </View>
             </GlassButton>
@@ -996,7 +1037,7 @@ export default function WizardScreen() {
               variant="glass-primary"
               shape="pill"
               size="sm"
-              label="Complete"
+              label={t('common:complete')}
               style={{ width: 92, height: 34 }}
               contentContainerStyle={{ width: 92, height: 34, minHeight: 34, paddingHorizontal: 0, paddingVertical: 0, justifyContent: 'center', alignItems: 'center' }}
               textStyle={{ fontSize: 13, fontWeight: '700', color: isDark ? '#4ade80' : '#15803d', includeFontPadding: false }}
@@ -1008,7 +1049,7 @@ export default function WizardScreen() {
               variant={isStepValid() ? "glass-primary" : "glass"}
               shape="pill"
               size="sm"
-              label="Next"
+              label={t('common:next')}
               style={{ width: 74, height: 34, opacity: isStepValid() ? 1 : 0.45 }}
               contentContainerStyle={{ width: 74, height: 34, minHeight: 34, paddingHorizontal: 0, paddingVertical: 0, justifyContent: 'center', alignItems: 'center' }}
               textStyle={{
@@ -1064,10 +1105,10 @@ export default function WizardScreen() {
 
               <View style={{ alignItems: 'center', marginBottom: 28 }}>
                 <Text style={{ fontSize: 28, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                  Welcome Athlete
+                  {t('steps.name.title')}
                 </Text>
                 <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', fontWeight: '500' }}>
-                  What should we call you during your training journey?
+                  {t('steps.name.subtitle')}
                 </Text>
               </View>
 
@@ -1084,7 +1125,7 @@ export default function WizardScreen() {
                     fontSize: 16,
                     fontWeight: displayName.trim() ? '600' : '400',
                   }}
-                  placeholder="Enter your name"
+                  placeholder={t('steps.name.placeholder')}
                   placeholderTextColor={colors.textSecondary}
                   value={displayName}
                   onChangeText={setDisplayName}
@@ -1122,16 +1163,16 @@ export default function WizardScreen() {
 
               <View style={{ alignItems: 'center', marginBottom: 28 }}>
                 <Text style={{ fontSize: 28, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                  Preferences
+                  {t('steps.preferences.title')}
                 </Text>
                 <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', fontWeight: '500' }}>
-                  Choose your measurement units and target weekly training hours.
+                  {t('steps.preferences.subtitle')}
                 </Text>
               </View>
 
               {/* Units Selector */}
               <Text style={{ fontSize: 14, fontWeight: '700', color: colors.text, marginBottom: 10, marginLeft: 4 }}>
-                Measurement Units
+                {t('steps.preferences.unitsLabel')}
               </Text>
               <View style={{ flexDirection: 'row', gap: 12, marginBottom: 24 }}>
                 <TouchableOpacity
@@ -1148,10 +1189,10 @@ export default function WizardScreen() {
                   }}
                 >
                   <Text style={{ fontSize: 16, fontWeight: '700', color: units === 'Metric' ? colors.primary : colors.text }}>
-                    Metric
+                    {t('units.metric')}
                   </Text>
                   <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                    km / kg / °C
+                    {t('units.metricHint')}
                   </Text>
                 </TouchableOpacity>
 
@@ -1169,16 +1210,16 @@ export default function WizardScreen() {
                   }}
                 >
                   <Text style={{ fontSize: 16, fontWeight: '700', color: units === 'Imperial' ? colors.primary : colors.text }}>
-                    Imperial
+                    {t('units.imperial')}
                   </Text>
                   <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                    mi / lbs / °F
+                    {t('units.imperialHint')}
                   </Text>
                 </TouchableOpacity>
               </View>
 
               <Text style={{ fontSize: 14, fontWeight: '700', color: colors.text, marginBottom: 10, marginLeft: 4 }}>
-                Target weekly training hours
+                {t('steps.preferences.weeklyHoursLabel')}
               </Text>
               <View
                 style={{
@@ -1195,10 +1236,10 @@ export default function WizardScreen() {
               >
                 <View>
                   <Text style={{ fontSize: 24, fontWeight: '800', color: colors.primary }}>
-                    {weeklyHours} <Text style={{ fontSize: 16, fontWeight: '600', color: colors.textSecondary }}>hours / week</Text>
+                    {weeklyHours} <Text style={{ fontSize: 16, fontWeight: '600', color: colors.textSecondary }}>{t('hoursPerWeek')}</Text>
                   </Text>
                   <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>
-                    ~{(weeklyHours / 7).toFixed(1)} hrs daily average
+                    {t('steps.preferences.dailyAverage', { hours: (weeklyHours / 7).toFixed(1) })}
                   </Text>
                 </View>
 
@@ -1261,10 +1302,10 @@ export default function WizardScreen() {
 
               <View style={{ alignItems: 'center', marginBottom: 28 }}>
                 <Text style={{ fontSize: 28, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                  Sports & Focus
+                  {t('steps.sports.title')}
                 </Text>
                 <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', fontWeight: '500' }}>
-                  Enable your disciplines and tap the star to select your main focus.
+                  {t('steps.sports.subtitle')}
                 </Text>
               </View>
 
@@ -1289,7 +1330,7 @@ export default function WizardScreen() {
                     >
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
                         <Text style={{ fontSize: 16, fontWeight: '700', color: isActive ? colors.text : colors.textSecondary, textTransform: 'capitalize' }}>
-                          {sport}
+                          {sportLabel(t, sport)}
                         </Text>
                       </View>
 
@@ -1354,10 +1395,10 @@ export default function WizardScreen() {
 
               <View style={{ alignItems: 'center', marginBottom: 28 }}>
                 <Text style={{ fontSize: 28, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                  Primary Goal
+                  {t('steps.primaryGoal.title')}
                 </Text>
                 <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', fontWeight: '500' }}>
-                  Select your overall training discipline target.
+                  {t('steps.primaryGoal.subtitle')}
                 </Text>
               </View>
 
@@ -1389,7 +1430,7 @@ export default function WizardScreen() {
                           marginRight: 12,
                         }}
                       >
-                        {goal}
+                        {goalLabel(t, goal)}
                       </Text>
                       {isSelected && <Check size={20} color={colors.primary} strokeWidth={2.5} />}
                     </TouchableOpacity>
@@ -1425,10 +1466,10 @@ export default function WizardScreen() {
 
               <View style={{ alignItems: 'center', marginBottom: 28 }}>
                 <Text style={{ fontSize: 28, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                  Set Your Goal
+                  {t('steps.goal.title')}
                 </Text>
                 <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', fontWeight: '500' }}>
-                  Target specific milestones and dates for your main focus.
+                  {t('steps.goal.subtitle')}
                 </Text>
               </View>
 
@@ -1436,10 +1477,10 @@ export default function WizardScreen() {
               <View style={{ marginBottom: 20 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, marginLeft: 4 }}>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text }}>
-                    MAIN FOCUS SPORT
+                    {t('steps.goal.mainFocusSport')}
                   </Text>
                   <Text style={{ fontSize: 12, fontWeight: '700', color: colors.primary }}>
-                    ★ Focused Sports Only
+                    {t('steps.goal.focusedOnly')}
                   </Text>
                 </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
@@ -1451,18 +1492,18 @@ export default function WizardScreen() {
                         onPress={() => {
                           setGoalSport(sport);
                           if (sport === 'stretching') {
-                            setGoalName('Full Front Splits');
-                            setGoalNotes('Flat ground front splits mobility');
+                            setGoalName(t('milestones.stretching.fullFrontSplits.label'));
+                            setGoalNotes(t('milestones.stretching.fullFrontSplits.note'));
                           } else if (sport === 'strength') {
-                            setGoalName('10 Strict Pull-ups');
-                            setGoalNotes('10 consecutive strict reps');
+                            setGoalName(t('milestones.strength.pullUps.label'));
+                            setGoalNotes(t('milestones.strength.pullUps.note'));
                           } else if (sport === 'swimming') {
-                            setGoalName('1500m Swim Target');
+                            setGoalName(t('defaults.swimGoalName'));
                             setGoalDistance('1500');
                           } else {
                             const defDist = getDefaultDistanceForGoal(trainingGoalType, units);
                             if (defDist) setGoalDistance(defDist);
-                            setGoalName(`${trainingGoalType} Target`);
+                            setGoalName(t('defaults.goalNameForType', { goal: goalLabel(t, trainingGoalType) }));
                           }
                         }}
                         style={{
@@ -1475,7 +1516,7 @@ export default function WizardScreen() {
                         }}
                       >
                         <Text style={{ fontSize: 14, fontWeight: '700', color: isSelected ? colors.primary : colors.text, textTransform: 'capitalize' }}>
-                          ★ {sport}
+                          {t('steps.goal.focusedSport', { sport: sportLabel(t, sport) })}
                         </Text>
                       </TouchableOpacity>
                     );
@@ -1487,7 +1528,7 @@ export default function WizardScreen() {
               {(isStretchingSport || isStrengthSport) && (
                 <View style={{ marginBottom: 20 }}>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text, marginBottom: 8, marginLeft: 4 }}>
-                    {isStretchingSport ? 'FLEXIBILITY MILESTONE / FOCUS' : 'STRENGTH BENCHMARK / FOCUS'}
+                    {isStretchingSport ? t('steps.goal.flexibilityMilestoneLabel') : t('steps.goal.strengthBenchmarkLabel')}
                   </Text>
 
                   <TouchableOpacity
@@ -1507,10 +1548,10 @@ export default function WizardScreen() {
                   >
                     <View style={{ flex: 1, marginRight: 10 }}>
                       <Text style={{ fontSize: 15, fontWeight: '700', color: colors.text }} numberOfLines={1}>
-                        {goalName || (isStretchingSport ? 'Select Flexibility Milestone' : 'Select Strength Benchmark')}
+                        {goalName || (isStretchingSport ? t('steps.goal.selectFlexibilityMilestone') : t('steps.goal.selectStrengthBenchmark'))}
                       </Text>
                       <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2, textTransform: 'capitalize' }} numberOfLines={1}>
-                        Category: {milestoneCategory === 'all' ? 'All Focus Areas' : milestoneCategory}
+                        {t('steps.goal.category', { category: milestoneCategory === 'all' ? t('steps.goal.allFocusAreas') : t(`steps.goal.categoryValues.${milestoneCategory}`) })}
                       </Text>
                     </View>
                     <View
@@ -1533,17 +1574,11 @@ export default function WizardScreen() {
               {(milestoneCategory === 'other' || isStrengthSport || isStretchingSport) && (
                 <View style={{ marginBottom: 20 }}>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text, marginBottom: 8, marginLeft: 4 }}>
-                    TARGET ANATOMICAL AREA FOR ALGORITHM
+                    {t('steps.goal.targetAreaLabel')}
                   </Text>
                   <View style={{ flexDirection: 'row', gap: 8 }}>
                     {(['all', 'core', 'upper', 'lower'] as const).map(area => {
                       const isSelected = customBodyArea === area;
-                      const areaLabels: Record<BodyArea, string> = {
-                        all: 'All Body',
-                        core: 'Core',
-                        upper: 'Upper Body',
-                        lower: 'Lower Body / Legs',
-                      };
                       return (
                         <TouchableOpacity
                           key={area}
@@ -1560,7 +1595,7 @@ export default function WizardScreen() {
                           }}
                         >
                           <Text style={{ fontSize: 12, fontWeight: '700', color: isSelected ? colors.primary : colors.text, textAlign: 'center' }}>
-                            {areaLabels[area]}
+                            {t(`bodyAreas.${area}`)}
                           </Text>
                         </TouchableOpacity>
                       );
@@ -1572,7 +1607,7 @@ export default function WizardScreen() {
               {/* Goal Name / Custom Input Field */}
               <View style={{ marginBottom: 20 }}>
                 <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text, marginBottom: 8, marginLeft: 4 }}>
-                  {isStretchingSport ? 'CUSTOM GOAL / MILESTONE NAME' : isStrengthSport ? 'CUSTOM TARGET / BENCHMARK NAME' : 'GOAL / EVENT NAME'}
+                  {isStretchingSport ? t('steps.goal.nameLabelStretching') : isStrengthSport ? t('steps.goal.nameLabelStrength') : t('steps.goal.nameLabel')}
                 </Text>
                 <TextInput
                   style={{
@@ -1588,10 +1623,10 @@ export default function WizardScreen() {
                   }}
                   placeholder={
                     isStretchingSport
-                      ? "e.g. Front Splits, Palms to Floor, Custom"
+                      ? t('steps.goal.namePlaceholderStretching')
                       : isStrengthSport
-                        ? "e.g. 10 Strict Pull-ups, 100kg Squat, Custom"
-                        : "e.g. Autumn Marathon, Sub-4h Target"
+                        ? t('steps.goal.namePlaceholderStrength')
+                        : t('steps.goal.namePlaceholder')
                   }
                   placeholderTextColor={colors.textSecondary}
                   value={goalName}
@@ -1604,10 +1639,10 @@ export default function WizardScreen() {
                 <View style={{ marginBottom: 20 }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, marginLeft: 4 }}>
                     <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text }}>
-                      {goalSport === 'swimming' ? 'TARGET SWIM DISTANCE (METERS / YARDS)' : `TARGET DISTANCE (${units === 'Imperial' ? 'MILES' : 'KILOMETERS'})`}
+                      {goalSport === 'swimming' ? t('steps.goal.swimDistanceLabel') : units === 'Imperial' ? t('steps.goal.distanceLabelMiles') : t('steps.goal.distanceLabelKm')}
                     </Text>
                     <Text style={{ fontSize: 12, fontWeight: '700', color: colors.primary }}>
-                      {goalSport === 'swimming' ? (units === 'Imperial' ? 'Yards' : 'Meters') : (units === 'Imperial' ? 'Imperial (mi)' : 'Metric (km)')}
+                      {goalSport === 'swimming' ? (units === 'Imperial' ? t('steps.goal.yards') : t('steps.goal.meters')) : (units === 'Imperial' ? t('steps.goal.imperialMi') : t('steps.goal.metricKm'))}
                     </Text>
                   </View>
 
@@ -1616,8 +1651,8 @@ export default function WizardScreen() {
                     {goalSport === 'running' && [
                       { label: units === 'Imperial' ? '5K (3.1m)' : '5K', val: units === 'Imperial' ? '3.1' : '5.0' },
                       { label: units === 'Imperial' ? '10K (6.2m)' : '10K', val: units === 'Imperial' ? '6.2' : '10.0' },
-                      { label: units === 'Imperial' ? 'Half 13.1m' : 'Half 21.1k', val: units === 'Imperial' ? '13.1' : '21.1' },
-                      { label: units === 'Imperial' ? 'Full 26.2m' : 'Full 42.2k', val: units === 'Imperial' ? '26.2' : '42.2' },
+                      { label: t('steps.goal.presetHalf', { distance: units === 'Imperial' ? '13.1m' : '21.1k' }), val: units === 'Imperial' ? '13.1' : '21.1' },
+                      { label: t('steps.goal.presetFull', { distance: units === 'Imperial' ? '26.2m' : '42.2k' }), val: units === 'Imperial' ? '26.2' : '42.2' },
                     ].map(p => (
                       <TouchableOpacity
                         key={p.label}
@@ -1640,7 +1675,7 @@ export default function WizardScreen() {
 
                     {goalSport === 'cycling' && [
                       { label: units === 'Imperial' ? '12.5m' : '20k', val: units === 'Imperial' ? '12.5' : '20.0' },
-                      { label: units === 'Imperial' ? '25m (TT)' : '40k (TT)', val: units === 'Imperial' ? '25.0' : '40.0' },
+                      { label: t('steps.goal.presetTimeTrial', { distance: units === 'Imperial' ? '25m' : '40k' }), val: units === 'Imperial' ? '25.0' : '40.0' },
                       { label: units === 'Imperial' ? '50m' : '80k', val: units === 'Imperial' ? '50.0' : '80.0' },
                       { label: units === 'Imperial' ? '100m' : '160k', val: units === 'Imperial' ? '100.0' : '160.0' },
                     ].map(p => (
@@ -1704,8 +1739,8 @@ export default function WizardScreen() {
                     }}
                     placeholder={
                       goalSport === 'swimming'
-                        ? "Distance in meters/yards (e.g. 1500)"
-                        : `Distance in ${units === 'Imperial' ? 'miles (e.g. 26.2)' : 'km (e.g. 42.2)'}`
+                        ? t('steps.goal.distancePlaceholderSwim')
+                        : units === 'Imperial' ? t('steps.goal.distancePlaceholderMiles') : t('steps.goal.distancePlaceholderKm')
                     }
                     placeholderTextColor={colors.textSecondary}
                     value={goalDistance}
@@ -1720,7 +1755,7 @@ export default function WizardScreen() {
                 <View style={{ marginBottom: 20 }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, marginLeft: 4 }}>
                     <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text }}>
-                      TARGET FINISH TIME (HH:MM:SS)
+                      {t('steps.goal.finishTimeLabel')}
                     </Text>
                     {targetPaceOrSpeed && (
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -1766,10 +1801,10 @@ export default function WizardScreen() {
               <View style={{ marginBottom: 20 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, marginLeft: 4 }}>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text }}>
-                    TARGET EVENT DATE
+                    {t('steps.goal.eventDateLabel')}
                   </Text>
                   <Text style={{ fontSize: 12, fontWeight: '700', color: colors.primary }}>
-                    {weeksUntilGoal} weeks away
+                    {t('steps.goal.weeksAway', { count: weeksUntilGoal })}
                   </Text>
                 </View>
 
@@ -1793,7 +1828,7 @@ export default function WizardScreen() {
                         }}
                       >
                         <Text style={{ fontSize: 13, fontWeight: '700', color: isSelected ? colors.primary : colors.text }}>
-                          +{w}w
+                          {t('steps.goal.weeksPreset', { weeks: w })}
                         </Text>
                       </TouchableOpacity>
                     );
@@ -1818,11 +1853,11 @@ export default function WizardScreen() {
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                     <CalendarIcon size={18} color={colors.primary} />
                     <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }}>
-                      {format(goalDate, 'MMMM d, yyyy')}
+                      {formatDate(goalDate, 'MMMM d, yyyy')}
                     </Text>
                   </View>
                   <Text style={{ fontSize: 12, fontWeight: '700', color: colors.textSecondary }}>
-                    Change Date
+                    {t('steps.goal.changeDate')}
                   </Text>
                 </TouchableOpacity>
 
@@ -1847,14 +1882,14 @@ export default function WizardScreen() {
                       >
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                           <Text style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>
-                            Select Target Date
+                            {t('steps.goal.selectTargetDate')}
                           </Text>
                           <GlassButton
                             onPress={() => setShowGoalDatePicker(false)}
                             shape="pill"
                             size="sm"
                             variant="glass-primary"
-                            label="Done"
+                            label={t('common:done')}
                             style={{ height: 34, minWidth: 64 }}
                           />
                         </View>
@@ -1895,7 +1930,7 @@ export default function WizardScreen() {
               {/* Target Notes / Focus Description */}
               <View style={{ marginBottom: 24 }}>
                 <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text, marginBottom: 8, marginLeft: 4 }}>
-                  {isStretchingSport ? 'MOBILITY FOCUS / NOTES (OPTIONAL)' : isStrengthSport ? 'BENCHMARK METRICS / NOTES (OPTIONAL)' : 'TARGET NOTES (OPTIONAL)'}
+                  {isStretchingSport ? t('steps.goal.notesLabelStretching') : isStrengthSport ? t('steps.goal.notesLabelStrength') : t('steps.goal.notesLabel')}
                 </Text>
                 <TextInput
                   style={{
@@ -1911,10 +1946,10 @@ export default function WizardScreen() {
                   }}
                   placeholder={
                     isStretchingSport
-                      ? "e.g. Daily 15m hip mobility routine, reach flat ground"
+                      ? t('steps.goal.notesPlaceholderStretching')
                       : isStrengthSport
-                        ? "e.g. 10 strict reps, 100 kg 1RM target"
-                        : "e.g. Sub-3:45 finish, negative split pacing"
+                        ? t('steps.goal.notesPlaceholderStrength')
+                        : t('steps.goal.notesPlaceholder')
                   }
                   placeholderTextColor={colors.textSecondary}
                   value={goalNotes}
@@ -1950,10 +1985,10 @@ export default function WizardScreen() {
 
               <View style={{ alignItems: 'center', marginBottom: 28 }}>
                 <Text style={{ fontSize: 28, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                  Training Distribution
+                  {t('steps.distribution.title')}
                 </Text>
                 <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', fontWeight: '500' }}>
-                  Allocate what portion of your {weeklyHours} weekly hours or sessions to assign each sport.
+                  {t('steps.distribution.subtitle', { hours: weeklyHours })}
                 </Text>
               </View>
 
@@ -1972,7 +2007,7 @@ export default function WizardScreen() {
                   }}
                 >
                   <Text style={{ fontSize: 13, fontWeight: '700', color: allocationMode === 'percentage' ? colors.primary : colors.text }}>
-                    % Time Split
+                    {t('steps.distribution.percentageMode')}
                   </Text>
                 </TouchableOpacity>
 
@@ -1989,7 +2024,7 @@ export default function WizardScreen() {
                   }}
                 >
                   <Text style={{ fontSize: 13, fontWeight: '700', color: allocationMode === 'sessions' ? colors.primary : colors.text }}>
-                    Weekly Sessions
+                    {t('steps.distribution.sessionsMode')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -1999,7 +2034,7 @@ export default function WizardScreen() {
                 <View style={{ marginBottom: 20 }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, marginLeft: 4 }}>
                     <Text style={{ fontSize: 12, fontWeight: '700', color: colors.textSecondary }}>
-                      TOTAL ALLOCATED
+                      {t('steps.distribution.totalAllocated')}
                     </Text>
                     <Text style={{ fontSize: 13, fontWeight: '800', color: totalAllocatedPercentage === 100 ? colors.primary : '#ef4444' }}>
                       {totalAllocatedPercentage}% / 100%
@@ -2064,17 +2099,17 @@ export default function WizardScreen() {
                             }}
                           />
                           <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text, textTransform: 'capitalize' }}>
-                            {sport} {isFocus && <Text style={{ color: colors.primary, fontSize: 13 }}>★ Main Focus</Text>}
+                            {sportLabel(t, sport)} {isFocus && <Text style={{ color: colors.primary, fontSize: 13 }}>{t('steps.distribution.mainFocus')}</Text>}
                           </Text>
                         </View>
 
                         {allocationMode === 'percentage' ? (
                           <Text style={{ fontSize: 16, fontWeight: '800', color: colors.primary }}>
-                            {pct}% <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>({estimatedHours}h/wk)</Text>
+                            {pct}% <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>{t('steps.distribution.hoursPerWeek', { hours: estimatedHours })}</Text>
                           </Text>
                         ) : (
                           <Text style={{ fontSize: 16, fontWeight: '800', color: colors.primary }}>
-                            {sess} <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>{sess === 1 ? 'session' : 'sessions'}/wk</Text>
+                            {sess} <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>{t('steps.distribution.sessionsPerWeek', { count: sess })}</Text>
                           </Text>
                         )}
                       </View>
@@ -2202,10 +2237,10 @@ export default function WizardScreen() {
 
                 <View style={{ alignItems: 'center', marginBottom: 20 }}>
                   <Text style={{ fontSize: 28, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                    Default Daily Availability
+                    {t('steps.availability.title')}
                   </Text>
                   <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', fontWeight: '500' }}>
-                    Set your typical available training hours. Specific days can always be customized on your training calendar.
+                    {t('steps.availability.subtitle')}
                   </Text>
                 </View>
 
@@ -2225,10 +2260,10 @@ export default function WizardScreen() {
                 >
                   <View>
                     <Text style={{ fontSize: 12, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase' }}>
-                      Total Available Capacity
+                      {t('steps.availability.totalCapacity')}
                     </Text>
                     <Text style={{ fontSize: 22, fontWeight: '800', color: isCapacitySufficient ? colors.primary : '#ef4444', marginTop: 2 }}>
-                      {totalWeeklyAvailability.toFixed(1)} <Text style={{ fontSize: 14, fontWeight: '600', color: colors.textSecondary }}>hours / week</Text>
+                      {totalWeeklyAvailability.toFixed(1)} <Text style={{ fontSize: 14, fontWeight: '600', color: colors.textSecondary }}>{t('hoursPerWeek')}</Text>
                     </Text>
                   </View>
 
@@ -2244,7 +2279,7 @@ export default function WizardScreen() {
                       }}
                     >
                       <Text style={{ fontSize: 12, fontWeight: '700', color: isCapacitySufficient ? colors.primary : '#ef4444' }}>
-                        Target: {weeklyHours}h
+                        {t('steps.availability.target', { hours: weeklyHours })}
                       </Text>
                     </View>
                   </View>
@@ -2279,12 +2314,12 @@ export default function WizardScreen() {
                               }}
                             />
                             <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>
-                              {day}
+                              {t(`weekdays.${day}`)}
                             </Text>
                           </View>
 
                           <Text style={{ fontSize: 16, fontWeight: '800', color: isRest ? colors.textSecondary : colors.primary }}>
-                            {isRest ? 'Rest Day' : `${hours} hrs`}
+                            {isRest ? t('steps.availability.restDay') : t('steps.availability.hours', { hours })}
                           </Text>
                         </View>
 
@@ -2294,8 +2329,8 @@ export default function WizardScreen() {
                             onPress={() => {
                               if (totalWeeklyAvailability - 0.5 < weeklyHours) {
                                 Alert.alert(
-                                  'Minimum Target Reached',
-                                  `Total available hours cannot go below your Target Weekly Training Hours (${weeklyHours} hrs).`
+                                  t('alerts.minimumTarget.title'),
+                                  t('alerts.minimumTarget.message', { hours: weeklyHours })
                                 );
                                 return;
                               }
@@ -2372,10 +2407,10 @@ export default function WizardScreen() {
 
               <View style={{ alignItems: 'center', marginBottom: 28 }}>
                 <Text style={{ fontSize: 28, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                  Strength Equipment
+                  {t('steps.equipment.title')}
                 </Text>
                 <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', fontWeight: '500' }}>
-                  Select equipment you have available for workouts.
+                  {t('steps.equipment.subtitle')}
                 </Text>
               </View>
 
@@ -2398,7 +2433,7 @@ export default function WizardScreen() {
                       }}
                     >
                       <Text style={{ fontSize: 16, fontWeight: '700', color: isChecked ? colors.text : colors.textSecondary, flex: 1, marginRight: 12 }}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </Text>
 
                       <Switch
@@ -2444,10 +2479,10 @@ export default function WizardScreen() {
 
               <View style={{ alignItems: 'center', marginBottom: 28 }}>
                 <Text style={{ fontSize: 28, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                  Partner Integrations
+                  {t('steps.integrations.title')}
                 </Text>
                 <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', fontWeight: '500' }}>
-                  Connect your training platforms to automatically sync activities, GPS, and power data.
+                  {t('steps.integrations.subtitle')}
                 </Text>
               </View>
 
@@ -2481,7 +2516,7 @@ export default function WizardScreen() {
                           Strava
                         </Text>
                         <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                          Rides, Runs, Swims & GPS Activities
+                          {t('steps.integrations.stravaSubtitle')}
                         </Text>
                       </View>
                     </View>
@@ -2499,13 +2534,13 @@ export default function WizardScreen() {
                         }}
                       >
                         <Check size={14} color={colors.primary} strokeWidth={3} />
-                        <Text style={{ fontSize: 12, fontWeight: '700', color: colors.primary }}>Connected</Text>
+                        <Text style={{ fontSize: 12, fontWeight: '700', color: colors.primary }}>{t('steps.integrations.connected')}</Text>
                       </View>
                     )}
                   </View>
 
                   <Text style={{ fontSize: 13, color: colors.textSecondary, lineHeight: 18, marginBottom: 16 }}>
-                    Automatically imports your completed workouts, power duration curves, heart rate, and GPS tracks.
+                    {t('steps.integrations.stravaDescription')}
                   </Text>
 
                   <GlassButton
@@ -2522,12 +2557,12 @@ export default function WizardScreen() {
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                       {profile?.stravaConnected ? (
                         <Text style={{ fontSize: 14, fontWeight: '700', color: colors.textSecondary }}>
-                          Disconnect Strava
+                          {t('steps.integrations.disconnectStrava')}
                         </Text>
                       ) : (
                         <>
                           <Text style={{ fontSize: 14, fontWeight: '700', color: isDark ? '#4ade80' : '#15803d' }}>
-                            Connect with Strava
+                            {t('steps.integrations.connectStrava')}
                           </Text>
                           <ExternalLink size={15} color={isDark ? '#4ade80' : '#15803d'} strokeWidth={2.2} />
                         </>
@@ -2563,10 +2598,11 @@ export default function WizardScreen() {
                       </View>
                       <View>
                         <Text style={{ fontSize: 15, fontWeight: '700', color: colors.text }}>
+                          {/* i18n-ignore: product name */}
                           Garmin Connect
                         </Text>
                         <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 1 }}>
-                          Edge, Forerunner & Fenix devices
+                          {t('steps.integrations.garminSubtitle')}
                         </Text>
                       </View>
                     </View>
@@ -2580,7 +2616,7 @@ export default function WizardScreen() {
                       }}
                     >
                       <Text style={{ fontSize: 10, fontWeight: '800', color: colors.textSecondary, letterSpacing: 0.5 }}>
-                        COMING SOON
+                        {t('steps.integrations.comingSoon')}
                       </Text>
                     </View>
                   </View>
@@ -2613,10 +2649,11 @@ export default function WizardScreen() {
                       </View>
                       <View>
                         <Text style={{ fontSize: 15, fontWeight: '700', color: colors.text }}>
+                          {/* i18n-ignore: product name */}
                           Wahoo ELEMNT
                         </Text>
                         <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 1 }}>
-                          ELEMNT GPS bike computers
+                          {t('steps.integrations.wahooSubtitle')}
                         </Text>
                       </View>
                     </View>
@@ -2630,7 +2667,7 @@ export default function WizardScreen() {
                       }}
                     >
                       <Text style={{ fontSize: 10, fontWeight: '800', color: colors.textSecondary, letterSpacing: 0.5 }}>
-                        COMING SOON
+                        {t('steps.integrations.comingSoon')}
                       </Text>
                     </View>
                   </View>
@@ -2638,7 +2675,7 @@ export default function WizardScreen() {
               </View>
 
               <Text style={{ fontSize: 12, color: colors.textSecondary, textAlign: 'center', fontStyle: 'italic' }}>
-                You can also connect, disconnect, or manage accounts anytime in Settings.
+                {t('steps.integrations.settingsHint')}
               </Text>
             </View>
           )}
@@ -2669,10 +2706,10 @@ export default function WizardScreen() {
 
               <View style={{ alignItems: 'center', marginBottom: 24 }}>
                 <Text style={{ fontSize: 26, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                  Current Fitness Level
+                  {t('steps.fitness.title')}
                 </Text>
                 <Text style={{ fontSize: 14, color: colors.textSecondary, textAlign: 'center', fontWeight: '500', paddingHorizontal: 16 }}>
-                  Choose your training background or enter your current threshold figures.
+                  {t('steps.fitness.subtitle')}
                 </Text>
               </View>
 
@@ -2700,7 +2737,7 @@ export default function WizardScreen() {
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                           <Text style={{ fontSize: 17, fontWeight: '800', color: colors.text }}>
-                            {preset.label}
+                            {t(preset.labelKey)}
                           </Text>
                           <View
                             style={{
@@ -2711,7 +2748,7 @@ export default function WizardScreen() {
                             }}
                           >
                             <Text style={{ fontSize: 10, fontWeight: '800', color: preset.color, textTransform: 'uppercase' }}>
-                              {preset.badge}
+                              {t(preset.badgeKey)}
                             </Text>
                           </View>
                         </View>
@@ -2733,7 +2770,7 @@ export default function WizardScreen() {
                       </View>
 
                       <Text style={{ fontSize: 13, color: colors.textSecondary, lineHeight: 18, marginBottom: 10 }}>
-                        {preset.description}
+                        {t(preset.descriptionKey)}
                       </Text>
 
                       {/* Quick Metric Pills */}
@@ -2774,7 +2811,7 @@ export default function WizardScreen() {
                             }}
                           >
                             <Text style={{ fontSize: 11, fontWeight: '700', color: colors.text }}>
-                              Pace {formatRunningPace(preset.runningPaceSecKm, units === 'Imperial')}/{units === 'Imperial' ? 'mi' : 'km'}
+                              {t('steps.fitness.pace', { pace: formatRunningPace(preset.runningPaceSecKm, units === 'Imperial'), unit: units === 'Imperial' ? 'mi' : 'km' })}
                             </Text>
                           </View>
                         )}
@@ -2799,18 +2836,18 @@ export default function WizardScreen() {
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <Sliders size={18} color={colors.primary} strokeWidth={2.2} />
                   <Text style={{ fontSize: 16, fontWeight: '800', color: colors.text }}>
-                    Current Training Figures
+                    {t('steps.fitness.figuresTitle')}
                   </Text>
                 </View>
                 <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: -10 }}>
-                  Adjust any figures to match your current threshold test data.
+                  {t('steps.fitness.figuresSubtitle')}
                 </Text>
 
                 {/* Heart Rate: FTHR & Max HR */}
                 <View style={{ flexDirection: 'row', gap: 10 }}>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, marginBottom: 6, textTransform: 'uppercase' }}>
-                      Threshold HR (FTHR)
+                      {t('steps.fitness.thresholdHr')}
                     </Text>
                     <View
                       style={{
@@ -2839,7 +2876,7 @@ export default function WizardScreen() {
 
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, marginBottom: 6, textTransform: 'uppercase' }}>
-                      Max Heart Rate
+                      {t('steps.fitness.maxHr')}
                     </Text>
                     <View
                       style={{
@@ -2872,7 +2909,7 @@ export default function WizardScreen() {
                   <View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                       <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase' }}>
-                        Cycling FTP (Functional Threshold Power)
+                        {t('steps.fitness.cyclingFtp')}
                       </Text>
                       {weightInput && parseFloat(weightInput) > 0 && cyclingFtpInput && parseFloat(cyclingFtpInput) > 0 && (
                         <Text style={{ fontSize: 11, fontWeight: '700', color: '#06b6d4' }}>
@@ -2905,7 +2942,7 @@ export default function WizardScreen() {
                         placeholderTextColor={colors.textSecondary}
                         style={{ flex: 1, fontSize: 15, fontWeight: '700', color: colors.text }}
                       />
-                      <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>Watts</Text>
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: colors.textSecondary }}>{t('steps.fitness.watts')}</Text>
                     </View>
                   </View>
                 )}
@@ -2914,7 +2951,7 @@ export default function WizardScreen() {
                 {activities.running && (
                   <View>
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, marginBottom: 6, textTransform: 'uppercase' }}>
-                      Running Threshold Pace (mm:ss)
+                      {t('steps.fitness.runningPace')}
                     </Text>
                     <View
                       style={{
@@ -2947,7 +2984,7 @@ export default function WizardScreen() {
                 {activities.swimming && (
                   <View>
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, marginBottom: 6, textTransform: 'uppercase' }}>
-                      Critical Swim Speed (CSS mm:ss)
+                      {t('steps.fitness.swimCss')}
                     </Text>
                     <View
                       style={{
@@ -2979,7 +3016,7 @@ export default function WizardScreen() {
                 {/* Body Weight */}
                 <View>
                   <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, marginBottom: 6, textTransform: 'uppercase' }}>
-                    Body Weight
+                    {t('steps.fitness.bodyWeight')}
                   </Text>
                   <View
                     style={{
@@ -3034,10 +3071,10 @@ export default function WizardScreen() {
                     <Sliders size={18} color={colors.textSecondary} strokeWidth={2.2} />
                     <View>
                       <Text style={{ fontSize: 14, fontWeight: '700', color: colors.text }}>
-                        Advanced: Specify CTL Manually
+                        {t('steps.fitness.advancedCtl')}
                       </Text>
                       <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 1 }}>
-                        Current: {ctlInput} CTL
+                        {t('steps.fitness.currentCtl', { ctl: ctlInput })}
                       </Text>
                     </View>
                   </View>
@@ -3061,7 +3098,7 @@ export default function WizardScreen() {
                   >
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                       <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text, flex: 1 }}>
-                        Chronic Training Load (CTL / Fitness)
+                        {t('steps.fitness.ctlLabel')}
                       </Text>
                       <View
                         style={{
@@ -3098,7 +3135,7 @@ export default function WizardScreen() {
                     >
                       <Info size={14} color={colors.textSecondary} style={{ marginTop: 2 }} />
                       <Text style={{ fontSize: 11, color: colors.textSecondary, lineHeight: 16, flex: 1 }}>
-                        CTL represents your rolling 42-day average daily training stress. If you use TrainingPeaks or Strava Fitness, enter your current score to ensure your initial plan load matches your exact conditioning.
+                        {t('steps.fitness.ctlInfo')}
                       </Text>
                     </View>
                   </View>
@@ -3133,10 +3170,10 @@ export default function WizardScreen() {
 
               <View style={{ alignItems: 'center', marginBottom: 28 }}>
                 <Text style={{ fontSize: 28, fontWeight: '800', letterSpacing: -0.5, color: colors.text, textAlign: 'center', marginBottom: 8 }}>
-                  Ready to Train
+                  {t('steps.summary.title')}
                 </Text>
                 <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', fontWeight: '500' }}>
-                  Review your personalized profile configurations.
+                  {t('steps.summary.subtitle')}
                 </Text>
               </View>
 
@@ -3152,38 +3189,38 @@ export default function WizardScreen() {
                 }}
               >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)', paddingBottom: 10 }}>
-                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Athlete Name</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{t('steps.summary.athleteName')}</Text>
                   <Text style={{ fontWeight: '700', color: colors.text, fontSize: 14 }}>{displayName}</Text>
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)', paddingBottom: 10 }}>
-                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Metrics Units</Text>
-                  <Text style={{ fontWeight: '700', color: colors.text, fontSize: 14 }}>{units}</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{t('steps.summary.units')}</Text>
+                  <Text style={{ fontWeight: '700', color: colors.text, fontSize: 14 }}>{units === 'Imperial' ? t('units.imperial') : t('units.metric')}</Text>
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)', paddingBottom: 10 }}>
-                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Target Weekly Hours</Text>
-                  <Text style={{ fontWeight: '700', color: colors.text, fontSize: 14 }}>{weeklyHours} hours</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{t('steps.summary.weeklyHours')}</Text>
+                  <Text style={{ fontWeight: '700', color: colors.text, fontSize: 14 }}>{t('steps.summary.hours', { count: weeklyHours })}</Text>
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)', paddingBottom: 10 }}>
-                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Main Focus</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{t('steps.summary.mainFocus')}</Text>
                   <Text style={{ fontWeight: '700', color: colors.text, textTransform: 'capitalize', fontSize: 14 }}>
-                    {mainFocusSportsList.join(', ')}
+                    {mainFocusSportsList.map(s => sportLabel(t, s)).join(', ')}
                   </Text>
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)', paddingBottom: 10 }}>
-                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Primary Goal</Text>
-                  <Text style={{ fontWeight: '700', color: colors.text, fontSize: 14 }}>{trainingGoalType}</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{t('steps.summary.primaryGoal')}</Text>
+                  <Text style={{ fontWeight: '700', color: colors.text, fontSize: 14 }}>{goalLabel(t, trainingGoalType)}</Text>
                 </View>
 
                 {/* Multi-line Time Distribution Breakdown */}
                 <View style={{ borderBottomWidth: 1, borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)', paddingBottom: 12 }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                    <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Time Distribution</Text>
+                    <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{t('steps.summary.timeDistribution')}</Text>
                     <Text style={{ fontWeight: '600', color: colors.textSecondary, fontSize: 12 }}>
-                      {weeklyHours}h / week total
+                      {t('steps.summary.weeklyTotal', { hours: weeklyHours })}
                     </Text>
                   </View>
                   <View style={{ gap: 6, paddingLeft: 4 }}>
@@ -3205,11 +3242,11 @@ export default function WizardScreen() {
                               }}
                             />
                             <Text style={{ fontSize: 13, fontWeight: '600', color: colors.text, textTransform: 'capitalize' }}>
-                              {sport} {isFocus && <Text style={{ color: colors.primary, fontSize: 12 }}>★</Text>}
+                              {sportLabel(t, sport)} {isFocus && <Text style={{ color: colors.primary, fontSize: 12 }}>★</Text>}
                             </Text>
                           </View>
                           <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text }}>
-                            {pct}% <Text style={{ fontSize: 12, fontWeight: '500', color: colors.textSecondary }}>({hrs}h • {sess}x/wk)</Text>
+                            {pct}% <Text style={{ fontSize: 12, fontWeight: '500', color: colors.textSecondary }}>{t('steps.summary.sportBreakdown', { hours: hrs, sessions: sess })}</Text>
                           </Text>
                         </View>
                       );
@@ -3218,13 +3255,13 @@ export default function WizardScreen() {
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)', paddingBottom: 10 }}>
-                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Target Milestone</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{t('steps.summary.targetMilestone')}</Text>
                   <View style={{ alignItems: 'flex-end', flex: 1, marginLeft: 12 }}>
                     <Text style={{ fontWeight: '700', color: colors.text, fontSize: 14, textAlign: 'right' }}>
                       {goalName}
                     </Text>
                     <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2, textAlign: 'right' }}>
-                      {format(goalDate, 'MMM d, yyyy')}
+                      {formatDate(goalDate, 'MMM d, yyyy')}
                       {isCardioSport && goalDistance ? ` • ${goalDistance} ${goalSport === 'swimming' ? (units === 'Imperial' ? 'yd' : 'm') : (units === 'Imperial' ? 'mi' : 'km')}` : ''}
                       {isCardioSport && goalDuration ? ` • ${goalDuration}` : ''}
                       {targetPaceOrSpeed ? ` (${targetPaceOrSpeed})` : ''}
@@ -3234,15 +3271,15 @@ export default function WizardScreen() {
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)', paddingBottom: 10 }}>
-                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Fitness Level</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{t('steps.summary.fitnessLevel')}</Text>
                   <View style={{ alignItems: 'flex-end', flex: 1, marginLeft: 12 }}>
                     <Text style={{ fontWeight: '700', color: colors.text, fontSize: 14, textTransform: 'capitalize' }}>
-                      {FITNESS_LEVEL_PRESETS[fitnessLevel].label} ({ctlInput} CTL)
+                      {t('steps.summary.fitnessLevelValue', { level: t(FITNESS_LEVEL_PRESETS[fitnessLevel].labelKey), ctl: ctlInput })}
                     </Text>
                     <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2, textAlign: 'right' }}>
                       {[
                         activities.cycling && cyclingFtpInput ? `FTP ${cyclingFtpInput}W` : null,
-                        activities.running && runningPaceInput ? `Pace ${runningPaceInput}/${units === 'Imperial' ? 'mi' : 'km'}` : null,
+                        activities.running && runningPaceInput ? t('steps.fitness.pace', { pace: runningPaceInput, unit: units === 'Imperial' ? 'mi' : 'km' }) : null,
                         fthrInput ? `FTHR ${fthrInput} bpm` : null,
                       ].filter(Boolean).join(' • ')}
                     </Text>
@@ -3251,15 +3288,15 @@ export default function WizardScreen() {
 
                 {/* Partner Integration Review Item */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>Integrations</Text>
+                  <Text style={{ color: colors.textSecondary, fontSize: 14 }}>{t('steps.summary.integrations')}</Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                     {profile?.stravaConnected ? (
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                         <Check size={14} color={colors.primary} strokeWidth={3} />
-                        <Text style={{ fontWeight: '700', color: colors.primary, fontSize: 14 }}>Strava Connected</Text>
+                        <Text style={{ fontWeight: '700', color: colors.primary, fontSize: 14 }}>{t('steps.summary.stravaConnected')}</Text>
                       </View>
                     ) : (
-                      <Text style={{ fontWeight: '600', color: colors.textSecondary, fontSize: 14 }}>Standalone</Text>
+                      <Text style={{ fontWeight: '600', color: colors.textSecondary, fontSize: 14 }}>{t('steps.summary.standalone')}</Text>
                     )}
                   </View>
                 </View>
@@ -3269,7 +3306,7 @@ export default function WizardScreen() {
                 <View style={{ alignItems: 'center', paddingVertical: 16 }}>
                   <ActivityIndicator color={colors.primary} size="large" />
                   <Text style={{ marginTop: 8, fontSize: 13, color: colors.textSecondary }}>
-                    Generating personalized training plan...
+                    {t('steps.summary.generating')}
                   </Text>
                 </View>
               )}
@@ -3302,14 +3339,14 @@ export default function WizardScreen() {
             {/* Header */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <Text style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>
-                {isStretchingSport ? 'Select Flexibility Target' : 'Select Strength Benchmark'}
+                {isStretchingSport ? t('milestonePicker.selectFlexibilityTarget') : t('milestonePicker.selectStrengthBenchmark')}
               </Text>
               <GlassButton
                 onPress={() => setShowMilestonePicker(false)}
                 shape="pill"
                 size="sm"
                 variant="glass-primary"
-                label="Done"
+                label={t('common:done')}
                 style={{ height: 34, minWidth: 64 }}
               />
             </View>
@@ -3318,14 +3355,6 @@ export default function WizardScreen() {
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, marginBottom: 16 }}>
               {(['all', 'legs', 'core', 'upper', 'other'] as const).map(cat => {
                 const isSelected = milestoneCategory === cat;
-                const catLabels: Record<TargetCategory, string> = {
-                  all: 'All Areas',
-                  legs: 'Legs',
-                  core: 'Core',
-                  upper: 'Upper Body',
-                  other: 'Other / Custom',
-                };
-
                 return (
                   <TouchableOpacity
                     key={cat}
@@ -3333,7 +3362,7 @@ export default function WizardScreen() {
                       setMilestoneCategory(cat);
                       if (cat === 'other') {
                         setGoalName('');
-                        setGoalNotes('Custom milestone target');
+                        setGoalNotes(t('defaults.customMilestoneNotes'));
                         setShowMilestonePicker(false);
                       }
                     }}
@@ -3347,7 +3376,7 @@ export default function WizardScreen() {
                     }}
                   >
                     <Text style={{ fontSize: 13, fontWeight: '700', color: isSelected ? colors.primary : colors.text }}>
-                      {catLabels[cat]}
+                      {t(`milestonePicker.categories.${cat}`)}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -3358,13 +3387,15 @@ export default function WizardScreen() {
             <ScrollView style={{ maxHeight: 360 }} showsVerticalScrollIndicator={false}>
               <View style={{ gap: 8, paddingBottom: 16 }}>
                 {filteredMilestones.map(m => {
-                  const isSelected = goalName === m.label;
+                  const label = t(m.labelKey);
+                  const note = t(m.noteKey);
+                  const isSelected = goalName === label;
                   return (
                     <TouchableOpacity
-                      key={m.label}
+                      key={m.labelKey}
                       onPress={() => {
-                        setGoalName(m.label);
-                        setGoalNotes(m.note);
+                        setGoalName(label);
+                        setGoalNotes(note);
                         setShowMilestonePicker(false);
                       }}
                       activeOpacity={0.75}
@@ -3381,10 +3412,10 @@ export default function WizardScreen() {
                     >
                       <View style={{ flex: 1, marginRight: 12 }}>
                         <Text style={{ fontSize: 15, fontWeight: '700', color: isSelected ? colors.primary : colors.text }}>
-                          {m.label}
+                          {label}
                         </Text>
                         <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 3 }}>
-                          {m.note}
+                          {note}
                         </Text>
                       </View>
                       {isSelected && <Check size={18} color={colors.primary} strokeWidth={2.5} />}
@@ -3397,7 +3428,7 @@ export default function WizardScreen() {
                   onPress={() => {
                     setMilestoneCategory('other');
                     setGoalName('');
-                    setGoalNotes('Custom milestone target');
+                    setGoalNotes(t('defaults.customMilestoneNotes'));
                     setShowMilestonePicker(false);
                   }}
                   activeOpacity={0.75}
@@ -3414,10 +3445,10 @@ export default function WizardScreen() {
                 >
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 15, fontWeight: '700', color: milestoneCategory === 'other' ? colors.primary : colors.text }}>
-                      Other / Custom Target
+                      {t('milestonePicker.otherTitle')}
                     </Text>
                     <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 3 }}>
-                      Select target anatomical area and enter custom movement
+                      {t('milestonePicker.otherDescription')}
                     </Text>
                   </View>
                   {milestoneCategory === 'other' && <Check size={18} color={colors.primary} strokeWidth={2.5} />}
