@@ -1,1 +1,9 @@
-{}
+{
+  "greeting": "Bonjour, {{name}}",
+  "defaultName": "Athlète",
+  "onTrack": "Vous êtes en bonne voie pour atteindre votre objectif de la semaine.",
+  "targetGoal": "Objectif",
+  "todaysSession": "Séance du jour",
+  "logExtra": "Ajouter une séance",
+  "noWorkoutsToday": "Aucune séance prévue aujourd'hui."
+}

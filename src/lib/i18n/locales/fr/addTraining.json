@@ -1,1 +1,49 @@
-{}
+{
+  "upload": "Importer",
+  "namePlaceholder": "Nom de la séance",
+  "tssBadge": "~{{tss}} TSS",
+  "sports": {
+    "stretching": "Étirements",
+    "other": "Autre"
+  },
+  "eventTypes": {
+    "session": "Séance",
+    "event": "Événement",
+    "goal": "Objectif"
+  },
+  "effortLevels": {
+    "recovery": "Récupération (zone 1)",
+    "steady": "Endurance (zone 2)",
+    "threshold": "Seuil (zone 3/4)",
+    "hard": "VO2max / Intense (zone 5)"
+  },
+  "uploading": {
+    "title": "Import de la séance",
+    "message": "Lecture du fichier FIT et calcul des analyses. Cela peut prendre quelques secondes…"
+  },
+  "fields": {
+    "date": "Date",
+    "sport": "Sport",
+    "type": "Type",
+    "effortLevel": "Niveau d'effort",
+    "plannedDuration": "Durée prévue",
+    "description": "Description et objectifs",
+    "descriptionPlaceholder": "Quels sont les objectifs ou remarques pour cette séance ?"
+  },
+  "saving": "Enregistrement…",
+  "addToPlan": "Ajouter au plan",
+  "pickers": {
+    "sport": "Choisir un sport",
+    "eventType": "Choisir un type",
+    "effortLevel": "Choisir le niveau d'effort"
+  },
+  "alerts": {
+    "requiredTitle": "Champ requis",
+    "nameRequired": "Veuillez saisir un nom de séance",
+    "saveFailed": "Échec de l'enregistrement de la séance",
+    "uploadSuccess": "Séance importée et analysée avec succès !",
+    "uploadErrorTitle": "Erreur d'import",
+    "uploadFailed": "Échec de l'import de la séance.",
+    "uploadException": "Une erreur s'est produite pendant l'import."
+  }
+}

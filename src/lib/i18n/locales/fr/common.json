@@ -1,1 +1,38 @@
-{}
+{
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "loading": "Chargement…",
+  "error": "Erreur",
+  "success": "Succès",
+  "start": "Démarrer la séance",
+  "details": "Détails",
+  "complete": "Terminer",
+  "analyse": "Voir l'analyse",
+  "delete": "Supprimer",
+  "ok": "OK",
+  "done": "Terminé",
+  "next": "Suivant",
+  "back": "Retour",
+  "close": "Fermer",
+  "edit": "Modifier",
+  "retry": "Réessayer",
+  "yes": "Oui",
+  "no": "Non",
+  "none": "Aucun",
+  "sports": {
+    "cycling": "Cyclisme",
+    "running": "Course à pied",
+    "swimming": "Natation",
+    "strength": "Renforcement",
+    "stretching": "Étirements",
+    "rest": "Repos"
+  },
+  "language": "Langue",
+  "toggleComplete": {
+    "redoTitle": "Refaire la séance",
+    "completeTitle": "Terminer la séance",
+    "redoMessage": "Voulez-vous vraiment refaire cette séance et la marquer comme non terminée ?",
+    "completeMessage": "Voulez-vous vraiment marquer cette séance comme terminée ?",
+    "redo": "Refaire"
+  }
+}

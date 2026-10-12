@@ -1,1 +1,107 @@
-{}
+{
+  "notFound": "Séance introuvable",
+  "goBack": "Retour",
+  "breakthrough": {
+    "title": "Nouveau seuil franchi ! 🏆",
+    "cyclingFtp": "Nouveau record de FTP ! Votre FTP vélo passe de {{oldFtp}} W à {{newFtp}} W.",
+    "runningPace": "Nouvelle allure seuil ! Votre allure seuil en course à pied passe à {{pace}}/km."
+  },
+  "finishWorkout": {
+    "title": "Terminer la séance",
+    "message": "Voulez-vous vraiment terminer cette séance et enregistrer vos résultats ?"
+  },
+  "endSession": {
+    "title": "Arrêter la séance",
+    "shortMessage": "Cette séance dure moins de 2 minutes. Que souhaitez-vous faire ?",
+    "message": "Voulez-vous vraiment terminer cette séance et enregistrer vos résultats ?"
+  },
+  "actions": {
+    "finish": "Terminer",
+    "resume": "Reprendre",
+    "discard": "Supprimer",
+    "finishAndSave": "Terminer et enregistrer"
+  },
+  "controls": {
+    "pause": "PAUSE",
+    "play": "LECTURE",
+    "finishWorkout": "TERMINER LA SÉANCE",
+    "nextStep": "ÉTAPE SUIVANTE"
+  },
+  "timer": {
+    "stepRemaining": "Reste de l'étape",
+    "stepElapsed": "Durée de l'étape",
+    "countdown": "DÉCOMPTE",
+    "elapsed": "ÉCOULÉ",
+    "labelWithMode": "{{label}} ({{mode}})"
+  },
+  "stats": {
+    "totalTime": "Temps total",
+    "ofPlanned": "sur {{planned}}",
+    "distance": "Distance",
+    "gpsPace": "Allure GPS",
+    "remaining": "Restant"
+  },
+  "stepOf": "Étape {{current}} sur {{total}}",
+  "nextUp": "À SUIVRE · {{type}}",
+  "currentStep": "Étape en cours",
+  "defaultStepName": "Étape {{type}}",
+  "defaultSegmentName": "Segment {{number}}",
+  "defaultWorkoutName": "Séance d'entraînement",
+  "sports": {
+    "running": "Course à pied",
+    "cycling": "Cyclisme",
+    "swimming": "Natation",
+    "strength": "Renforcement",
+    "stretching": "Étirements",
+    "yoga": "Yoga",
+    "rest": "Repos"
+  },
+  "stepTypes": {
+    "warmup": "Échauffement",
+    "interval": "Fractionné",
+    "recovery": "Récupération",
+    "cooldown": "Retour au calme",
+    "tempo": "Tempo",
+    "endurance": "Endurance",
+    "exercise": "Exercice",
+    "work": "Effort",
+    "sprint": "Sprint",
+    "rest": "Repos",
+    "threshold": "Seuil",
+    "strength": "Renforcement",
+    "stretching": "Étirements",
+    "mobility": "Mobilité"
+  },
+  "targets": {
+    "metricLabel": "INDICATEUR CIBLE",
+    "steadyPace": "Allure régulière",
+    "intensityLabel": "INTENSITÉ CIBLE",
+    "steadyEffort": "Effort régulier",
+    "zone2Aerobic": "Zone 2 aérobie",
+    "powerLabel": "PUISSANCE CIBLE",
+    "paceLabel": "ALLURE CIBLE",
+    "cssPaceLabel": "ALLURE CSS CIBLE",
+    "repsLabel": "RÉPÉTITIONS CIBLES",
+    "heartRateLabel": "FC CIBLE",
+    "sessionLabel": "OBJECTIF DE LA SÉANCE",
+    "warmupZone": "50-65 % FTP · Zone d'échauffement",
+    "thresholdZone": "95-105 % FTP · Zone seuil",
+    "activeRecovery": "45-55 % FTP · Récupération active",
+    "cooldownZone": "45-60 % FTP · Zone de retour au calme",
+    "enduranceZone": "65-75 % FTP · Zone d'endurance",
+    "racePace": "Seuil / allure course 5-10 km",
+    "easyAerobicPace": "Allure facile aérobie / récupération",
+    "steadyEndurancePace": "Zone 2 · Allure d'endurance régulière",
+    "criticalSwimSpeed": "Vitesse critique de nage · Seuil",
+    "aerobicRecoveryPace": "Allure aérobie / récupération",
+    "setsReps": "{{sets}} séries × {{reps}} rép.",
+    "reps": "{{reps}} rép.",
+    "qualityReps": "Répétitions de qualité",
+    "eccentricForm": "Contrôlez bien la phase excentrique",
+    "hrZone": "Zone de FC cible",
+    "thresholdHr": "FC seuil zone 3-4",
+    "executeSegment": "Réalisez le segment",
+    "followGuidance": "Suivez les consignes du fractionné",
+    "zone2AerobicEndurance": "Zone 2 endurance aérobie"
+  }
+}
