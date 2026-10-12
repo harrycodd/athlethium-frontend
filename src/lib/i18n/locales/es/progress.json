@@ -1,1 +1,79 @@
-{}
+{
+  "title": "Progreso",
+  "subtitle": "Sigue la evolución de tus métricas de entrenamiento",
+  "range": {
+    "days_one": "{{count}} día",
+    "days_other": "{{count}} días"
+  },
+  "interactiveChart": "Gráfico interactivo",
+  "presets": {
+    "load": "Carga",
+    "readiness": "Disposición",
+    "custom": "Personalizado",
+    "fitnessFatigue": "Condición y fatiga",
+    "dailyReadiness": "Disposición diaria",
+    "customEllipsis": "Personalizado..."
+  },
+  "axis": {
+    "readiness": "Disposición",
+    "trainingLoad": "Carga de entrenamiento",
+    "weightWithUnit": "Peso ({{unit}})"
+  },
+  "axisBadge": {
+    "L": "I",
+    "R": "D",
+    "S": "E"
+  },
+  "today": "Hoy",
+  "metricValueLabel": "{{label}}:",
+  "selectAtLeastOne": "Selecciona al menos una métrica para mostrar.",
+  "editMetrics": "Editar métricas...",
+  "apply": "Aplicar",
+  "customGraph": {
+    "title": "Gráfico personalizado",
+    "subtitle": "Selecciona hasta 5 métricas ({{selected}}/5 seleccionadas)"
+  },
+  "groups": {
+    "training": "Carga de entrenamiento",
+    "readiness": "Disposición diaria",
+    "body": "Métricas corporales"
+  },
+  "metrics": {
+    "ctl": {
+      "label": "Condición física (CTL)",
+      "short": "Condición"
+    },
+    "atl": {
+      "label": "Fatiga (ATL)",
+      "short": "Fatiga"
+    },
+    "form": {
+      "label": "Forma (TSB)",
+      "short": "Forma"
+    },
+    "sleep": {
+      "label": "Sueño",
+      "short": "Sueño"
+    },
+    "physical": {
+      "label": "Físico",
+      "short": "Físico"
+    },
+    "mental": {
+      "label": "Mental",
+      "short": "Mental"
+    },
+    "weight": {
+      "label": "Peso",
+      "short": "Peso"
+    },
+    "injury": {
+      "label": "Lesión",
+      "short": "Lesión"
+    },
+    "illness": {
+      "label": "Enfermedad",
+      "short": "Enfermedad"
+    }
+  }
+}

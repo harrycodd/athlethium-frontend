@@ -1,1 +1,79 @@
-{}
+{
+  "title": "Fortschritt",
+  "subtitle": "Verfolge deine Fitnesswerte im Zeitverlauf",
+  "range": {
+    "days_one": "{{count}} Tag",
+    "days_other": "{{count}} Tage"
+  },
+  "interactiveChart": "Interaktives Diagramm",
+  "presets": {
+    "load": "Belastung",
+    "readiness": "Tagesform",
+    "custom": "Eigene",
+    "fitnessFatigue": "Fitness & Ermüdung",
+    "dailyReadiness": "Tagesform",
+    "customEllipsis": "Eigene..."
+  },
+  "axis": {
+    "readiness": "Tagesform",
+    "trainingLoad": "Trainingsbelastung",
+    "weightWithUnit": "Gewicht ({{unit}})"
+  },
+  "axisBadge": {
+    "L": "L",
+    "R": "R",
+    "S": "S"
+  },
+  "today": "Heute",
+  "metricValueLabel": "{{label}}:",
+  "selectAtLeastOne": "Wähle mindestens einen Wert zur Anzeige aus.",
+  "editMetrics": "Werte bearbeiten...",
+  "apply": "Anwenden",
+  "customGraph": {
+    "title": "Eigenes Diagramm",
+    "subtitle": "Wähle bis zu 5 Werte ({{selected}}/5 gewählt)"
+  },
+  "groups": {
+    "training": "Trainingsbelastung",
+    "readiness": "Tagesform",
+    "body": "Körperwerte"
+  },
+  "metrics": {
+    "ctl": {
+      "label": "Fitness (CTL)",
+      "short": "Fitness"
+    },
+    "atl": {
+      "label": "Ermüdung (ATL)",
+      "short": "Ermüdung"
+    },
+    "form": {
+      "label": "Form (TSB)",
+      "short": "Form"
+    },
+    "sleep": {
+      "label": "Schlaf",
+      "short": "Schlaf"
+    },
+    "physical": {
+      "label": "Körperlich",
+      "short": "Körperl."
+    },
+    "mental": {
+      "label": "Mental",
+      "short": "Mental"
+    },
+    "weight": {
+      "label": "Gewicht",
+      "short": "Gewicht"
+    },
+    "injury": {
+      "label": "Verletzung",
+      "short": "Verletzung"
+    },
+    "illness": {
+      "label": "Krankheit",
+      "short": "Krankheit"
+    }
+  }
+}

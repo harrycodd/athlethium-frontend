@@ -1,1 +1,271 @@
-{}
+{
+  "defaultEventName": "Evento objetivo",
+  "sports": {
+    "stretching": "Estiramientos"
+  },
+  "card": {
+    "reachedTitle": "¡Objetivo alcanzado!",
+    "nextGoalPrompt": "¿Cuál es tu próximo objetivo?",
+    "setNextGoal": "+ Fijar próximo objetivo",
+    "countdownTitle": "Cuenta atrás: {{name}}",
+    "daysToGo_one": "<num>{{count}}</num><label>día restante</label>",
+    "daysToGo_other": "<num>{{count}}</num><label>días restantes</label>",
+    "planProgress": "Progreso del plan",
+    "weekProgressPercent": "Semana {{week}} de {{total}} ({{percent}} %)"
+  },
+  "details": {
+    "title": "Detalles del objetivo",
+    "blockProgress": "Progreso del bloque de entrenamiento",
+    "weekProgress": "Semana {{week}} de {{total}}",
+    "daysCompleted_one": "{{count}} día completado",
+    "daysCompleted_other": "{{count}} días completados",
+    "daysRemaining_one": "Queda {{count}} día",
+    "daysRemaining_other": "Quedan {{count}} días",
+    "quotedDescription": "«{{text}}»",
+    "markAchieved": "Marcar como logrado",
+    "editGoal": "Editar objetivo"
+  },
+  "form": {
+    "editTitle": "Editar objetivo",
+    "newTitle": "Fija tu objetivo",
+    "subtitle": "Apunta a hitos concretos y fechas de carrera",
+    "sportFocus": "Deporte principal",
+    "goalTemplates": "Plantillas de objetivos",
+    "flexibilityMilestoneFocus": "Hito / enfoque de flexibilidad",
+    "strengthBenchmarkFocus": "Marca / enfoque de fuerza",
+    "selectFlexibilityMilestone": "Elige un hito de flexibilidad",
+    "selectStrengthBenchmark": "Elige una marca de fuerza",
+    "category": "Categoría: {{category}}",
+    "allFocusAreas": "Todas las zonas",
+    "categories": {
+      "legs": "Piernas",
+      "core": "Core",
+      "upper": "Tren superior",
+      "other": "Otros"
+    },
+    "anatomicalArea": "Zona anatómica objetivo para el algoritmo de entrenamiento",
+    "bodyAreas": {
+      "all": "Cuerpo completo",
+      "core": "Core",
+      "upper": "Tren superior",
+      "lower": "Tren inferior / piernas"
+    },
+    "nameLabelStretching": "Nombre del objetivo / hito personalizado",
+    "nameLabelStrength": "Nombre de la marca personalizada",
+    "nameLabel": "Nombre del objetivo / evento",
+    "namePlaceholderStretching": "p. ej., spagat frontal, palmas al suelo, personalizado",
+    "namePlaceholderStrength": "p. ej., 10 dominadas estrictas, sentadilla con 100 kg, personalizado",
+    "namePlaceholder": "p. ej., maratón de otoño, bajar de 4 h",
+    "defaultGoalName": "Mi objetivo de forma física",
+    "goalNameFromTemplate": "Objetivo: {{goal}}",
+    "swimGoalName": "Objetivo: 1500 m de natación",
+    "customMilestoneNote": "Hito personalizado",
+    "swimDistanceLabel": "Distancia de natación objetivo (metros/yardas)",
+    "distanceLabelMiles": "Distancia objetivo (millas)",
+    "distanceLabelKm": "Distancia objetivo (kilómetros)",
+    "yards": "Yardas",
+    "meters": "Metros",
+    "imperialMi": "Imperial (mi)",
+    "metricKm": "Métrico (km)",
+    "distanceChips": {
+      "halfMi": "Media 13.1 mi",
+      "halfKm": "Media 21.1 km",
+      "fullMi": "Maratón 26.2 mi",
+      "fullKm": "Maratón 42.2 km"
+    },
+    "swimDistancePlaceholder": "Distancia en metros/yardas (p. ej., 1500)",
+    "distancePlaceholderMiles": "Distancia en millas (p. ej., 26.2)",
+    "distancePlaceholderKm": "Distancia en km (p. ej., 42.2)",
+    "finishTime": "Tiempo final objetivo (HH:MM:SS)",
+    "eventDate": "Fecha del evento",
+    "weeksAway_one": "Falta {{count}} semana",
+    "weeksAway_other": "Faltan {{count}} semanas",
+    "weeksPreset": "+{{weeks}} sem",
+    "changeDate": "Cambiar fecha",
+    "notesLabelStretching": "Enfoque de movilidad / notas (opcional)",
+    "notesLabelStrength": "Notas de la marca objetivo (opcional)",
+    "notesLabel": "Notas del objetivo (opcional)",
+    "notesPlaceholderStretching": "p. ej., rutina diaria de 15 min de movilidad de cadera, llegar al suelo",
+    "notesPlaceholderStrength": "p. ej., 10 repeticiones estrictas, 1RM de 100 kg",
+    "notesPlaceholder": "p. ej., bajar de 3:45, ritmo en negativo",
+    "saveUpdate": "Guardar y actualizar plan",
+    "saveCreate": "Fijar objetivo y crear plan"
+  },
+  "milestonePicker": {
+    "flexibilityTitle": "Hitos de flexibilidad",
+    "strengthTitle": "Marcas de fuerza",
+    "subtitle": "Elige un hito para ajustar tu progresión semanal.",
+    "categories": {
+      "all": "Todos los hitos",
+      "legs": "Piernas y cadera",
+      "core": "Core y columna",
+      "upper": "Tren superior"
+    },
+    "otherTitle": "Otro / objetivo personalizado",
+    "otherNote": "Elige la zona anatómica y escribe tu ejercicio personalizado"
+  },
+  "datePicker": {
+    "title": "Elige la fecha objetivo"
+  },
+  "alerts": {
+    "requiredTitle": "Obligatorio",
+    "requiredMessage": "Escribe o elige un nombre para el objetivo.",
+    "saveFailed": "No se pudo guardar el objetivo.",
+    "achievedTitle": "🎉 ¡Enhorabuena!",
+    "achievedMessage": "¡Objetivo marcado como logrado! ¿Qué quieres conseguir ahora?"
+  },
+  "goalTypes": {
+    "generalFitness": "Forma física general",
+    "ironman": "Ironman",
+    "halfIronman": "Medio Ironman (70.3)",
+    "olympicTriathlon": "Triatlón olímpico",
+    "sprintTriathlon": "Triatlón sprint",
+    "aquathlon": "Acuatlón",
+    "swimRun": "SwimRun",
+    "duathlon": "Duatlón",
+    "marathon": "Maratón",
+    "halfMarathon": "Media maratón",
+    "tenK": "10K",
+    "fiveK": "5K",
+    "centuryRide": "Century (100 millas)",
+    "fortyKTT": "Contrarreloj 40K",
+    "tenMileTT": "Contrarreloj 10 millas",
+    "freestyle1500": "1500 m libre",
+    "individualMedley400": "400 m estilos",
+    "strokeSpecialization200": "200 m especialidad de estilo",
+    "sprintEvent100": "100 m velocidad",
+    "openWater1500": "Aguas abiertas 1.5K",
+    "openWater5K": "Aguas abiertas 5K",
+    "openWater10K": "Aguas abiertas 10K",
+    "functionalStrength": "Fuerza funcional y acondicionamiento",
+    "fullBodyFlexibility": "Flexibilidad de cuerpo completo",
+    "frontSplitsMastery": "Dominio del spagat frontal",
+    "middleSplitsMastery": "Dominio del spagat lateral"
+  },
+  "milestones": {
+    "stretching": {
+      "fullFrontSplits": {
+        "label": "Spagat frontal completo",
+        "note": "Movilidad para el spagat frontal hasta el suelo"
+      },
+      "middleSplits": {
+        "label": "Spagat lateral",
+        "note": "Rango de abducción de cadera para el spagat lateral"
+      },
+      "palmsToFloor": {
+        "label": "Palmas al suelo",
+        "note": "Flexibilidad de isquiotibiales y cadena posterior"
+      },
+      "deepSquat": {
+        "label": "Movilidad en sentadilla profunda",
+        "note": "Apertura profunda de tobillo y cadera"
+      },
+      "pigeonPose": {
+        "label": "Postura de la paloma 90°",
+        "note": "Flexibilidad de glúteos y rotadores profundos de la cadera"
+      },
+      "ankleDorsiflexion": {
+        "label": "Dorsiflexión de tobillo",
+        "note": "Rango completo de movimiento del tobillo"
+      },
+      "thoracicBridge": {
+        "label": "Puente torácico",
+        "note": "Extensión completa de espalda y columna torácica"
+      },
+      "lSit": {
+        "label": "Movilidad en L-sit",
+        "note": "Compresión del core y rango de los flexores de cadera"
+      },
+      "spinalDecompression": {
+        "label": "Descompresión y torsiones de columna",
+        "note": "Movilidad de la columna y equilibrio rotacional"
+      },
+      "overheadShoulder": {
+        "label": "Movilidad de hombros por encima de la cabeza",
+        "note": "Flexión activa de hombros de 180° por encima de la cabeza"
+      },
+      "chestOpener": {
+        "label": "Apertura de pecho y hombro anterior",
+        "note": "Flexibilidad del pectoral y del tendón del bíceps"
+      },
+      "thoracicExtension": {
+        "label": "Extensión torácica",
+        "note": "Movilidad postural de la parte alta de la espalda"
+      },
+      "fullBodyFlow": {
+        "label": "Flow de movilidad de cuerpo completo",
+        "note": "Rutina diaria completa de movilidad"
+      },
+      "fullBodyMastery": {
+        "label": "Flexibilidad total de cuerpo completo",
+        "note": "Flexibilidad integral de varias articulaciones"
+      }
+    },
+    "strength": {
+      "pullUps": {
+        "label": "10 dominadas estrictas",
+        "note": "10 repeticiones estrictas seguidas"
+      },
+      "pushUps": {
+        "label": "50 flexiones seguidas",
+        "note": "50 flexiones sin parar"
+      },
+      "benchPress": {
+        "label": "Press de banca con tu peso corporal",
+        "note": "Press de banca con 1x tu peso corporal"
+      },
+      "handstandPushUps": {
+        "label": "Flexiones en parada de manos",
+        "note": "Flexiones estrictas en parada de manos contra la pared"
+      },
+      "muscleUp": {
+        "label": "Dominio del muscle-up",
+        "note": "Muscle-ups estrictos en barra / anillas"
+      },
+      "overheadPress": {
+        "label": "Press militar (0.75x PC)",
+        "note": "Press militar estricto con barra"
+      },
+      "squat": {
+        "label": "Sentadilla con 1.5x PC",
+        "note": "Sentadilla trasera con barra con 1.5x tu peso corporal"
+      },
+      "deadlift": {
+        "label": "Peso muerto con 2x PC",
+        "note": "Peso muerto convencional con 2x tu peso corporal"
+      },
+      "pistolSquats": {
+        "label": "Sentadillas pistol (a una pierna)",
+        "note": "5 repeticiones limpias por pierna"
+      },
+      "bulgarianSplitSquat": {
+        "label": "Sentadilla búlgara pesada",
+        "note": "Fuerza y estabilidad a una pierna"
+      },
+      "plank": {
+        "label": "Plancha de 3 minutos",
+        "note": "180 s de plancha estricta continua"
+      },
+      "dragonFlag": {
+        "label": "Dominio del dragon flag",
+        "note": "Dragon flag estricto con peso corporal"
+      },
+      "hangingLegRaises": {
+        "label": "Elevaciones de piernas colgado (15 reps.)",
+        "note": "Elevaciones estrictas de pies a la barra"
+      },
+      "abWheel": {
+        "label": "Rueda abdominal desde los pies",
+        "note": "Rueda abdominal con extensión completa"
+      },
+      "cleanAndJerk": {
+        "label": "Marca en dos tiempos",
+        "note": "Marca de halterofilia olímpica"
+      },
+      "functionalStrength": {
+        "label": "Dominio de la fuerza funcional",
+        "note": "Fuerza y potencia funcional de cuerpo completo"
+      }
+    }
+  }
+}

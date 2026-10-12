@@ -1,1 +1,146 @@
-{}
+{
+  "title": "Einstellungen",
+  "hoursPerWeek": "Stunden / Woche",
+  "units": {
+    "Metric": "Metrisch",
+    "Imperial": "Imperial",
+    "metricDescription": "km / kg / °C",
+    "imperialDescription": "mi / lbs / °F"
+  },
+  "weekdays": {
+    "Monday": "Montag",
+    "Tuesday": "Dienstag",
+    "Wednesday": "Mittwoch",
+    "Thursday": "Donnerstag",
+    "Friday": "Freitag",
+    "Saturday": "Samstag",
+    "Sunday": "Sonntag"
+  },
+  "sportNames": {
+    "running": "Laufen",
+    "cycling": "Radfahren",
+    "swimming": "Schwimmen",
+    "strength": "Kraft",
+    "stretching": "Dehnen"
+  },
+  "alerts": {
+    "updateFailed": "Einstellungen konnten nicht gespeichert werden",
+    "actionRestricted": "Nicht möglich",
+    "cannotDisableFocus": "Du kannst keine Sportart deaktivieren, die gerade dein Hauptfokus ist.",
+    "needActiveSport": "Du brauchst mindestens eine aktive Sportart.",
+    "needMainFocus": "Du brauchst mindestens einen Hauptfokus.",
+    "maxFocusTitle": "Maximal 3 Hauptfokus-Sportarten",
+    "maxFocusMessage": "Damit Trainingsanpassung und Regeneration gut funktionieren, kannst du bis zu 3 Hauptfokus-Sportarten wählen."
+  },
+  "profile": {
+    "title": "Athletenprofil",
+    "defaultName": "Athlet",
+    "summary": "{{name}} · {{units}} · {{days}} T Vorschau",
+    "nameLabel": "Name",
+    "namePlaceholder": "Gib deinen Namen ein",
+    "unitsLabel": "Maßeinheiten",
+    "weeklyHoursLabel": "Ziel-Wochenstunden",
+    "dailyAverage": "~{{hours}} Std. im Tagesschnitt",
+    "lookaheadLabel": "Planungshorizont",
+    "daysShort": "{{days}} T"
+  },
+  "language": {
+    "helper": "Kommende Einheiten werden in der neuen Sprache neu erstellt.",
+    "pickerTitle": "Sprache wählen",
+    "changeFailed": "Die Sprache konnte nicht geändert werden. Bitte versuch es erneut."
+  },
+  "sports": {
+    "title": "Sportarten & Fokus",
+    "summary": "{{active}} aktiv · ★ {{focus}}",
+    "hint": "Aktiviere Sportarten mit den Schaltern. Tippe auf den Stern, um deinen <bold>Hauptfokus</bold> festzulegen."
+  },
+  "metrics": {
+    "title": "Leistungswerte",
+    "summaryFtp": "FTP {{watts}}W",
+    "summaryPace": "Pace {{pace}}/{{unit}}",
+    "summaryCss": "CSS {{pace}}/100m",
+    "summaryMaxHr": "Max. HF {{bpm}} bpm",
+    "heartRateTitle": "Herzfrequenz & Schwellen",
+    "maxHr": "Maximale Herzfrequenz (HFmax)",
+    "restHr": "Ruheherzfrequenz (RHF)",
+    "fthr": "Schwellenherzfrequenz (FTHR)",
+    "runningTitle": "Laufwerte",
+    "thresholdPace": "Schwellenpace (FTPa)",
+    "runningPower": "Lauf-Schwellenleistung (FTP)",
+    "runningPowerPlaceholder": "Optional (z. B. 280)",
+    "watts": "Watt",
+    "cyclingTitle": "Radwerte",
+    "cyclingFtp": "Funktionelle Schwellenleistung (FTP)",
+    "swimmingTitle": "Schwimmwerte",
+    "css": "Critical Swim Speed (CSS-Pace)",
+    "bodyTitle": "Körperzusammensetzung",
+    "bodyWeight": "Körpergewicht",
+    "weightPlaceholder": "z. B. 70"
+  },
+  "availability": {
+    "title": "Tägliche Verfügbarkeit",
+    "summary": "{{hours}} Std. Gesamtkapazität",
+    "totalLabel": "Verfügbare Gesamtkapazität",
+    "target": "Ziel: {{hours}} h",
+    "restDay": "Ruhetag",
+    "hours": "{{hours}} Std."
+  },
+  "equipment": {
+    "title": "Kraftequipment",
+    "summary": "{{available}} von {{total}} verfügbar",
+    "hint": "Wähle das Equipment aus, das du für Krafteinheiten zur Verfügung hast.",
+    "items": {
+      "dumbbells": "Kurzhanteln",
+      "kettlebell": "Kettlebell",
+      "pullUpBar": "Klimmzugstange",
+      "squatRack": "Squat-Rack",
+      "bench": "Hantelbank",
+      "dipBar": "Dipstation",
+      "cable": "Kabelzug",
+      "latPulldown": "Latzug",
+      "flyMachine": "Butterfly-Maschine",
+      "resistanceBands": "Widerstandsbänder",
+      "medicineBall": "Medizinball"
+    }
+  },
+  "integrations": {
+    "title": "Partner-Integrationen",
+    "summary": "Strava · {{status}}"
+  },
+  "strava": {
+    "subtitle": "Rad, Lauf, Schwimmen & GPS-Aktivitäten",
+    "description": "Importiert automatisch deine absolvierten Einheiten, Leistungskurven, Herzfrequenz und GPS-Tracks.",
+    "connected": "Verbunden",
+    "notConnected": "Nicht verbunden",
+    "connect": "Mit Strava verbinden",
+    "disconnect": "Strava trennen",
+    "disconnectConfirm": "Willst du dein Strava-Konto wirklich trennen?",
+    "disconnectButton": "Trennen",
+    "disconnectFailed": "Strava konnte nicht getrennt werden: {{message}}",
+    "connectedSuccess": "Strava erfolgreich verbunden!",
+    "connectFailed": "Verbindung mit Strava fehlgeschlagen: {{error}}",
+    "authFailed": "Authentifizierung fehlgeschlagen: {{message}}"
+  },
+  "account": {
+    "wizardTitle": "Einrichtungsassistent",
+    "wizardMessage": "Möchtest du den Einrichtungsassistenten von vorn starten?",
+    "rerun": "Neu starten",
+    "rerunWizard": "Einrichtung neu starten",
+    "signOut": "Abmelden",
+    "signOutConfirm": "Willst du dich wirklich abmelden?",
+    "deleteAccount": "Konto löschen",
+    "deleteConfirm": "Willst du dein Konto wirklich endgültig löschen? Das kann nicht rückgängig gemacht werden – alle Einheiten, Werte und Daten werden dauerhaft entfernt.",
+    "deleting": "Wird gelöscht...",
+    "deletedTitle": "Konto gelöscht",
+    "deletedMessage": "Dein Konto und alle zugehörigen Daten wurden dauerhaft entfernt.",
+    "deleteFailed": "Konto konnte nicht gelöscht werden. Bitte versuch es erneut.",
+    "incorrectPassword": "Falsches Passwort. Bitte versuch es erneut."
+  },
+  "reauth": {
+    "title": "Kontolöschung bestätigen",
+    "message": "Gib zu deiner Sicherheit dein Passwort ein, um die endgültige Löschung deines Kontos zu bestätigen.",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Gib dein Passwort ein",
+    "confirm": "Konto endgültig löschen"
+  }
+}

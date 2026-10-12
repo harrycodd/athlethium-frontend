@@ -1,1 +1,107 @@
-{}
+{
+  "notFound": "Sesión no encontrada",
+  "goBack": "Volver",
+  "breakthrough": {
+    "title": "¡Nuevo umbral! 🏆",
+    "cyclingFtp": "¡Nuevo récord de FTP! Hemos actualizado tu FTP de ciclismo de {{oldFtp}}W a {{newFtp}}W.",
+    "runningPace": "¡Nuevo récord de ritmo umbral! Hemos actualizado tu ritmo umbral de carrera a {{pace}}/km."
+  },
+  "finishWorkout": {
+    "title": "Terminar entrenamiento",
+    "message": "¿Seguro que quieres terminar este entrenamiento y guardar los resultados?"
+  },
+  "endSession": {
+    "title": "Terminar sesión",
+    "shortMessage": "Esta sesión dura menos de 2 minutos. ¿Qué quieres hacer?",
+    "message": "¿Seguro que quieres terminar esta sesión y guardar los resultados?"
+  },
+  "actions": {
+    "finish": "Terminar",
+    "resume": "Reanudar",
+    "discard": "Descartar",
+    "finishAndSave": "Terminar y guardar"
+  },
+  "controls": {
+    "pause": "PAUSA",
+    "play": "SEGUIR",
+    "finishWorkout": "TERMINAR",
+    "nextStep": "SIGUIENTE PASO"
+  },
+  "timer": {
+    "stepRemaining": "Restante del paso",
+    "stepElapsed": "Transcurrido del paso",
+    "countdown": "CUENTA ATRÁS",
+    "elapsed": "TRANSCURRIDO",
+    "labelWithMode": "{{label}} ({{mode}})"
+  },
+  "stats": {
+    "totalTime": "Tiempo total",
+    "ofPlanned": "de {{planned}}",
+    "distance": "Distancia",
+    "gpsPace": "Ritmo GPS",
+    "remaining": "Restante"
+  },
+  "stepOf": "Paso {{current}} de {{total}}",
+  "nextUp": "A CONTINUACIÓN · {{type}}",
+  "currentStep": "Paso actual",
+  "defaultStepName": "Paso de {{type}}",
+  "defaultSegmentName": "Segmento {{number}}",
+  "defaultWorkoutName": "Sesión de entrenamiento",
+  "sports": {
+    "running": "Carrera",
+    "cycling": "Ciclismo",
+    "swimming": "Natación",
+    "strength": "Fuerza",
+    "stretching": "Estiramientos",
+    "yoga": "Yoga",
+    "rest": "Descanso"
+  },
+  "stepTypes": {
+    "warmup": "Calentamiento",
+    "interval": "Intervalo",
+    "recovery": "Recuperación",
+    "cooldown": "Vuelta a la calma",
+    "tempo": "Tempo",
+    "endurance": "Resistencia",
+    "exercise": "Ejercicio",
+    "work": "Trabajo",
+    "sprint": "Sprint",
+    "rest": "Descanso",
+    "threshold": "Umbral",
+    "strength": "Fuerza",
+    "stretching": "Estiramientos",
+    "mobility": "Movilidad"
+  },
+  "targets": {
+    "metricLabel": "MÉTRICA OBJETIVO",
+    "steadyPace": "Ritmo constante",
+    "intensityLabel": "INTENSIDAD OBJETIVO",
+    "steadyEffort": "Esfuerzo constante",
+    "zone2Aerobic": "Zona 2 aeróbica",
+    "powerLabel": "POTENCIA OBJETIVO",
+    "paceLabel": "RITMO OBJETIVO",
+    "cssPaceLabel": "RITMO CSS OBJETIVO",
+    "repsLabel": "REPETICIONES OBJETIVO",
+    "heartRateLabel": "FC OBJETIVO",
+    "sessionLabel": "OBJETIVO DE LA SESIÓN",
+    "warmupZone": "50-65% FTP · Zona de calentamiento",
+    "thresholdZone": "95-105% FTP · Zona de umbral",
+    "activeRecovery": "45-55% FTP · Recuperación activa",
+    "cooldownZone": "45-60% FTP · Zona de vuelta a la calma",
+    "enduranceZone": "65-75% FTP · Zona de resistencia",
+    "racePace": "Umbral / ritmo de carrera de 5K-10K",
+    "easyAerobicPace": "Ritmo aeróbico suave / de recuperación",
+    "steadyEndurancePace": "Zona 2 · Ritmo constante de resistencia",
+    "criticalSwimSpeed": "Velocidad crítica de nado · Umbral",
+    "aerobicRecoveryPace": "Ritmo aeróbico / de recuperación",
+    "setsReps": "{{sets}} series × {{reps}} repeticiones",
+    "reps": "{{reps}} repeticiones",
+    "qualityReps": "Repeticiones de calidad",
+    "eccentricForm": "Céntrate en controlar la fase excéntrica",
+    "hrZone": "Zona de FC objetivo",
+    "thresholdHr": "FC de umbral zona 3-4",
+    "executeSegment": "Completa el segmento",
+    "followGuidance": "Sigue las indicaciones del intervalo programado",
+    "zone2AerobicEndurance": "Resistencia aeróbica zona 2"
+  }
+}

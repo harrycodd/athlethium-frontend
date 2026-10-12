@@ -1,1 +1,171 @@
-{}
+{
+  "sports": {
+    "running": "Laufen",
+    "cycling": "Radfahren",
+    "swimming": "Schwimmen",
+    "strength": "Kraft",
+    "stretching": "Dehnen",
+    "yoga": "Yoga",
+    "rest": "Ruhetag",
+    "other": "Sonstiges"
+  },
+  "duration": {
+    "h": "{{h}} h",
+    "hm": "{{h}} h {{m}} min",
+    "hms": "{{h}} h {{m}} min {{s}} s",
+    "m": "{{m}} min",
+    "ms": "{{m}} min {{s}} s",
+    "s": "{{s}} s"
+  },
+  "reps_one": "{{count}} Wdh.",
+  "reps_other": "{{count}} Wdh.",
+  "lap": "Runde {{number}}",
+  "step": "Schritt {{number}}",
+  "details": {
+    "redo": "Wiederholen",
+    "upload": "Hochladen",
+    "namePlaceholder": "Name der Einheit",
+    "completed": "Erledigt",
+    "uploadingTitle": "Einheit wird hochgeladen",
+    "uploadingMessage": "FIT-Datei wird gelesen und ausgewertet. Das kann ein paar Sekunden dauern...",
+    "tabs": {
+      "analysis": "Analyse",
+      "structure": "Struktur"
+    },
+    "date": "Datum",
+    "sport": "Sportart",
+    "plannedDuration": "Geplante Dauer",
+    "sessionDuration": "Dauer der Einheit",
+    "descriptionGoals": "Beschreibung & Ziele",
+    "descriptionPlaceholder": "Welche Ziele hast du für diese Einheit?",
+    "startActivity": "Aktivität starten",
+    "selectSport": "Sportart wählen"
+  },
+  "alerts": {
+    "loadFailed": "Details der Einheit konnten nicht geladen werden.",
+    "verifyFileTitle": "Datei prüfen",
+    "verifyFileMessage": "Das sieht nicht nach einer .fit-Datei aus. Willst du sie trotzdem hochladen?",
+    "uploadAnyway": "Trotzdem hochladen",
+    "uploadSuccess": "Datei erfolgreich hochgeladen und ausgewertet!",
+    "uploadErrorTitle": "Upload-Fehler",
+    "uploadFailed": "Datei konnte nicht hochgeladen werden.",
+    "uploadUnexpected": "Beim Hochladen der Datei ist ein Fehler aufgetreten.",
+    "saved": "Einheit aktualisiert.",
+    "saveFailed": "Änderungen konnten nicht gespeichert werden.",
+    "redoTitle": "Einheit wiederholen",
+    "redoMessage": "Willst du diese Einheit wirklich wiederholen und als nicht erledigt markieren?",
+    "redoConfirm": "Wiederholen",
+    "redoFailed": "Einheit konnte nicht zurückgesetzt werden.",
+    "deleteTitle": "Einheit löschen",
+    "deleteMessage": "Willst du diese Einheit wirklich löschen?",
+    "deleteFailed": "Einheit konnte nicht gelöscht werden."
+  },
+  "structure": {
+    "loadingLaps": "Rundendaten werden geladen...",
+    "metrics": {
+      "pace": "Pace",
+      "speed": "Geschw.",
+      "power": "Leistung",
+      "hr": "Herzfrequenz"
+    },
+    "avgPower": "Ø Leistung",
+    "avgHr": "Ø HF",
+    "avgPace": "Ø Pace",
+    "avgSpeed": "Ø Geschw.",
+    "distance": "Distanz",
+    "empty": "Für diese Einheit sind keine Strukturdetails verfügbar.",
+    "stepName": "{{type}}-Schritt",
+    "targetRange": "{{low}}-{{high}}% FTP",
+    "targetAbove": ">{{low}}% FTP",
+    "setsOfReps_one": "{{count}} Satz × {{reps}}",
+    "setsOfReps_other": "{{count}} Sätze × {{reps}}"
+  },
+  "stepTypes": {
+    "warmup": "Aufwärmen",
+    "interval": "Intervall",
+    "recovery": "Regeneration",
+    "cooldown": "Cool-down",
+    "tempo": "Tempo",
+    "endurance": "Grundlage",
+    "exercise": "Übung",
+    "work": "Belastung"
+  },
+  "analysis": {
+    "loading": "Analysedaten werden geladen...",
+    "entireSession": "Gesamte Einheit",
+    "metrics": {
+      "speed": "Geschwindigkeit",
+      "power": "Leistung",
+      "heartrate": "Herzfrequenz",
+      "elevation": "Höhe",
+      "cadence": "Kadenz"
+    },
+    "max": {
+      "speed": "Max. Geschw.",
+      "power": "Max. Leistung",
+      "heartrate": "Max. HF",
+      "elevation": "Max. Höhe",
+      "cadence": "Max. Kadenz"
+    },
+    "avg": {
+      "speed": "Ø Geschw.",
+      "power": "Ø Leistung",
+      "heartrate": "Ø HF",
+      "elevation": "Ø Höhe",
+      "cadence": "Ø Kadenz"
+    },
+    "min": {
+      "speed": "Min. Geschw.",
+      "power": "Min. Leistung",
+      "heartrate": "Min. HF",
+      "elevation": "Min. Höhe",
+      "cadence": "Min. Kadenz"
+    },
+    "normPower": "Norm. Leistung",
+    "bestEfforts": "Bestleistungen",
+    "completedWorkout": "Absolvierte Einheit",
+    "sessionMetrics": "Werte der Einheit",
+    "notAvailable": "k. A."
+  },
+  "stats": {
+    "duration": "Dauer",
+    "distance": "Distanz",
+    "avgSpeed": "Ø Geschw.",
+    "avgPace": "Ø Pace",
+    "avgPower": "Ø Leistung",
+    "normPower": "Norm. Leistung",
+    "elevation": "Höhenmeter",
+    "cadence": "Kadenz",
+    "pace": "Pace",
+    "sets": "Sätze",
+    "reps": "Wdh.",
+    "volume": "Volumen",
+    "avgHr": "Ø HF",
+    "maxHr": "Max. HF",
+    "calories": "Kalorien",
+    "tss": "TSS"
+  },
+  "strengthLog": {
+    "title": "Trag deine Sätze ein",
+    "totals_one": "{{count}} Satz · {{reps}} · {{volume}} {{unit}} gesamt",
+    "totals_other": "{{count}} Sätze · {{reps}} · {{volume}} {{unit}} gesamt",
+    "setNumber": "Satz {{number}}",
+    "repsInputLabel": "{{exercise}} Satz {{number}} Wiederholungen",
+    "weightInputLabel": "{{exercise}} Satz {{number}} Gewicht",
+    "repsPlaceholder": "Wdh.",
+    "addSetLabel": "Satz {{exercise}} hinzufügen",
+    "removeSetLabel": "{{exercise}} Satz {{number}} entfernen",
+    "addExercisePlaceholder": "Übung hinzufügen (z. B. Hip Thrust)",
+    "add": "Hinzufügen",
+    "save": "Sätze speichern",
+    "savedTitle": "Gespeichert",
+    "savedMessage_one": "{{count}} Satz eingetragen.",
+    "savedMessage_other": "{{count}} Sätze eingetragen.",
+    "saveFailed": "Deine Sätze konnten nicht gespeichert werden. Bitte versuch es erneut."
+  },
+  "summary": {
+    "sets": "Sätze",
+    "setLine": "Satz {{number}}: {{detail}}",
+    "done": "erledigt"
+  }
+}

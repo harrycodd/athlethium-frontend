@@ -1,1 +1,38 @@
-{}
+{
+  "save": "Speichern",
+  "cancel": "Abbrechen",
+  "loading": "Lädt...",
+  "error": "Fehler",
+  "success": "Erfolg",
+  "start": "Einheit starten",
+  "details": "Details",
+  "complete": "Erledigt",
+  "analyse": "Analyse ansehen",
+  "delete": "Löschen",
+  "ok": "OK",
+  "done": "Fertig",
+  "next": "Weiter",
+  "back": "Zurück",
+  "close": "Schließen",
+  "edit": "Bearbeiten",
+  "retry": "Erneut versuchen",
+  "yes": "Ja",
+  "no": "Nein",
+  "none": "Keine",
+  "sports": {
+    "cycling": "Radfahren",
+    "running": "Laufen",
+    "swimming": "Schwimmen",
+    "strength": "Kraft",
+    "stretching": "Dehnen",
+    "rest": "Ruhetag"
+  },
+  "language": "Sprache",
+  "toggleComplete": {
+    "redoTitle": "Einheit wiederholen",
+    "completeTitle": "Einheit abschließen",
+    "redoMessage": "Willst du diese Einheit wirklich wiederholen und als nicht erledigt markieren?",
+    "completeMessage": "Willst du diese Einheit wirklich als erledigt markieren?",
+    "redo": "Wiederholen"
+  }
+}

@@ -1,1 +1,146 @@
-{}
+{
+  "title": "Ajustes",
+  "hoursPerWeek": "horas / semana",
+  "units": {
+    "Metric": "Métrico",
+    "Imperial": "Imperial",
+    "metricDescription": "km / kg / °C",
+    "imperialDescription": "mi / lbs / °F"
+  },
+  "weekdays": {
+    "Monday": "Lunes",
+    "Tuesday": "Martes",
+    "Wednesday": "Miércoles",
+    "Thursday": "Jueves",
+    "Friday": "Viernes",
+    "Saturday": "Sábado",
+    "Sunday": "Domingo"
+  },
+  "sportNames": {
+    "running": "Carrera",
+    "cycling": "Ciclismo",
+    "swimming": "Natación",
+    "strength": "Fuerza",
+    "stretching": "Estiramientos"
+  },
+  "alerts": {
+    "updateFailed": "No se pudieron actualizar los ajustes",
+    "actionRestricted": "Acción no permitida",
+    "cannotDisableFocus": "No puedes desactivar un deporte que es tu enfoque principal.",
+    "needActiveSport": "Debes tener al menos un deporte activo.",
+    "needMainFocus": "Debes tener al menos un enfoque principal.",
+    "maxFocusTitle": "Máximo 3 deportes principales",
+    "maxFocusMessage": "Para asegurar buenas adaptaciones al entrenamiento y una buena recuperación, puedes elegir hasta 3 deportes principales."
+  },
+  "profile": {
+    "title": "Perfil de atleta",
+    "defaultName": "Atleta",
+    "summary": "{{name}} · {{units}} · {{days}} d de previsión",
+    "nameLabel": "Nombre del atleta",
+    "namePlaceholder": "Escribe tu nombre",
+    "unitsLabel": "Unidades de medida",
+    "weeklyHoursLabel": "Horas semanales objetivo",
+    "dailyAverage": "~{{hours}} h de media al día",
+    "lookaheadLabel": "Horizonte de planificación",
+    "daysShort": "{{days}} d"
+  },
+  "language": {
+    "helper": "Las próximas sesiones se reescribirán en el nuevo idioma.",
+    "pickerTitle": "Elige idioma",
+    "changeFailed": "No se pudo cambiar el idioma. Inténtalo de nuevo."
+  },
+  "sports": {
+    "title": "Deportes y enfoque",
+    "summary": "{{active}} activos · ★ {{focus}}",
+    "hint": "Usa los interruptores para activar deportes. Toca la estrella para marcar tu <bold>enfoque principal</bold>."
+  },
+  "metrics": {
+    "title": "Métricas de rendimiento",
+    "summaryFtp": "FTP {{watts}}W",
+    "summaryPace": "Ritmo {{pace}}/{{unit}}",
+    "summaryCss": "CSS {{pace}}/100m",
+    "summaryMaxHr": "FC máx. {{bpm}} bpm",
+    "heartRateTitle": "Frecuencia cardiaca y umbrales",
+    "maxHr": "Frecuencia cardiaca máxima (FCmáx)",
+    "restHr": "Frecuencia cardiaca en reposo (FCR)",
+    "fthr": "Frecuencia cardiaca de umbral funcional (FTHR)",
+    "runningTitle": "Métricas de carrera",
+    "thresholdPace": "Ritmo umbral (FTPa)",
+    "runningPower": "Potencia umbral de carrera (FTP)",
+    "runningPowerPlaceholder": "Opcional (p. ej., 280)",
+    "watts": "Vatios",
+    "cyclingTitle": "Métricas de ciclismo",
+    "cyclingFtp": "Potencia umbral funcional (FTP)",
+    "swimmingTitle": "Métricas de natación",
+    "css": "Velocidad crítica de nado (ritmo CSS)",
+    "bodyTitle": "Composición corporal",
+    "bodyWeight": "Peso corporal",
+    "weightPlaceholder": "p. ej., 70"
+  },
+  "availability": {
+    "title": "Disponibilidad diaria",
+    "summary": "{{hours}} h de capacidad total",
+    "totalLabel": "Capacidad total disponible",
+    "target": "Objetivo: {{hours}} h",
+    "restDay": "Día de descanso",
+    "hours": "{{hours}} h"
+  },
+  "equipment": {
+    "title": "Material de fuerza",
+    "summary": "{{available}} de {{total}} disponibles",
+    "hint": "Selecciona el material que tienes para los entrenamientos de fuerza.",
+    "items": {
+      "dumbbells": "Mancuernas",
+      "kettlebell": "Kettlebell",
+      "pullUpBar": "Barra de dominadas",
+      "squatRack": "Rack de sentadillas",
+      "bench": "Banco",
+      "dipBar": "Barra de fondos",
+      "cable": "Máquina de poleas",
+      "latPulldown": "Jalón al pecho",
+      "flyMachine": "Máquina de aperturas",
+      "resistanceBands": "Bandas elásticas",
+      "medicineBall": "Balón medicinal"
+    }
+  },
+  "integrations": {
+    "title": "Integraciones",
+    "summary": "Strava · {{status}}"
+  },
+  "strava": {
+    "subtitle": "Salidas en bici, carreras, natación y actividades GPS",
+    "description": "Importa automáticamente tus entrenamientos completados, curvas de potencia-duración, frecuencia cardiaca y recorridos GPS.",
+    "connected": "Conectado",
+    "notConnected": "No conectado",
+    "connect": "Conectar con Strava",
+    "disconnect": "Desconectar Strava",
+    "disconnectConfirm": "¿Seguro que quieres desconectar tu cuenta de Strava?",
+    "disconnectButton": "Desconectar",
+    "disconnectFailed": "No se pudo desconectar Strava: {{message}}",
+    "connectedSuccess": "¡Strava conectado correctamente!",
+    "connectFailed": "No se pudo conectar con Strava: {{error}}",
+    "authFailed": "Error de autenticación: {{message}}"
+  },
+  "account": {
+    "wizardTitle": "Asistente de configuración",
+    "wizardMessage": "¿Quieres volver a ejecutar el asistente de configuración desde el principio?",
+    "rerun": "Repetir",
+    "rerunWizard": "Repetir configuración inicial",
+    "signOut": "Cerrar sesión",
+    "signOutConfirm": "¿Seguro que quieres cerrar sesión?",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteConfirm": "¿Seguro que quieres eliminar tu cuenta de forma permanente? Esta acción no se puede deshacer y se borrarán para siempre todos tus entrenamientos, métricas y datos.",
+    "deleting": "Eliminando...",
+    "deletedTitle": "Cuenta eliminada",
+    "deletedMessage": "Tu cuenta y todos los datos asociados se han eliminado de forma permanente.",
+    "deleteFailed": "No se pudo eliminar la cuenta. Inténtalo de nuevo.",
+    "incorrectPassword": "Contraseña incorrecta. Inténtalo de nuevo."
+  },
+  "reauth": {
+    "title": "Confirmar eliminación de la cuenta",
+    "message": "Por tu seguridad, introduce tu contraseña para confirmar la eliminación permanente de tu cuenta.",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "Introduce tu contraseña",
+    "confirm": "Eliminar cuenta definitivamente"
+  }
+}
