@@ -305,8 +305,6 @@
       "meters": "メートル",
       "imperialMi": "ヤード・ポンド法（mi）",
       "metricKm": "メートル法（km）",
-      "presetHalf": "ハーフ {{distance}}",
-      "presetFull": "フル {{distance}}",
       "presetTimeTrial": "{{distance}}（TT）",
       "distancePlaceholderSwim": "距離（メートル/ヤード、例：1500）",
       "distancePlaceholderMiles": "距離（マイル、例：26.2）",

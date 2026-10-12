@@ -305,8 +305,6 @@
       "meters": "Metri",
       "imperialMi": "Imperiale (mi)",
       "metricKm": "Metrico (km)",
-      "presetHalf": "Mezza {{distance}}",
-      "presetFull": "Intera {{distance}}",
       "presetTimeTrial": "{{distance}} (crono)",
       "distancePlaceholderSwim": "Distanza in metri/iarde (es. 1500)",
       "distancePlaceholderMiles": "Distanza in miglia (es. 26.2)",

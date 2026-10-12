@@ -1655,8 +1655,8 @@ export default function WizardScreen() {
                     {goalSport === 'running' && [
                       { label: units === 'Imperial' ? '5K (3.1m)' : '5K', val: units === 'Imperial' ? '3.1' : '5.0' },
                       { label: units === 'Imperial' ? '10K (6.2m)' : '10K', val: units === 'Imperial' ? '6.2' : '10.0' },
-                      { label: t('steps.goal.presetHalf', { distance: units === 'Imperial' ? '13.1m' : '21.1k' }), val: units === 'Imperial' ? '13.1' : '21.1' },
-                      { label: t('steps.goal.presetFull', { distance: units === 'Imperial' ? '26.2m' : '42.2k' }), val: units === 'Imperial' ? '26.2' : '42.2' },
+                      { label: t(units === 'Imperial' ? 'goal:form.distanceChips.halfMi' : 'goal:form.distanceChips.halfKm'), val: units === 'Imperial' ? '13.1' : '21.1' },
+                      { label: t(units === 'Imperial' ? 'goal:form.distanceChips.fullMi' : 'goal:form.distanceChips.fullKm'), val: units === 'Imperial' ? '26.2' : '42.2' },
                     ].map(p => (
                       <TouchableOpacity
                         key={p.label}

@@ -305,8 +305,6 @@
       "meters": "Meter",
       "imperialMi": "Imperial (mi)",
       "metricKm": "Metrisch (km)",
-      "presetHalf": "HM {{distance}}",
-      "presetFull": "Marathon {{distance}}",
       "presetTimeTrial": "{{distance}} (EZF)",
       "distancePlaceholderSwim": "Distanz in Metern/Yards (z. B. 1500)",
       "distancePlaceholderMiles": "Distanz in Meilen (z. B. 26,2)",
