@@ -10,7 +10,8 @@ module.exports = {
     'node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|lucide-react-native|nativewind|react-native-css-interop|react-native-gifted-charts|gifted-charts-core|firebase|@firebase/.*))',
   ],
   collectCoverageFrom: [
-    'src/lib/{api,strava,workout-service,user-service}.ts',
+    'src/lib/{api,strava,workout-service,user-service,session-stats}.ts',
+    'src/components/{strength-log,session-summary}.tsx',
     'src/hooks/use-auth.tsx',
     'src/app/index.tsx',
     'src/app/wizard.tsx',

@@ -1,4 +1,5 @@
 import { callFunction } from './api';
+import type { LoggedSet } from './session-stats';
 import { collection, query, where, onSnapshot, addDoc, updateDoc, doc, Timestamp, serverTimestamp, getDocs, getDoc, deleteDoc, deleteField } from "firebase/firestore";
 
 // ... (keep existing imports)
@@ -53,6 +54,7 @@ export interface Workout {
   actual_time?: number;
   actual_tss?: number;
   completion_type?: string;
+  logged_sets?: LoggedSet[]; // strength: sets actually done (logged in the app or imported from a FIT file)
 }
 
 const toPositiveNumber = (value: any): number | null => {

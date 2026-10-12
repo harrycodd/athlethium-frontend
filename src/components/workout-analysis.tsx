@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, ActivityIndicator, TouchableOpacity, ScrollView, Dimensions, Modal } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import MapView, { Polyline } from 'react-native-maps';
@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Zap, Heart, Activity, Mountain, FastForward, Maximize, X, Clock } from 'lucide-react-native';
 import { Workout } from '@/lib/workout-service';
 import Card from '@/components/ui/card';
+import SessionSummary from '@/components/session-summary';
 import { cn } from '@/lib/utils';
 
 const screenWidth = Dimensions.get('window').width;
@@ -232,23 +233,6 @@ export default function WorkoutAnalysis({ workout }: Props) {
     }
   }, [timeSeriesRaw, activeMetric, selectedLapIndex, workout, isImperial]);
 
-  // Calculate full-workout moving average speed
-  const overallMovingAvgSpeed = useMemo(() => {
-    if (!timeSeriesRaw || !timeSeriesRaw['speed']) return null;
-    let sum = 0;
-    let count = 0;
-    for (let i = 0; i < timeSeriesRaw['speed'].length; i++) {
-      if (timeSeriesRaw['speed'][i] != null) {
-        const isMoving = timeSeriesRaw['moving'] ? timeSeriesRaw['moving'][i] : timeSeriesRaw['speed'][i] > 0.5;
-        if (isMoving) {
-          sum += timeSeriesRaw['speed'][i];
-          count++;
-        }
-      }
-    }
-    return count > 0 ? sum / count : 0;
-  }, [timeSeriesRaw]);
-
 
 
   if (loading) {
@@ -259,13 +243,6 @@ export default function WorkoutAnalysis({ workout }: Props) {
       </View>
     );
   }
-
-  const formatDuration = (seconds: number) => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    if (h > 0) return `${h}h ${m}m`;
-    return `${m}m`;
-  };
 
   const availableMetrics = timeSeriesRaw 
     ? (Object.keys(METRIC_CONFIG) as MetricType[]).filter(k => timeSeriesRaw[k] && timeSeriesRaw[k].length > 0)
@@ -347,26 +324,6 @@ export default function WorkoutAnalysis({ workout }: Props) {
 
   const dynamicStats = getDynamicStats();
   const bestEfforts = workout?.stats?.best_efforts?.[activeMetric];
-
-  let distance = 0;
-  let durationSecs = workout.time || 0;
-  let tss = workout.tss || 0;
-  let avgSpeed = 0;
-  
-  if (workout.stats) {
-    distance = (workout.stats.distance || 0) / 1000;
-    if (isImperial) distance *= 0.621371;
-    
-    durationSecs = workout.stats.totalTime || durationSecs;
-    if (workout.stats.averagePace && workout.stats.averagePace > 0) {
-      avgSpeed = 3600 / workout.stats.averagePace;
-      if (isImperial) avgSpeed *= 0.621371;
-    }
-  }
-
-  if (overallMovingAvgSpeed && overallMovingAvgSpeed > 0) {
-    avgSpeed = isImperial ? overallMovingAvgSpeed * 0.621371 : overallMovingAvgSpeed;
-  }
 
   const activeUnit = activeMetric === 'speed' && isRunning
     ? (isImperial ? 'min/mi' : 'min/km')
@@ -572,38 +529,7 @@ export default function WorkoutAnalysis({ workout }: Props) {
       )}
 
       <Text variant="h3" className="mb-4 mt-2">{workout.completed ? 'Completed Workout' : 'Session Metrics'}</Text>
-      <Card className="p-5 mb-12">
-
-
-        <View className="flex-row justify-between mb-4">
-          <View>
-            <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1">Duration</Text>
-            <Text className="text-2xl font-bold">{formatDuration(durationSecs)}</Text>
-          </View>
-          <View className="items-end">
-            <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1">Distance</Text>
-            <Text className="text-2xl font-bold">{distance.toFixed(2)} <Text variant="muted">{isImperial ? 'mi' : 'km'}</Text></Text>
-          </View>
-        </View>
-
-        <View className="h-[1px] bg-border w-full mb-4" />
-
-        <View className="flex-row justify-between">
-          <View>
-            <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1">Avg Speed</Text>
-            <Text className="text-lg font-semibold">
-              {avgSpeed > 0
-                ? (isRunning ? formatPaceFromMinutes(60 / avgSpeed) : avgSpeed.toFixed(1))
-                : '--'}
-            </Text>
-            <Text variant="muted" className="mt-1">{isRunning ? (isImperial ? 'min/mi' : 'min/km') : (isImperial ? 'mph' : 'km/h')}</Text>
-          </View>
-          <View className="items-end">
-            <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1">TSS</Text>
-            <Text className="text-lg font-semibold">{tss > 0 ? tss : '--'}</Text>
-          </View>
-        </View>
-      </Card>
+      <SessionSummary workout={workout} imperial={isImperial} />
 
       {/* Full Screen Map Modal */}
       <Modal visible={isMapExpanded} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setIsMapExpanded(false)}>
