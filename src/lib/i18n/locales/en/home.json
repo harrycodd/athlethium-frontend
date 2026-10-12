@@ -1,1 +1,9 @@
-{}
+{
+  "greeting": "Good morning, {{name}}",
+  "defaultName": "Athlete",
+  "onTrack": "You're on track for your weekly goal.",
+  "targetGoal": "Target Goal",
+  "todaysSession": "Today's Session",
+  "logExtra": "Log Extra",
+  "noWorkoutsToday": "No workouts scheduled for today."
+}

@@ -16,6 +16,8 @@ import { updateUserProfile } from '@/lib/user-service';
 import { GlassButton } from '@/components/ui/glass-button';
 import { cn } from '@/lib/utils';
 import DailyMetricsInline from '@/components/daily-metrics-inline';
+import { useTranslation } from 'react-i18next';
+import { formatDate } from '@/lib/i18n/format';
 
 export default function PlanScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -27,6 +29,7 @@ export default function PlanScreen() {
   const router = useRouter();
   const { user, profile } = useAuth();
   const theme = useTheme();
+  const { t } = useTranslation('plan');
 
   useEffect(() => {
     if (!user) return;
@@ -70,18 +73,18 @@ export default function PlanScreen() {
     if (!workout.id) return;
 
     const isCompleted = workout.completed || workout.status === 'completed';
-    const title = isCompleted ? "Redo Workout" : "Complete Workout";
+    const title = isCompleted ? t('common:toggleComplete.redoTitle') : t('common:toggleComplete.completeTitle');
     const message = isCompleted
-      ? "Are you sure you want to redo this workout and mark it as no longer complete?"
-      : "Are you sure you want to mark this workout as complete?";
+      ? t('common:toggleComplete.redoMessage')
+      : t('common:toggleComplete.completeMessage');
 
     Alert.alert(
       title,
       message,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t('common:cancel'), style: "cancel" },
         {
-          text: isCompleted ? "Redo" : "Complete",
+          text: isCompleted ? t('common:toggleComplete.redo') : t('common:complete'),
           onPress: async () => {
             try {
               await toggleWorkoutCompletion(workout.id!, workout.status);
@@ -102,7 +105,7 @@ export default function PlanScreen() {
   };
 
   const dateKey = format(selectedDate, 'yyyy-MM-dd');
-  const dayName = format(selectedDate, 'EEEE');
+  const dayName = format(selectedDate, 'EEEE'); // storage key (English weekday), not displayed
   const currentDailyTarget = (profile?.dailyHoursOverrides?.[dateKey] ?? profile?.dailyMaxHours?.[dayName]) ?? 1.5;
 
   const handleUpdateDailyTarget = async (newTarget: number) => {
@@ -117,14 +120,14 @@ export default function PlanScreen() {
     setShowOverrideModal(false);
   };
 
-  const headerTitle = "Your Plan";
+  const headerTitle = t('title');
 
   return (
     <>
       <ScreenWrapper className="px-4" withBottomInset={false}>
         <Header
           title={headerTitle}
-          subtitle={format(selectedDate, 'EEEE, MMMM do')}
+          subtitle={formatDate(selectedDate, 'EEEE, MMMM do')}
           rightElement={
             <GlassButton
               size="icon"
@@ -160,12 +163,12 @@ export default function PlanScreen() {
                 <Clock size={20} color={theme.colors.primary} />
               </View>
               <View className="flex-1">
-                <Text className="font-bold text-sm">Daily Max</Text>
-                <Text variant="muted" className="text-xs">Limit for {format(selectedDate, 'MMM do')}</Text>
+                <Text className="font-bold text-sm">{t('dailyMax.title')}</Text>
+                <Text variant="muted" className="text-xs">{t('dailyMax.limitFor', { date: formatDate(selectedDate, 'MMM do') })}</Text>
               </View>
             </View>
             <GlassButton
-              label={`${currentDailyTarget} hrs`}
+              label={t('dailyMax.hoursShort', { count: currentDailyTarget })}
               variant="glass"
               size="sm"
               shape="pill"
@@ -179,7 +182,7 @@ export default function PlanScreen() {
 
         <View className="mb-4">
           <Text variant="h3" className="mb-4">
-            {isSameDay(selectedDate, new Date()) ? "Today's Schedule" : "Scheduled Sessions"}
+            {isSameDay(selectedDate, new Date()) ? t('todaysSchedule') : t('scheduledSessions')}
           </Text>
 
           {loading ? (
@@ -203,7 +206,7 @@ export default function PlanScreen() {
             ))
           ) : (
             <View className="py-10 items-center justify-center bg-muted/20 rounded-2xl border border-dashed border-border">
-              <Text variant="muted">No sessions scheduled for this day.</Text>
+              <Text variant="muted">{t('emptyDay')}</Text>
             </View>
           )}
         </View>
@@ -217,7 +220,7 @@ export default function PlanScreen() {
           onPress={() => setShowOverrideModal(false)}
         >
           <View className="bg-card rounded-t-[32px] p-6 pb-12">
-            <Text variant="h2" className="mb-6">Daily Max Hours</Text>
+            <Text variant="h2" className="mb-6">{t('dailyMax.modalTitle')}</Text>
             <ScrollView showsVerticalScrollIndicator={false} className="max-h-[400px]">
               {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((opt) => (
                 <TouchableOpacity
@@ -226,14 +229,14 @@ export default function PlanScreen() {
                   className="flex-row items-center py-4 border-b border-border last:border-b-0"
                 >
                   <Text className={`flex-1 text-lg ${currentDailyTarget === opt ? 'text-primary font-bold' : ''}`}>
-                    {opt} Hours
+                    {t('dailyMax.hoursOption', { count: opt })}
                   </Text>
                   {currentDailyTarget === opt && <Check size={20} color={theme.primary} />}
                 </TouchableOpacity>
               ))}
             </ScrollView>
             <GlassButton
-              label="Cancel"
+              label={t('common:cancel')}
               variant="glass"
               size="lg"
               shape="pill"

@@ -24,8 +24,15 @@
     "running": "Running",
     "swimming": "Swimming",
     "strength": "Strength",
-    "stretching": "Mobility",
+    "stretching": "Stretching",
     "rest": "Rest"
   },
-  "language": "Language"
+  "language": "Language",
+  "toggleComplete": {
+    "redoTitle": "Redo Workout",
+    "completeTitle": "Complete Workout",
+    "redoMessage": "Are you sure you want to redo this workout and mark it as no longer complete?",
+    "completeMessage": "Are you sure you want to mark this workout as complete?",
+    "redo": "Redo"
+  }
 }

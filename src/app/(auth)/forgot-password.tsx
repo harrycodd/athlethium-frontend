@@ -30,7 +30,7 @@ export default function ForgotPasswordScreen() {
 
   const handleSendLink = async () => {
     if (!email.trim()) {
-      Alert.alert('Error', 'Please enter your email address');
+      Alert.alert(t('common:error'), t('errors.enterEmail'));
       return;
     }
 
@@ -38,16 +38,16 @@ export default function ForgotPasswordScreen() {
     try {
       await sendPasswordResetEmail(auth, email.trim());
       Alert.alert(
-        'Success',
-        'A password reset link has been sent to your email address.',
-        [{ text: 'OK', onPress: handleBack }]
+        t('common:success'),
+        t('resetLinkSent'),
+        [{ text: t('common:ok'), onPress: handleBack }]
       );
     } catch (error: any) {
       const code = error?.code;
       if (code === 'auth/user-not-found' || code === 'auth/invalid-email') {
-        Alert.alert('Error', 'No account found with this email address.');
+        Alert.alert(t('common:error'), t('errors.noAccountForEmail'));
       } else {
-        Alert.alert('Error', 'Please try again later.');
+        Alert.alert(t('common:error'), t('errors.tryAgainLaterSentence'));
       }
     } finally {
       setLoading(false);
@@ -78,7 +78,7 @@ export default function ForgotPasswordScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
             <ChevronLeft size={16} color={colors.text} strokeWidth={2.5} />
             <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text, includeFontPadding: false }}>
-              {t('back', 'Back')}
+              {t('common:back')}
             </Text>
           </View>
         </GlassButton>
@@ -185,7 +185,7 @@ export default function ForgotPasswordScreen() {
                 fontSize: 16,
                 fontWeight: email.trim() ? '600' : '400',
               }}
-              placeholder={t('emailPlaceholder', 'usuario@example.com')}
+              placeholder={t('emailPlaceholder')}
               placeholderTextColor={colors.textSecondary}
               value={email}
               onChangeText={setEmail}

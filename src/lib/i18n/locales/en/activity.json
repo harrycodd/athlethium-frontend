@@ -1,1 +1,107 @@
-{}
+{
+  "notFound": "Session not found",
+  "goBack": "Go Back",
+  "breakthrough": {
+    "title": "Threshold Breakthrough! 🏆",
+    "cyclingFtp": "New FTP Breakthrough! Updated cycling FTP from {{oldFtp}}W to {{newFtp}}W.",
+    "runningPace": "New Threshold Pace Breakthrough! Updated running threshold pace to {{pace}}/km."
+  },
+  "finishWorkout": {
+    "title": "Finish Workout",
+    "message": "Are you sure you want to finish this workout and save your results?"
+  },
+  "endSession": {
+    "title": "End Session",
+    "shortMessage": "This session is under 2 minutes. What would you like to do?",
+    "message": "Are you sure you want to finish this session and save your results?"
+  },
+  "actions": {
+    "finish": "Finish",
+    "resume": "Resume",
+    "discard": "Discard",
+    "finishAndSave": "Finish & Save"
+  },
+  "controls": {
+    "pause": "PAUSE",
+    "play": "PLAY",
+    "finishWorkout": "FINISH WORKOUT",
+    "nextStep": "NEXT STEP"
+  },
+  "timer": {
+    "stepRemaining": "Step Remaining",
+    "stepElapsed": "Step Elapsed",
+    "countdown": "COUNTDOWN",
+    "elapsed": "ELAPSED",
+    "labelWithMode": "{{label}} ({{mode}})"
+  },
+  "stats": {
+    "totalTime": "Total Time",
+    "ofPlanned": "of {{planned}}",
+    "distance": "Distance",
+    "gpsPace": "GPS Pace",
+    "remaining": "Remaining"
+  },
+  "stepOf": "Step {{current}} of {{total}}",
+  "nextUp": "NEXT UP · {{type}}",
+  "currentStep": "Current Step",
+  "defaultStepName": "{{type}} Step",
+  "defaultSegmentName": "Segment {{number}}",
+  "defaultWorkoutName": "Workout Session",
+  "sports": {
+    "running": "Running",
+    "cycling": "Cycling",
+    "swimming": "Swimming",
+    "strength": "Strength",
+    "stretching": "Stretching",
+    "yoga": "Yoga",
+    "rest": "Rest"
+  },
+  "stepTypes": {
+    "warmup": "Warmup",
+    "interval": "Interval",
+    "recovery": "Recovery",
+    "cooldown": "Cooldown",
+    "tempo": "Tempo",
+    "endurance": "Endurance",
+    "exercise": "Exercise",
+    "work": "Work",
+    "sprint": "Sprint",
+    "rest": "Rest",
+    "threshold": "Threshold",
+    "strength": "Strength",
+    "stretching": "Stretching",
+    "mobility": "Mobility"
+  },
+  "targets": {
+    "metricLabel": "TARGET METRIC",
+    "steadyPace": "Steady Pace",
+    "intensityLabel": "TARGET INTENSITY",
+    "steadyEffort": "Steady Effort",
+    "zone2Aerobic": "Zone 2 Aerobic",
+    "powerLabel": "TARGET POWER",
+    "paceLabel": "TARGET PACE",
+    "cssPaceLabel": "TARGET CSS PACE",
+    "repsLabel": "TARGET REPS",
+    "heartRateLabel": "TARGET HEART RATE",
+    "sessionLabel": "SESSION TARGET",
+    "warmupZone": "50-65% FTP · Warm-up Zone",
+    "thresholdZone": "95-105% FTP · Threshold Zone",
+    "activeRecovery": "45-55% FTP · Active Recovery",
+    "cooldownZone": "45-60% FTP · Cool-down Zone",
+    "enduranceZone": "65-75% FTP · Endurance Zone",
+    "racePace": "Threshold / 5K-10K Race Pace",
+    "easyAerobicPace": "Easy Aerobic / Recovery Pace",
+    "steadyEndurancePace": "Zone 2 · Steady Endurance Pace",
+    "criticalSwimSpeed": "Critical Swim Speed · Threshold",
+    "aerobicRecoveryPace": "Aerobic / Recovery Pace",
+    "setsReps": "{{sets}} Sets × {{reps}} Reps",
+    "reps": "{{reps}} Reps",
+    "qualityReps": "Quality Reps",
+    "eccentricForm": "Focus on controlled eccentric form",
+    "hrZone": "Target HR Zone",
+    "thresholdHr": "Zone 3-4 Threshold HR",
+    "executeSegment": "Execute Segment",
+    "followGuidance": "Follow programmed interval guidance",
+    "zone2AerobicEndurance": "Zone 2 Aerobic Endurance"
+  }
+}

@@ -6,7 +6,10 @@ const DATE_LOCALES: Record<string, Locale> = { en: enUS, es, fr, de, it, ja };
 
 /** date-fns locale for the current app language (month and day names, ordinals, week start). */
 export function dateLocale(): Locale {
-  return DATE_LOCALES[i18n.resolvedLanguage || i18n.language] ?? enUS;
+  // The chosen language decides, even before its translation files are filled in
+  // (resolvedLanguage falls back to English while a language has no strings yet).
+  const chosen = (i18n.language || '').split('-')[0];
+  return DATE_LOCALES[chosen] ?? DATE_LOCALES[i18n.resolvedLanguage || ''] ?? enUS;
 }
 
 /**

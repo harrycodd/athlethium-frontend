@@ -4,7 +4,8 @@ import { ChevronRight, FastForward } from 'lucide-react-native';
 import Text from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
 import { Radius, BorderWidth } from '@/constants/theme';
-import { PlayableStep } from '@/hooks/use-activity-tracker';
+import { PlayableStep, stepTypeLabel } from '@/hooks/use-activity-tracker';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   isVisible: boolean;
@@ -20,6 +21,7 @@ const formatDuration = (sec: number) => {
 
 export function NextUpOverlay({ isVisible, nextStep, timeRemaining = 0 }: Props) {
   const { colors, isDark } = useTheme();
+  const { t } = useTranslation('activity');
 
   if (!isVisible || !nextStep) return null;
 
@@ -63,7 +65,7 @@ export function NextUpOverlay({ isVisible, nextStep, timeRemaining = 0 }: Props)
       <View style={{ flex: 1, marginRight: 8 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <Text style={{ fontSize: 10, fontWeight: '800', color: nextColor, textTransform: 'uppercase' }}>
-            NEXT UP · {nextStep.type}
+            {t('nextUp', { type: stepTypeLabel(t, nextStep.type) })}
           </Text>
           {nextStep.duration > 0 && (
             <Text style={{ fontSize: 10, fontWeight: '600', color: colors.textSecondary }}>

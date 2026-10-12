@@ -3,6 +3,7 @@ import { View, TouchableOpacity } from 'react-native';
 import { Play, Pause, SkipBack, SkipForward, Check } from 'lucide-react-native';
 import { GlassButton } from '@/components/ui/glass-button';
 import { useTheme } from '@/hooks/use-theme';
+import { useTranslation } from 'react-i18next';
 import Text from '@/components/ui/text';
 import { Radius, BorderWidth } from '@/constants/theme';
 
@@ -26,6 +27,7 @@ export function ActivityControls({
   onNext,
 }: Props) {
   const { colors, isDark } = useTheme();
+  const { t } = useTranslation('activity');
 
   return (
     <View style={{ width: '100%', gap: 10 }}>
@@ -64,7 +66,7 @@ export function ActivityControls({
             {isActive ? (
               <>
                 <Pause size={26} color={colors.text} fill={colors.text} />
-                <Text style={{ fontSize: 16, fontWeight: '800', color: colors.text }}>PAUSE</Text>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: colors.text }}>{t('controls.pause')}</Text>
               </>
             ) : (
               <>
@@ -75,7 +77,7 @@ export function ActivityControls({
                   style={{ marginLeft: 2 }}
                 />
                 <Text style={{ fontSize: 16, fontWeight: '800', color: isDark ? '#4ade80' : '#15803d' }}>
-                  PLAY
+                  {t('controls.play')}
                 </Text>
               </>
             )}

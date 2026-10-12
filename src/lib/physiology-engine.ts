@@ -1,6 +1,7 @@
 import { format, subDays } from 'date-fns';
 import { UserProfile, updateUserProfile } from './user-service';
 import { Workout } from './workout-service';
+import i18n from './i18n';
 
 /**
  * Banister EWMA Physiology Engine for Training Load (Fitness / Fatigue / Form)
@@ -206,7 +207,7 @@ export async function checkAndAutoUpdateFtp(
         });
         return {
           updated: true,
-          message: `New FTP Breakthrough! Updated cycling FTP from ${currentFtp}W to ${estimatedFtp}W.`,
+          message: i18n.t('activity:breakthrough.cyclingFtp', { oldFtp: currentFtp, newFtp: estimatedFtp }),
           oldFtp: currentFtp,
           newFtp: estimatedFtp,
         };
@@ -230,7 +231,9 @@ export async function checkAndAutoUpdateFtp(
         });
         return {
           updated: true,
-          message: `New Threshold Pace Breakthrough! Updated running threshold pace to ${Math.floor(estimatedThresholdPace / 60)}:${String(Math.round(estimatedThresholdPace % 60)).padStart(2, '0')}/km.`,
+          message: i18n.t('activity:breakthrough.runningPace', {
+            pace: `${Math.floor(estimatedThresholdPace / 60)}:${String(Math.round(estimatedThresholdPace % 60)).padStart(2, '0')}`,
+          }),
         };
       }
     }

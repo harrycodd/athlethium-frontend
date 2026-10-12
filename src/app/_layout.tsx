@@ -111,6 +111,7 @@ function RootLayoutNav() {
           name="activity/[id]" 
           options={{ 
             headerShown: false,
+            // i18n-ignore: presentation mode, not text
             presentation: 'fullScreenModal',
             animation: 'slide_from_bottom'
           }} 

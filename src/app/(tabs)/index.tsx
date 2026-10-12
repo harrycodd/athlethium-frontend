@@ -16,6 +16,7 @@ import Card from "@/components/ui/card";
 import DailyMetricsInline from "@/components/daily-metrics-inline";
 import { updateUserProfile } from "@/lib/user-service";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -27,6 +28,7 @@ export default function Home() {
   const [upcomingGoal, setUpcomingGoal] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
   const isAutoGeneratingRef = useRef(false);
+  const { t } = useTranslation('home');
 
   const fetchGoal = useCallback(async () => {
     if (!user) return;
@@ -70,18 +72,18 @@ export default function Home() {
     if (!workout.id) return;
 
     const isCompleted = workout.completed || workout.status === 'completed';
-    const title = isCompleted ? "Redo Workout" : "Complete Workout";
+    const title = isCompleted ? t('common:toggleComplete.redoTitle') : t('common:toggleComplete.completeTitle');
     const message = isCompleted
-      ? "Are you sure you want to redo this workout and mark it as no longer complete?"
-      : "Are you sure you want to mark this workout as complete?";
+      ? t('common:toggleComplete.redoMessage')
+      : t('common:toggleComplete.completeMessage');
 
     Alert.alert(
       title,
       message,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t('common:cancel'), style: "cancel" },
         {
-          text: isCompleted ? "Redo" : "Complete",
+          text: isCompleted ? t('common:toggleComplete.redo') : t('common:complete'),
           onPress: async () => {
             try {
               await toggleWorkoutCompletion(workout.id!, workout.status);
@@ -121,8 +123,8 @@ export default function Home() {
   return (
     <ScreenWrapper className="px-4" withBottomInset={false}>
       <Header
-        title={`Good morning, ${profile?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || 'Athlete'}`}
-        subtitle="You're on track for your weekly goal."
+        title={t('greeting', { name: profile?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || t('defaultName') })}
+        subtitle={t('onTrack')}
         rightElement={
           <GlassButton
             size="icon"
@@ -147,7 +149,7 @@ export default function Home() {
       {(upcomingGoal || profile?.goal) && (
         <GoalCountdown
           goal={upcomingGoal}
-          eventName={upcomingGoal?.name || profile?.goal?.name || "Target Goal"}
+          eventName={upcomingGoal?.name || profile?.goal?.name || t('targetGoal')}
           goalDate={upcomingGoal?.date ? new Date(upcomingGoal.date) : (profile?.goal?.date ? new Date(profile.goal.date) : new Date())}
           onGoalUpdated={fetchGoal}
           className="mb-6"
@@ -156,9 +158,9 @@ export default function Home() {
 
       <View className="mb-4">
         <View className="flex-row items-center justify-between mb-4">
-          <Text variant="h3">{"Today's Session"}</Text>
+          <Text variant="h3">{t('todaysSession')}</Text>
           <GlassButton
-            label="Log Extra"
+            label={t('logExtra')}
             variant="glass-primary"
             size="sm"
             shape="pill"
@@ -190,7 +192,7 @@ export default function Home() {
           ))
         ) : (
           <View className="py-10 items-center justify-center bg-muted/20 rounded-2xl border border-dashed border-border">
-            <Text variant="muted">No workouts scheduled for today.</Text>
+            <Text variant="muted">{t('noWorkoutsToday')}</Text>
           </View>
         )}
       </View>

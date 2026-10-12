@@ -5,11 +5,13 @@ import { Platform } from 'react-native';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Colors } from '@/constants/theme';
 import { Home, Calendar, BarChart2 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function AppTabs() {
   const { colorScheme } = useColorScheme();
   const colors = Colors[colorScheme as keyof typeof Colors] || Colors.light;
   const isDark = colorScheme === 'dark';
+  const { t } = useTranslation('tabs');
 
   if (Platform.OS === 'web') {
     return (
@@ -18,6 +20,7 @@ export default function AppTabs() {
           headerShown: false,
           tabBarStyle: {
             backgroundColor: isDark ? '#101012' : '#ffffff',
+            // i18n-ignore: colour values
             borderTopColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)',
             height: 64,
             paddingBottom: 8,
@@ -34,21 +37,21 @@ export default function AppTabs() {
         <Tabs.Screen
           name="index"
           options={{
-            title: 'Home',
+            title: t('home'),
             tabBarIcon: ({ color, size }) => <Home size={size || 22} color={color} />,
           }}
         />
         <Tabs.Screen
           name="plan"
           options={{
-            title: 'Plan',
+            title: t('plan'),
             tabBarIcon: ({ color, size }) => <Calendar size={size || 22} color={color} />,
           }}
         />
         <Tabs.Screen
           name="progress"
           options={{
-            title: 'Progress',
+            title: t('progress'),
             tabBarIcon: ({ color, size }) => <BarChart2 size={size || 22} color={color} />,
           }}
         />
@@ -59,6 +62,7 @@ export default function AppTabs() {
   return (
     <NativeTabs
       backgroundColor={Platform.OS === 'ios' ? 'transparent' : colors.background}
+      // i18n-ignore: native blur effect names
       blurEffect={isDark ? 'systemChromeMaterialDark' : 'systemChromeMaterialLight'}
       indicatorColor={colors.primary}
       tintColor={colors.primary}
@@ -72,7 +76,7 @@ export default function AppTabs() {
       }}
     >
       <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{t('home')}</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
           sf={{ default: 'house', selected: 'house.fill' }}
           md="home"
@@ -80,7 +84,7 @@ export default function AppTabs() {
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="plan">
-        <NativeTabs.Trigger.Label>Plan</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{t('plan')}</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
           sf={{ default: 'calendar', selected: 'calendar' }}
           md="calendar_month"
@@ -88,7 +92,7 @@ export default function AppTabs() {
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="progress">
-        <NativeTabs.Trigger.Label>Progress</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{t('progress')}</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
           sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }}
           md="bar_chart"
