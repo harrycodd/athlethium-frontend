@@ -13,7 +13,8 @@ export interface LoggedSet {
 }
 
 export interface StatTile {
-  label: string;
+  /** i18n key in the `session` namespace, e.g. 'stats.avgPower'; translated where it's rendered */
+  labelKey: string;
   value: string;
   unit?: string;
 }
@@ -36,8 +37,8 @@ export function summaryStats(workout: Workout, imperial = false): StatTile[] {
   const stats: Record<string, any> = workout.stats || {};
   const sport = (workout.sport || '').toLowerCase();
   const tiles: StatTile[] = [];
-  const add = (label: string, value: number | undefined, fmt: (v: number) => string, unit?: string) => {
-    if (value !== undefined) tiles.push({ label, value: fmt(value), unit });
+  const add = (labelKey: string, value: number | undefined, fmt: (v: number) => string, unit?: string) => {
+    if (value !== undefined) tiles.push({ labelKey, value: fmt(value), unit });
   };
 
   const duration = positive(stats.duration_seconds) ?? positive(workout.actual_time) ?? positive(workout.time);
@@ -46,35 +47,35 @@ export function summaryStats(workout: Workout, imperial = false): StatTile[] {
   const speed = positive(stats.avg_speed_ms) ?? (distance && duration ? distance / duration : undefined);
   const tss = positive(workout.actual_tss) ?? positive(workout.tss);
 
-  add('Duration', duration, formatDuration);
+  add('stats.duration', duration, formatDuration);
 
   if (sport === 'cycling' || sport === 'running') {
-    add('Distance', distance, (m) => (imperial ? m / 1609.34 : m / 1000).toFixed(2), imperial ? 'mi' : 'km');
+    add('stats.distance', distance, (m) => (imperial ? m / 1609.34 : m / 1000).toFixed(2), imperial ? 'mi' : 'km');
     if (sport === 'cycling') {
-      add('Avg Speed', speed, (ms) => (ms * (imperial ? 2.23694 : 3.6)).toFixed(1), imperial ? 'mph' : 'km/h');
+      add('stats.avgSpeed', speed, (ms) => (ms * (imperial ? 2.23694 : 3.6)).toFixed(1), imperial ? 'mph' : 'km/h');
     } else {
-      add('Avg Pace', speed, (ms) => formatPace((imperial ? 1609.34 : 1000) / ms), imperial ? '/mi' : '/km');
+      add('stats.avgPace', speed, (ms) => formatPace((imperial ? 1609.34 : 1000) / ms), imperial ? '/mi' : '/km');
     }
-    add('Avg Power', positive(stats.avg_power), (w) => w.toFixed(0), 'W');
-    if (sport === 'cycling') add('Norm. Power', positive(stats.normalized_power), (w) => w.toFixed(0), 'W');
-    add('Elevation', positive(stats.elevation_m), (m) => (imperial ? m * 3.28084 : m).toFixed(0), imperial ? 'ft' : 'm');
+    add('stats.avgPower', positive(stats.avg_power), (w) => w.toFixed(0), 'W');
+    if (sport === 'cycling') add('stats.normPower', positive(stats.normalized_power), (w) => w.toFixed(0), 'W');
+    add('stats.elevation', positive(stats.elevation_m), (m) => (imperial ? m * 3.28084 : m).toFixed(0), imperial ? 'ft' : 'm');
     // running cadence is recorded per leg; show steps per minute
-    add('Cadence', positive(stats.avg_cadence), (c) => (sport === 'running' ? c * 2 : c).toFixed(0), sport === 'running' ? 'spm' : 'rpm');
+    add('stats.cadence', positive(stats.avg_cadence), (c) => (sport === 'running' ? c * 2 : c).toFixed(0), sport === 'running' ? 'spm' : 'rpm');
   } else if (sport === 'swimming') {
-    add('Distance', distance, (m) => (imperial ? m * 1.09361 : m).toFixed(0), imperial ? 'yd' : 'm');
-    add('Pace', distance && duration ? duration / (distance / (imperial ? 91.44 : 100)) : undefined, formatPace,
+    add('stats.distance', distance, (m) => (imperial ? m * 1.09361 : m).toFixed(0), imperial ? 'yd' : 'm');
+    add('stats.pace', distance && duration ? duration / (distance / (imperial ? 91.44 : 100)) : undefined, formatPace,
       imperial ? '/100yd' : '/100m');
   } else if (sport === 'strength') {
     const totals = setTotals(workout.logged_sets || []);
-    add('Sets', positive(totals.sets), (v) => String(v));
-    add('Reps', positive(totals.reps), (v) => String(v));
-    add('Volume', positive(totals.volumeKg), (kg) => (imperial ? kg / KG_PER_LB : kg).toFixed(0), imperial ? 'lb' : 'kg');
+    add('stats.sets', positive(totals.sets), (v) => String(v));
+    add('stats.reps', positive(totals.reps), (v) => String(v));
+    add('stats.volume', positive(totals.volumeKg), (kg) => (imperial ? kg / KG_PER_LB : kg).toFixed(0), imperial ? 'lb' : 'kg');
   }
 
-  add('Avg HR', positive(stats.avg_heart_rate), (v) => v.toFixed(0), 'bpm');
-  add('Max HR', positive(stats.max_heart_rate), (v) => v.toFixed(0), 'bpm');
-  add('Calories', positive(stats.calories), (v) => v.toFixed(0), 'kcal');
-  if (sport === 'cycling' || sport === 'running' || sport === 'swimming') add('TSS', tss, (v) => v.toFixed(0));
+  add('stats.avgHr', positive(stats.avg_heart_rate), (v) => v.toFixed(0), 'bpm');
+  add('stats.maxHr', positive(stats.max_heart_rate), (v) => v.toFixed(0), 'bpm');
+  add('stats.calories', positive(stats.calories), (v) => v.toFixed(0), 'kcal');
+  if (sport === 'cycling' || sport === 'running' || sport === 'swimming') add('stats.tss', tss, (v) => v.toFixed(0));
   return tiles;
 }
 

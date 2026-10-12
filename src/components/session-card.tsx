@@ -1,5 +1,6 @@
 import React from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { GlassButton } from "./ui/glass-button";
 import Text from "./ui/text";
 import { GlassCard } from "./ui/glass-card";
@@ -27,14 +28,15 @@ type Props = {
   source?: string;
 };
 
-const activityConfig: Record<string, { icon: any, lightColor: string, bgColor: string, label: string }> = {
-  running: { icon: Footprints, lightColor: "#f97316", bgColor: "bg-orange-500/10", label: "Running" },
-  cycling: { icon: Bike, lightColor: "#3b82f6", bgColor: "bg-blue-500/10", label: "Cycling" },
-  swimming: { icon: Waves, lightColor: "#06b6d4", bgColor: "bg-cyan-500/10", label: "Swimming" },
-  strength: { icon: Dumbbell, lightColor: "#a855f7", bgColor: "bg-purple-500/10", label: "Strength" },
-  stretching: { icon: StretchHorizontal, lightColor: "#f59e0b", bgColor: "bg-amber-500/10", label: "Mobility" },
-  yoga: { icon: StretchHorizontal, lightColor: "#10b981", bgColor: "bg-emerald-500/10", label: "Yoga" },
-  other: { icon: Activity, lightColor: "#6b7280", bgColor: "bg-gray-500/10", label: "Other" },
+// labelKey: i18n key, translated when rendered
+const activityConfig: Record<string, { icon: any, lightColor: string, bgColor: string, labelKey: string }> = {
+  running: { icon: Footprints, lightColor: "#f97316", bgColor: "bg-orange-500/10", labelKey: "common:sports.running" },
+  cycling: { icon: Bike, lightColor: "#3b82f6", bgColor: "bg-blue-500/10", labelKey: "common:sports.cycling" },
+  swimming: { icon: Waves, lightColor: "#06b6d4", bgColor: "bg-cyan-500/10", labelKey: "common:sports.swimming" },
+  strength: { icon: Dumbbell, lightColor: "#a855f7", bgColor: "bg-purple-500/10", labelKey: "common:sports.strength" },
+  stretching: { icon: StretchHorizontal, lightColor: "#f59e0b", bgColor: "bg-amber-500/10", labelKey: "common:sports.stretching" },
+  yoga: { icon: StretchHorizontal, lightColor: "#10b981", bgColor: "bg-emerald-500/10", labelKey: "session:sports.yoga" },
+  other: { icon: Activity, lightColor: "#6b7280", bgColor: "bg-gray-500/10", labelKey: "session:sports.other" },
 };
 
 export default function SessionCard({
@@ -53,9 +55,10 @@ export default function SessionCard({
   time,
   source
 }: Props) {
+  const { t } = useTranslation('session');
   const sportKey = sport.toLowerCase();
   const config = activityConfig[sportKey] || (sportKey.includes('strength') ? activityConfig.strength : activityConfig.other);
-  const displayName = name || config.label;
+  const displayName = name || t(config.labelKey);
   const Icon = config.icon;
   const { colors, isDark } = useTheme();
 
@@ -67,9 +70,9 @@ export default function SessionCard({
     const h = Math.floor(totalSec / 3600);
     const m = Math.floor((totalSec % 3600) / 60);
     if (h > 0) {
-      return m > 0 ? `${h}h ${m}m` : `${h}h`;
+      return m > 0 ? t('duration.hm', { h, m }) : t('duration.h', { h });
     }
-    return `${m}m`;
+    return t('duration.m', { m });
   };
 
   const durStr = formatDuration(time);
@@ -125,7 +128,7 @@ export default function SessionCard({
       {!completed ? (
         <View className="flex-row gap-2">
           <GlassButton 
-            label="Start Session" 
+            label={t('common:start')}
             variant="glass-primary"
             shape="pill"
             onPress={onStart} 
@@ -133,7 +136,7 @@ export default function SessionCard({
             style={{ flex: 1.4 }}
           />
           <GlassButton 
-            label="Details" 
+            label={t('common:details')}
             variant="glass" 
             shape="pill"
             onPress={onDetails} 
@@ -141,7 +144,7 @@ export default function SessionCard({
             style={{ flex: 1 }}
           />
           <GlassButton 
-            label="Complete" 
+            label={t('common:complete')}
             variant="glass" 
             shape="pill"
             onPress={onComplete} 
@@ -152,7 +155,7 @@ export default function SessionCard({
       ) : (
         <View className="flex-row gap-2">
           <GlassButton 
-            label="View Analysis" 
+            label={t('common:analyse')}
             variant="glass-primary"
             shape="pill"
             onPress={onAnalyze} 
@@ -160,7 +163,7 @@ export default function SessionCard({
             style={{ flex: 1.5 }}
           />
           <GlassButton 
-            label="Details" 
+            label={t('common:details')}
             variant="glass" 
             shape="pill"
             onPress={onDetails} 

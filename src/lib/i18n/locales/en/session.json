@@ -1,1 +1,171 @@
-{}
+{
+  "sports": {
+    "running": "Running",
+    "cycling": "Cycling",
+    "swimming": "Swimming",
+    "strength": "Strength",
+    "stretching": "Stretching",
+    "yoga": "Yoga",
+    "rest": "Rest",
+    "other": "Other"
+  },
+  "duration": {
+    "h": "{{h}}h",
+    "hm": "{{h}}h {{m}}m",
+    "hms": "{{h}}h {{m}}m {{s}}s",
+    "m": "{{m}}m",
+    "ms": "{{m}}m {{s}}s",
+    "s": "{{s}}s"
+  },
+  "reps_one": "{{count}} rep",
+  "reps_other": "{{count}} reps",
+  "lap": "Lap {{number}}",
+  "step": "Step {{number}}",
+  "details": {
+    "redo": "Redo",
+    "upload": "Upload",
+    "namePlaceholder": "Session Name",
+    "completed": "Completed",
+    "uploadingTitle": "Uploading Workout",
+    "uploadingMessage": "Parsing FIT file and generating analytics. This might take a few seconds...",
+    "tabs": {
+      "analysis": "Analysis",
+      "structure": "Structure"
+    },
+    "date": "Date",
+    "sport": "Sport",
+    "plannedDuration": "Planned Duration",
+    "sessionDuration": "Session Duration",
+    "descriptionGoals": "Description & Goals",
+    "descriptionPlaceholder": "What are the goals for this session?",
+    "startActivity": "Start Activity",
+    "selectSport": "Select Sport"
+  },
+  "alerts": {
+    "loadFailed": "Could not load session details.",
+    "verifyFileTitle": "Verify File",
+    "verifyFileMessage": "This doesn't look like a .fit file. Are you sure you want to upload it?",
+    "uploadAnyway": "Upload Anyway",
+    "uploadSuccess": "Workout file uploaded and analyzed successfully!",
+    "uploadErrorTitle": "Upload Error",
+    "uploadFailed": "Failed to upload workout file.",
+    "uploadUnexpected": "An error occurred during file upload.",
+    "saved": "Session updated.",
+    "saveFailed": "Failed to save changes.",
+    "redoTitle": "Redo Workout",
+    "redoMessage": "Are you sure you want to redo this workout and mark it as no longer complete?",
+    "redoConfirm": "Redo",
+    "redoFailed": "Failed to redo session.",
+    "deleteTitle": "Delete Session",
+    "deleteMessage": "Are you sure you want to delete this session?",
+    "deleteFailed": "Failed to delete session."
+  },
+  "structure": {
+    "loadingLaps": "Loading lap data...",
+    "metrics": {
+      "pace": "Pace",
+      "speed": "Speed",
+      "power": "Power",
+      "hr": "Heart Rate"
+    },
+    "avgPower": "Avg Power",
+    "avgHr": "Avg HR",
+    "avgPace": "Avg Pace",
+    "avgSpeed": "Avg Speed",
+    "distance": "Distance",
+    "empty": "No structure details available for this session.",
+    "stepName": "{{type}} Step",
+    "targetRange": "{{low}}-{{high}}% FTP",
+    "targetAbove": ">{{low}}% FTP",
+    "setsOfReps_one": "{{count}} set × {{reps}}",
+    "setsOfReps_other": "{{count}} sets × {{reps}}"
+  },
+  "stepTypes": {
+    "warmup": "Warmup",
+    "interval": "Interval",
+    "recovery": "Recovery",
+    "cooldown": "Cooldown",
+    "tempo": "Tempo",
+    "endurance": "Endurance",
+    "exercise": "Exercise",
+    "work": "Work"
+  },
+  "analysis": {
+    "loading": "Loading analysis data...",
+    "entireSession": "Entire Session",
+    "metrics": {
+      "speed": "Speed",
+      "power": "Power",
+      "heartrate": "Heart Rate",
+      "elevation": "Elevation",
+      "cadence": "Cadence"
+    },
+    "max": {
+      "speed": "Max Speed",
+      "power": "Max Power",
+      "heartrate": "Max Heart Rate",
+      "elevation": "Max Elevation",
+      "cadence": "Max Cadence"
+    },
+    "avg": {
+      "speed": "Avg Speed",
+      "power": "Avg Power",
+      "heartrate": "Avg Heart Rate",
+      "elevation": "Avg Elevation",
+      "cadence": "Avg Cadence"
+    },
+    "min": {
+      "speed": "Min Speed",
+      "power": "Min Power",
+      "heartrate": "Min Heart Rate",
+      "elevation": "Min Elevation",
+      "cadence": "Min Cadence"
+    },
+    "normPower": "Norm. Power",
+    "bestEfforts": "Best Efforts",
+    "completedWorkout": "Completed Workout",
+    "sessionMetrics": "Session Metrics",
+    "notAvailable": "N/A"
+  },
+  "stats": {
+    "duration": "Duration",
+    "distance": "Distance",
+    "avgSpeed": "Avg Speed",
+    "avgPace": "Avg Pace",
+    "avgPower": "Avg Power",
+    "normPower": "Norm. Power",
+    "elevation": "Elevation",
+    "cadence": "Cadence",
+    "pace": "Pace",
+    "sets": "Sets",
+    "reps": "Reps",
+    "volume": "Volume",
+    "avgHr": "Avg HR",
+    "maxHr": "Max HR",
+    "calories": "Calories",
+    "tss": "TSS"
+  },
+  "strengthLog": {
+    "title": "Log your sets",
+    "totals_one": "{{count}} set · {{reps}} · {{volume}} {{unit}} total",
+    "totals_other": "{{count}} sets · {{reps}} · {{volume}} {{unit}} total",
+    "setNumber": "Set {{number}}",
+    "repsInputLabel": "{{exercise}} set {{number}} reps",
+    "weightInputLabel": "{{exercise}} set {{number}} weight",
+    "repsPlaceholder": "reps",
+    "addSetLabel": "Add a set of {{exercise}}",
+    "removeSetLabel": "Remove {{exercise}} set {{number}}",
+    "addExercisePlaceholder": "Add an exercise (e.g. Hip Thrust)",
+    "add": "Add",
+    "save": "Save sets",
+    "savedTitle": "Saved",
+    "savedMessage_one": "{{count}} set logged.",
+    "savedMessage_other": "{{count}} sets logged.",
+    "saveFailed": "Could not save your sets. Please try again."
+  },
+  "summary": {
+    "sets": "Sets",
+    "setLine": "Set {{number}}: {{detail}}",
+    "done": "done"
+  }
+}

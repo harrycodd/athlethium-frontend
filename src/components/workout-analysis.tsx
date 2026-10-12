@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, ActivityIndicator, TouchableOpacity, ScrollView, Dimensions, Modal } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
+import { useTranslation } from 'react-i18next';
 import MapView, { Polyline } from 'react-native-maps';
 import Text from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
@@ -16,12 +17,13 @@ const CHART_WIDTH = screenWidth - 64;
 
 type MetricType = 'speed' | 'power' | 'heartrate' | 'elevation' | 'cadence';
 
-const METRIC_CONFIG: Record<MetricType, { label: string, color: string, unit: string, imperialUnit: string, icon: any }> = {
-  speed: { label: 'Speed', color: '#3B82F6', unit: 'km/h', imperialUnit: 'mph', icon: FastForward },
-  power: { label: 'Power', color: '#8B5CF6', unit: 'W', imperialUnit: 'W', icon: Zap },
-  heartrate: { label: 'Heart Rate', color: '#EF4444', unit: 'bpm', imperialUnit: 'bpm', icon: Heart },
-  elevation: { label: 'Elevation', color: '#10B981', unit: 'm', imperialUnit: 'ft', icon: Mountain },
-  cadence: { label: 'Cadence', color: '#F59E0B', unit: 'rpm', imperialUnit: 'rpm', icon: Activity },
+// Labels are translated when rendered: analysis.metrics.<metric> (and analysis.max/avg/min.<metric>).
+const METRIC_CONFIG: Record<MetricType, { color: string, unit: string, imperialUnit: string, icon: any }> = {
+  speed: { color: '#3B82F6', unit: 'km/h', imperialUnit: 'mph', icon: FastForward },
+  power: { color: '#8B5CF6', unit: 'W', imperialUnit: 'W', icon: Zap },
+  heartrate: { color: '#EF4444', unit: 'bpm', imperialUnit: 'bpm', icon: Heart },
+  elevation: { color: '#10B981', unit: 'm', imperialUnit: 'ft', icon: Mountain },
+  cadence: { color: '#F59E0B', unit: 'rpm', imperialUnit: 'rpm', icon: Activity },
 };
 
 const formatPaceFromKmh = (speedKmh: number) => {
@@ -40,8 +42,8 @@ const formatPaceFromMinutes = (paceMinutes: number) => {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-const formatRunningMinimum = (paceMinutes: number) => {
-  if (!paceMinutes || paceMinutes <= 0 || !Number.isFinite(paceMinutes)) return 'N/A';
+const formatRunningMinimum = (paceMinutes: number, notAvailable: string) => {
+  if (!paceMinutes || paceMinutes <= 0 || !Number.isFinite(paceMinutes)) return notAvailable;
   return formatPaceFromMinutes(paceMinutes);
 };
 
@@ -51,6 +53,7 @@ interface Props {
 
 export default function WorkoutAnalysis({ workout }: Props) {
   const theme = useTheme();
+  const { t } = useTranslation('session');
   const { profile } = useAuth();
   const isImperial = profile?.units === 'Imperial';
   const isRunning = workout?.sport === 'running';
@@ -239,7 +242,7 @@ export default function WorkoutAnalysis({ workout }: Props) {
     return (
       <View className="justify-center items-center py-10">
         <ActivityIndicator size="large" color={theme.primary} />
-        <Text variant="muted" className="mt-4">Loading analysis data...</Text>
+        <Text variant="muted" className="mt-4">{t('analysis.loading')}</Text>
       </View>
     );
   }
@@ -392,7 +395,7 @@ export default function WorkoutAnalysis({ workout }: Props) {
                   >
                     <Icon size={14} color={isActive ? "#fff" : theme.textSecondary} />
                     <Text className={cn("font-bold text-xs", isActive ? "text-white" : "text-muted-foreground")}>
-                      {config.label}
+                      {t(`analysis.metrics.${metric}`)}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -411,7 +414,7 @@ export default function WorkoutAnalysis({ workout }: Props) {
                       selectedLapIndex === null ? "bg-foreground border-foreground" : "bg-card border-border"
                     )}
                   >
-                    <Text className={cn("font-bold text-xs", selectedLapIndex === null ? "text-background" : "text-muted-foreground")}>Entire Session</Text>
+                    <Text className={cn("font-bold text-xs", selectedLapIndex === null ? "text-background" : "text-muted-foreground")}>{t('analysis.entireSession')}</Text>
                   </TouchableOpacity>
                   {workout.stats.laps.map((lap: any) => (
                     <TouchableOpacity
@@ -422,7 +425,7 @@ export default function WorkoutAnalysis({ workout }: Props) {
                         selectedLapIndex === lap.lap_index ? "bg-foreground border-foreground" : "bg-card border-border"
                       )}
                     >
-                      <Text className={cn("font-bold text-xs", selectedLapIndex === lap.lap_index ? "text-background" : "text-muted-foreground")}>Lap {lap.lap_index}</Text>
+                      <Text className={cn("font-bold text-xs", selectedLapIndex === lap.lap_index ? "text-background" : "text-muted-foreground")}>{t('lap', { number: lap.lap_index })}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -433,7 +436,7 @@ export default function WorkoutAnalysis({ workout }: Props) {
           {chartData.length > 0 ? (
             <Card className="p-4 items-center justify-center overflow-hidden border border-border bg-card shadow-sm">
               <View className="w-full flex-row justify-between mb-4 px-2">
-                <Text variant="h3">{METRIC_CONFIG[activeMetric].label}</Text>
+                <Text variant="h3">{t(`analysis.metrics.${activeMetric}`)}</Text>
                 <Text variant="muted" className="font-bold">{activeUnit}</Text>
               </View>
               <LineChart
@@ -477,24 +480,24 @@ export default function WorkoutAnalysis({ workout }: Props) {
           {dynamicStats && (
             <View className="flex-row justify-between mt-4">
               <Card className="flex-1 p-3 mr-2 items-center">
-                <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1 text-[10px]">Max {METRIC_CONFIG[activeMetric].label}</Text>
+                <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1 text-[10px]">{t(`analysis.max.${activeMetric}`)}</Text>
                 <Text className="text-lg font-bold">{activeMetric === 'speed' && isRunning ? formatPaceFromMinutes(dynamicStats.max) : dynamicStats.max.toFixed(0)}</Text>
                 <Text variant="small" className="mt-1">{activeUnit}</Text>
               </Card>
               <Card className="flex-1 p-3 mx-1 items-center">
-                <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1 text-[10px]">Avg {METRIC_CONFIG[activeMetric].label}</Text>
+                <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1 text-[10px]">{t(`analysis.avg.${activeMetric}`)}</Text>
                 <Text className="text-lg font-bold">{activeMetric === 'speed' && isRunning ? formatPaceFromMinutes(dynamicStats.avg) : dynamicStats.avg.toFixed(0)}</Text>
                 <Text variant="small" className="mt-1">{activeUnit}</Text>
               </Card>
               {dynamicStats.np !== null ? (
                 <Card className="flex-1 p-3 ml-2 items-center">
-                  <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1 text-[10px]">Norm. Power</Text>
+                  <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1 text-[10px]">{t('analysis.normPower')}</Text>
                   <Text className="text-lg font-bold">{dynamicStats.np.toFixed(0)} <Text variant="small">W</Text></Text>
                 </Card>
               ) : (
                 <Card className="flex-1 p-3 ml-2 items-center">
-                  <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1 text-[10px]">Min {METRIC_CONFIG[activeMetric].label}</Text>
-                  <Text className="text-lg font-bold">{activeMetric === 'speed' && isRunning ? formatRunningMinimum(dynamicStats.min) : dynamicStats.min.toFixed(0)}</Text>
+                  <Text variant="small" className="text-muted-foreground uppercase font-bold tracking-wider mb-1 text-[10px]">{t(`analysis.min.${activeMetric}`)}</Text>
+                  <Text className="text-lg font-bold">{activeMetric === 'speed' && isRunning ? formatRunningMinimum(dynamicStats.min, t('analysis.notAvailable')) : dynamicStats.min.toFixed(0)}</Text>
                   <Text variant="small" className="mt-1">{activeUnit}</Text>
                 </Card>
               )}
@@ -503,7 +506,7 @@ export default function WorkoutAnalysis({ workout }: Props) {
 
           {bestEfforts && Object.keys(bestEfforts).length > 0 && (
             <View className="mt-6">
-              <Text variant="h3" className="mb-3">Best Efforts</Text>
+              <Text variant="h3" className="mb-3">{t('analysis.bestEfforts')}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} className="py-1">
                 <View className="flex-row gap-2">
                    {['5s', '10s', '30s', '1m', '3m', '5m', '10m', '20m', '30m', '1hr'].map(interval => {
@@ -528,7 +531,7 @@ export default function WorkoutAnalysis({ workout }: Props) {
         </View>
       )}
 
-      <Text variant="h3" className="mb-4 mt-2">{workout.completed ? 'Completed Workout' : 'Session Metrics'}</Text>
+      <Text variant="h3" className="mb-4 mt-2">{workout.completed ? t('analysis.completedWorkout') : t('analysis.sessionMetrics')}</Text>
       <SessionSummary workout={workout} imperial={isImperial} />
 
       {/* Full Screen Map Modal */}

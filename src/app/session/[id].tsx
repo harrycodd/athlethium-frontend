@@ -11,6 +11,9 @@ import { getWorkout, updateWorkout, Workout, deleteWorkout } from '@/lib/workout
 import { ActivityType } from '@/types/activity';
 import { ChevronLeft, Calendar as CalendarIcon, Clock, ChevronDown, Check, Info, Trash2, Upload, Play, CheckCircle2, RefreshCw, Zap, Heart, FastForward } from 'lucide-react-native';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
+import { formatDate } from '@/lib/i18n/format';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Timestamp } from 'firebase/firestore';
 import { Radius, BorderWidth, getIntensityZoneToken } from '@/constants/theme';
@@ -26,13 +29,24 @@ import { cn } from '@/lib/utils';
 const screenWidth = Dimensions.get('window').width;
 const CHART_WIDTH = screenWidth - 32;
 
-const SPORT_OPTIONS: { label: string; value: ActivityType }[] = [
-  { label: 'Running', value: 'running' },
-  { label: 'Cycling', value: 'cycling' },
-  { label: 'Swimming', value: 'swimming' },
-  { label: 'Strength', value: 'strength' },
-  { label: 'Stretching', value: 'stretching' },
+// labelKey: i18n key in the `session` namespace, translated when rendered (value is what's stored)
+const SPORT_OPTIONS: { labelKey: string; value: ActivityType }[] = [
+  { labelKey: 'sports.running', value: 'running' },
+  { labelKey: 'sports.cycling', value: 'cycling' },
+  { labelKey: 'sports.swimming', value: 'swimming' },
+  { labelKey: 'sports.strength', value: 'strength' },
+  { labelKey: 'sports.stretching', value: 'stretching' },
 ];
+
+const SPORT_LABELS = ['running', 'cycling', 'swimming', 'strength', 'stretching', 'yoga', 'rest', 'other'];
+/** Display name for a stored sport code; unknown codes are shown as they are. */
+const sportLabel = (code: string, t: TFunction) =>
+  SPORT_LABELS.includes(code.toLowerCase()) ? t(`sports.${code.toLowerCase()}`, { ns: 'session' }) : code;
+
+// Step `type` values come from the backend and drive logic; only their label is translated.
+const STEP_TYPES = ['warmup', 'interval', 'recovery', 'cooldown', 'tempo', 'endurance', 'exercise', 'work'];
+const stepTypeLabel = (type: string, t: TFunction) =>
+  STEP_TYPES.includes(type) ? t(`stepTypes.${type}`, { ns: 'session' }) : type;
 
 const parseWorkoutDate = (d: any): Date => {
   if (!d) return new Date();
@@ -57,6 +71,7 @@ export default function SessionDetailsScreen() {
 
   const router = useRouter();
   const theme = useTheme();
+  const { t } = useTranslation('session');
   const { user, profile } = useAuth();
   const imperial = profile?.units === 'Imperial';
 
@@ -120,7 +135,7 @@ export default function SessionDetailsScreen() {
         }
       } catch (error) {
         console.error("Failed to load workout details:", error);
-        Alert.alert("Error", "Could not load session details.");
+        Alert.alert(t('common:error'), t('alerts.loadFailed'));
         router.back();
       } finally {
         setLoading(false);
@@ -145,11 +160,11 @@ export default function SessionDetailsScreen() {
       if (file.name && !file.name.toLowerCase().endsWith('.fit')) {
         const proceed = await new Promise(resolve => {
           Alert.alert(
-            "Verify File",
-            "This doesn't look like a .fit file. Are you sure you want to upload it?",
+            t('alerts.verifyFileTitle'),
+            t('alerts.verifyFileMessage'),
             [
-              { text: "Cancel", onPress: () => resolve(false), style: "cancel" },
-              { text: "Upload Anyway", onPress: () => resolve(true) }
+              { text: t('common:cancel'), onPress: () => resolve(false), style: "cancel" },
+              { text: t('alerts.uploadAnyway'), onPress: () => resolve(true) }
             ]
           );
         });
@@ -161,7 +176,7 @@ export default function SessionDetailsScreen() {
       const uploadResult = await uploadFitFile(user.uid, file, id);
 
       if (uploadResult.success) {
-        Alert.alert('Success', 'Workout file uploaded and analyzed successfully!');
+        Alert.alert(t('common:success'), t('alerts.uploadSuccess'));
         if (router.canGoBack()) {
           router.back();
         } else {
@@ -169,11 +184,11 @@ export default function SessionDetailsScreen() {
         }
       } else {
         console.error('Upload failed:', uploadResult.error);
-        Alert.alert('Upload Error', uploadResult.error || 'Failed to upload workout file.');
+        Alert.alert(t('alerts.uploadErrorTitle'), uploadResult.error || t('alerts.uploadFailed'));
       }
     } catch (error: any) {
       console.error('Upload error:', error);
-      Alert.alert('Error', error?.message || 'An error occurred during file upload.');
+      Alert.alert(t('common:error'), error?.message || t('alerts.uploadUnexpected'));
     } finally {
       setUploading(false);
     }
@@ -193,7 +208,7 @@ export default function SessionDetailsScreen() {
         sport: sport,
         description: description,
         date: dateString,
-        meta: `${durationStr} • Updated`,
+        meta: `${durationStr} • Updated`, // i18n-ignore: stored in Firestore
         plannedTime: durationSecs,
       };
 
@@ -228,11 +243,11 @@ export default function SessionDetailsScreen() {
       if (markAsCompleted) {
         router.back();
       } else if (!isAutoSave) {
-        Alert.alert("Success", "Session updated.");
+        Alert.alert(t('common:success'), t('alerts.saved'));
       }
     } catch (error) {
       console.error("Error saving workout:", error);
-      if (!isAutoSave) Alert.alert("Error", "Failed to save changes.");
+      if (!isAutoSave) Alert.alert(t('common:error'), t('alerts.saveFailed'));
     } finally {
       if (!isAutoSave) setSaving(false);
     }
@@ -270,12 +285,12 @@ export default function SessionDetailsScreen() {
 
   const handleRedo = () => {
     Alert.alert(
-      "Redo Workout",
-      "Are you sure you want to redo this workout and mark it as no longer complete?",
+      t('alerts.redoTitle'),
+      t('alerts.redoMessage'),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t('common:cancel'), style: "cancel" },
         {
-          text: "Redo",
+          text: t('alerts.redoConfirm'),
           style: "destructive",
           onPress: async () => {
             if (!workout?.id) return;
@@ -302,7 +317,7 @@ export default function SessionDetailsScreen() {
               router.back();
             } catch (error) {
               console.error("Error redoing workout:", error);
-              Alert.alert("Error", "Failed to redo session.");
+              Alert.alert(t('common:error'), t('alerts.redoFailed'));
               setSaving(false);
             }
           }
@@ -313,12 +328,12 @@ export default function SessionDetailsScreen() {
 
   const handleDelete = () => {
     Alert.alert(
-      "Delete Session",
-      "Are you sure you want to delete this session?",
+      t('alerts.deleteTitle'),
+      t('alerts.deleteMessage'),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t('common:cancel'), style: "cancel" },
         {
-          text: "Delete",
+          text: t('common:delete'),
           style: "destructive",
           onPress: async () => {
             if (!workout?.id) return;
@@ -328,7 +343,7 @@ export default function SessionDetailsScreen() {
               router.back();
             } catch (error) {
               console.error("Error deleting workout:", error);
-              Alert.alert("Error", "Failed to delete session.");
+              Alert.alert(t('common:error'), t('alerts.deleteFailed'));
               setSaving(false);
             }
           }
@@ -393,7 +408,7 @@ export default function SessionDetailsScreen() {
             >
               <View className="flex-row items-center justify-center gap-1">
                 <ChevronLeft size={16} color={theme.colors.text} strokeWidth={2.5} />
-                <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text }}>Back</Text>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text }}>{t('common:back')}</Text>
               </View>
             </GlassButton>
 
@@ -409,7 +424,7 @@ export default function SessionDetailsScreen() {
                 >
                   <View className="flex-row items-center justify-center gap-1.5">
                     <RefreshCw size={13} color={theme.colors.primary} />
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: theme.colors.primary }}>Redo</Text>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: theme.colors.primary }}>{t('details.redo')}</Text>
                   </View>
                 </GlassButton>
               ) : (
@@ -423,7 +438,7 @@ export default function SessionDetailsScreen() {
                 >
                   <View className="flex-row items-center justify-center gap-1.5">
                     <Upload size={13} color={theme.colors.primary} />
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: theme.colors.primary }}>Upload</Text>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: theme.colors.primary }}>{t('details.upload')}</Text>
                   </View>
                 </GlassButton>
               )}
@@ -444,7 +459,7 @@ export default function SessionDetailsScreen() {
             <TextInput
               value={name}
               onChangeText={setName}
-              placeholder="Session Name"
+              placeholder={t('details.namePlaceholder')}
               placeholderTextColor={theme.colors.textSecondary}
               multiline={true}
               className="text-2xl font-black tracking-tight"
@@ -470,7 +485,7 @@ export default function SessionDetailsScreen() {
                 }}
               >
                 <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.primary, textTransform: 'capitalize' }}>
-                  {sport}
+                  {sportLabel(sport, t)}
                 </Text>
               </View>
               {workout?.tss !== undefined && workout.tss > 0 && (
@@ -505,7 +520,7 @@ export default function SessionDetailsScreen() {
                 >
                   <CheckCircle2 size={12} color={theme.colors.primary} />
                   <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.primary }}>
-                    Completed
+                    {t('details.completed')}
                   </Text>
                 </View>
               )}
@@ -526,8 +541,8 @@ export default function SessionDetailsScreen() {
                 className="w-full shadow-lg"
               >
                 <ActivityIndicator size="large" color={theme.colors.primary} />
-                <Text variant="h2" className="mt-6 mb-2 text-center">Uploading Workout</Text>
-                <Text variant="muted" className="text-center">Parsing FIT file and generating analytics. This might take a few seconds...</Text>
+                <Text variant="h2" className="mt-6 mb-2 text-center">{t('details.uploadingTitle')}</Text>
+                <Text variant="muted" className="text-center">{t('details.uploadingMessage')}</Text>
               </View>
             </View>
           </Modal>
@@ -535,7 +550,7 @@ export default function SessionDetailsScreen() {
           {/* Tab Toggle */}
           <View className="px-4 flex-row gap-2 mb-4">
             <GlassButton
-              label="Details"
+              label={t('common:details')}
               variant={activeTab === 'details' ? 'glass-primary' : 'glass'}
               size="sm"
               shape="pill"
@@ -547,7 +562,7 @@ export default function SessionDetailsScreen() {
 
             {isCompleted && (
               <GlassButton
-                label="Analysis"
+                label={t('details.tabs.analysis')}
                 variant={activeTab === 'analysis' ? 'glass-primary' : 'glass'}
                 size="sm"
                 shape="pill"
@@ -559,7 +574,7 @@ export default function SessionDetailsScreen() {
             )}
 
             <GlassButton
-              label="Structure"
+              label={t('details.tabs.structure')}
               variant={activeTab === 'structure' ? 'glass-primary' : 'glass'}
               size="sm"
               shape="pill"
@@ -585,21 +600,21 @@ export default function SessionDetailsScreen() {
                   )}
                   <View className="flex-row gap-2 items-stretch">
                     <PickerButton
-                      label="Date"
-                      value={format(selectedDate, 'EEE, MMM do')}
+                      label={t('details.date')}
+                      value={formatDate(selectedDate, 'EEE, MMM do')}
                       icon={CalendarIcon}
                       onPress={() => setShowDatePicker(true)}
                     />
                     <PickerButton
-                      label="Sport"
-                      value={SPORT_OPTIONS.find(s => s.value === sport)?.label || sport}
+                      label={t('details.sport')}
+                      value={(() => { const opt = SPORT_OPTIONS.find(s => s.value === sport); return opt ? t(opt.labelKey) : sport; })()}
                       icon={Clock}
                       onPress={() => setShowSportPicker(true)}
                     />
                   </View>
 
                   <View className="mb-4">
-                    <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">Planned Duration</Text>
+                    <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">{t('details.plannedDuration')}</Text>
                     <View 
                       style={{
                         borderRadius: Radius.xl,
@@ -626,7 +641,7 @@ export default function SessionDetailsScreen() {
 
                   {isCompleted && workout?.time ? (
                     <View className="mb-4">
-                      <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">Session Duration</Text>
+                      <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">{t('details.sessionDuration')}</Text>
                       <View 
                         style={{
                           borderRadius: Radius.xl,
@@ -647,11 +662,11 @@ export default function SessionDetailsScreen() {
                   ) : null}
 
                   <View className="mb-6">
-                    <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">Description & Goals</Text>
+                    <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">{t('details.descriptionGoals')}</Text>
                     <TextInput
                       value={description}
                       onChangeText={setDescription}
-                      placeholder="What are the goals for this session?"
+                      placeholder={t('details.descriptionPlaceholder')}
                       placeholderTextColor={theme.colors.textSecondary}
                       multiline
                       style={{
@@ -690,7 +705,7 @@ export default function SessionDetailsScreen() {
                 >
                   <View className="flex-row items-center gap-2">
                     <Play size={18} color={theme.isDark ? "#4ade80" : "#15803d"} fill={theme.isDark ? "#4ade80" : "#15803d"} />
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: theme.isDark ? "#4ade80" : "#15803d" }}>Start Activity</Text>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: theme.isDark ? "#4ade80" : "#15803d" }}>{t('details.startActivity')}</Text>
                   </View>
                 </GlassButton>
               </View>
@@ -716,10 +731,10 @@ export default function SessionDetailsScreen() {
       <Modal visible={showSportPicker} transparent animationType="slide">
         <TouchableOpacity className="flex-1 bg-black/50 justify-end" activeOpacity={1} onPress={() => setShowSportPicker(false)}>
           <View className="bg-card rounded-t-[32px] p-6 pb-12 border-t border-border">
-            <Text variant="h2" className="mb-6">Select Sport</Text>
+            <Text variant="h2" className="mb-6">{t('details.selectSport')}</Text>
             {SPORT_OPTIONS.map((opt: any, index: number) => (
               <TouchableOpacity
-                key={opt.label}
+                key={opt.value}
                 onPress={() => {
                   setSport(opt.value);
                   setShowSportPicker(false);
@@ -730,13 +745,13 @@ export default function SessionDetailsScreen() {
                 )}
               >
                 <Text className={`flex-1 text-lg ${sport === opt.value ? 'text-primary font-bold' : ''}`}>
-                  {opt.label}
+                  {t(opt.labelKey)}
                 </Text>
                 {sport === opt.value && <Check size={20} color={theme.colors.primary} />}
               </TouchableOpacity>
             ))}
             <GlassButton 
-              label="Cancel" 
+              label={t('common:cancel')}
               variant="glass" 
               size="lg" 
               shape="pill" 
@@ -752,6 +767,7 @@ export default function SessionDetailsScreen() {
 
 function WorkoutStructure({ workout }: { workout: Workout | null }) {
   const theme = useTheme();
+  const { t } = useTranslation('session');
   const { profile } = useAuth();
   const isImperial = profile?.units === 'Imperial';
 
@@ -776,8 +792,8 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor(seconds % 60);
-    if (h > 0) return `${h}h ${m}m ${s}s`;
-    return `${m}m ${s}s`;
+    if (h > 0) return t('duration.hms', { h, m, s });
+    return t('duration.ms', { m, s });
   };
 
   const formatPaceFromMinutes = (paceMinutes: number) => {
@@ -795,7 +811,7 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
       return (
         <View className="py-20 items-center">
           <ActivityIndicator size="small" color={theme.primary} />
-          <Text variant="muted" className="mt-2">Loading lap data...</Text>
+          <Text variant="muted" className="mt-2">{t('structure.loadingLaps')}</Text>
         </View>
       );
     }
@@ -880,9 +896,9 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
     }
 
     const METRIC_CONFIG = {
-      speed: { label: workout?.sport === 'running' ? 'Pace' : 'Speed', color: '#3B82F6', icon: FastForward },
-      power: { label: 'Power', color: '#8B5CF6', icon: Zap },
-      hr: { label: 'Heart Rate', color: '#EF4444', icon: Heart },
+      speed: { label: workout?.sport === 'running' ? t('structure.metrics.pace') : t('structure.metrics.speed'), color: '#3B82F6', icon: FastForward },
+      power: { label: t('structure.metrics.power'), color: '#8B5CF6', icon: Zap },
+      hr: { label: t('structure.metrics.hr'), color: '#EF4444', icon: Heart },
     };
 
     return (
@@ -947,19 +963,19 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
           let metricLabel = '';
           if (primaryMetric === 'power') {
             metricDisplay = `${Math.round(lap.derivedAvgPower)}W`;
-            metricLabel = 'Avg Power';
+            metricLabel = t('structure.avgPower');
           } else if (primaryMetric === 'hr') {
             metricDisplay = `${Math.round(lap.derivedAvgHr)} bpm`;
-            metricLabel = 'Avg HR';
+            metricLabel = t('structure.avgHr');
           } else {
             if (isRunning) {
               const lapPace = lap.derivedAvgSpeed > 0 ? 60 / lap.derivedAvgSpeed : 0;
               metricDisplay = `${formatPaceFromMinutes(lapPace)} /${isImperial ? 'mi' : 'km'}`;
-              metricLabel = 'Avg Pace';
+              metricLabel = t('structure.avgPace');
             } else {
               const lapSpeedMph = isImperial ? lap.derivedAvgSpeed * 0.621371 : lap.derivedAvgSpeed;
               metricDisplay = `${lapSpeedMph.toFixed(1)} ${isImperial ? 'mph' : 'km/h'}`;
-              metricLabel = 'Avg Speed';
+              metricLabel = t('structure.avgSpeed');
             }
           }
 
@@ -967,7 +983,7 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
             <Card key={`lap-${index}`} className="mb-4 p-4 border-l-4 border-l-primary shadow-none">
               <View className="flex-row justify-between items-start mb-2">
                 <View className="flex-1">
-                  <Text className="font-bold text-lg leading-tight">Lap {lap.lap_index || index + 1}</Text>
+                  <Text className="font-bold text-lg leading-tight">{t('lap', { number: lap.lap_index || index + 1 })}</Text>
                   <View className="flex-row items-center mt-1">
                     <View className="mr-1">
                       <Clock size={12} color={theme.textSecondary} />
@@ -978,7 +994,7 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
                   </View>
                 </View>
                 <View className="bg-primary/10 px-2 py-1 rounded-lg">
-                  <Text className="text-xs font-bold text-primary uppercase">Step {index + 1}</Text>
+                  <Text className="text-xs font-bold text-primary uppercase">{t('step', { number: index + 1 })}</Text>
                 </View>
               </View>
 
@@ -988,7 +1004,7 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
                   <Text className="font-semibold text-base">{metricDisplay}</Text>
                 </View>
                 <View className="items-end">
-                  <Text variant="muted" className="text-[10px] uppercase font-bold tracking-widest">Distance</Text>
+                  <Text variant="muted" className="text-[10px] uppercase font-bold tracking-widest">{t('structure.distance')}</Text>
                   <Text className="font-semibold text-base">
                     {lapDistance > 0 ? `${lapDistance.toFixed(2)} ${isImperial ? 'mi' : 'km'}` : '--'}
                   </Text>
@@ -1007,7 +1023,7 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
   if (!workout || (!hasSteps && !hasSegments)) {
     return (
       <View className="py-20 items-center">
-        <Text variant="muted">No structure details available for this session.</Text>
+        <Text variant="muted">{t('structure.empty')}</Text>
       </View>
     );
   }
@@ -1029,20 +1045,23 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
   const renderStepsList = () => {
     if (hasSteps) {
       return (workout.steps || []).map((step: any, index: number) => {
-        const stepName = step.name || `${step.type.toUpperCase()} Step`;
+        // step names come from the backend, already in the athlete's language
+        const stepName = step.name || t('structure.stepName', { type: stepTypeLabel(step.type, t).toUpperCase() });
         const durM = Math.floor(step.duration / 60);
         const durS = step.duration % 60;
-        const durLabel = durM > 0 ? (durS > 0 ? `${durM}m ${durS}s` : `${durM}m`) : `${durS}s`;
+        const durLabel = durM > 0
+          ? (durS > 0 ? t('duration.ms', { m: durM, s: durS }) : t('duration.m', { m: durM }))
+          : t('duration.s', { s: durS });
 
         let targetBadge = null;
         if (step.target_low && step.target_high) {
-          targetBadge = `${step.target_low}-${step.target_high}% FTP`;
+          targetBadge = t('structure.targetRange', { low: step.target_low, high: step.target_high });
         } else if (step.target_low) {
-          targetBadge = `>${step.target_low}% FTP`;
+          targetBadge = t('structure.targetAbove', { low: step.target_low });
         } else if (step.reps && step.sets) {
-          targetBadge = `${step.sets} sets × ${step.reps} reps`;
+          targetBadge = t('structure.setsOfReps', { count: step.sets, reps: t('reps', { count: step.reps }) });
         } else if (step.reps) {
-          targetBadge = `${step.reps} reps`;
+          targetBadge = t('reps', { count: step.reps });
         }
 
         const isInterval = step.type === 'interval';
@@ -1067,7 +1086,7 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
                 </View>
               </View>
               <View className="bg-primary/10 px-2 py-1 rounded-lg">
-                <Text className="text-xs font-bold text-primary uppercase">{step.type}</Text>
+                <Text className="text-xs font-bold text-primary uppercase">{stepTypeLabel(step.type, t)}</Text>
               </View>
             </View>
 
@@ -1088,13 +1107,13 @@ function WorkoutStructure({ workout }: { workout: Workout | null }) {
               <View className="flex-row items-center mt-1">
                 <Clock size={12} color={theme.textSecondary} style={{ marginRight: 4 }} />
                 <Text variant="muted" className="text-xs font-medium">
-                  {Math.floor(seg.duration / 60)}m {seg.duration % 60}s
+                  {t('duration.ms', { m: Math.floor(seg.duration / 60), s: seg.duration % 60 })}
                 </Text>
               </View>
             )}
           </View>
           <View className="bg-primary/10 px-2 py-1 rounded-lg">
-            <Text className="text-xs font-bold text-primary uppercase">Step {index + 1}</Text>
+            <Text className="text-xs font-bold text-primary uppercase">{t('step', { number: index + 1 })}</Text>
           </View>
         </View>
 
