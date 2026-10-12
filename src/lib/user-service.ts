@@ -1,4 +1,5 @@
 import { deviceTimeZone } from './api';
+import { getCurrentLanguage } from './i18n';
 import { doc, getDoc, setDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -33,6 +34,7 @@ export interface UserProfile {
   stravaAthleteId?: string | null;
   stravaExpiresAt?: number | null;
   timezone?: string; // IANA zone used by the backend to decide the athlete's "today"
+  language?: string; // app language code; the backend writes session text in it
   garminConnected: boolean;
   wahooConnected: boolean;
   lastSyncAt?: any;
@@ -169,6 +171,7 @@ export const createUserProfile = async (uid: string, email: string | null, displ
       displayName,
       ...DEFAULT_PROFILE,
       timezone: deviceTimeZone(),
+      language: getCurrentLanguage(),
     } as UserProfile;
 
     await setDoc(docRef, removeUndefinedFields(newProfile));

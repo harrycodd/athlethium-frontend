@@ -1,44 +1,28 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import en from './locales/en.json';
+import { NAMESPACES, resources } from './locales';
+import { DEFAULT_LANGUAGE, LANGUAGES, deviceLanguage } from './languages';
+
+export { LANGUAGES, isSupportedLanguage, deviceLanguage } from './languages';
+export type { LanguageCode } from './languages';
 
 export const defaultNS = 'common';
-export const resources = {
-  en: {
-    common: en.common,
-    auth: en.auth,
-    tabs: en.tabs,
-    workout: en.workout,
-    readiness: en.readiness,
-  },
-} as const;
-
-export const supportedLanguages = [
-  { code: 'en', name: 'English' },
-  { code: 'es', name: 'Español' },
-  { code: 'fr', name: 'Français' },
-  { code: 'de', name: 'Deutsch' },
-  { code: 'it', name: 'Italiano' },
-  { code: 'ja', name: '日本語' },
-];
 
 i18n.use(initReactI18next).init({
-  lng: 'en',
-  fallbackLng: 'en',
+  // Start in the phone's language; a saved choice is restored by `restoreLanguage` (language.ts).
+  lng: deviceLanguage(),
+  fallbackLng: DEFAULT_LANGUAGE,
+  supportedLngs: LANGUAGES.map((l) => l.code),
   resources,
-  defaultNS: 'common',
+  ns: [...NAMESPACES],
+  defaultNS,
   interpolation: {
     escapeValue: false, // React already escapes values
   },
+  returnNull: false,
   compatibilityJSON: 'v4',
 });
 
-export const changeLanguage = async (lng: string) => {
-  return i18n.changeLanguage(lng);
-};
-
-export const getCurrentLanguage = () => {
-  return i18n.language || 'en';
-};
+export const getCurrentLanguage = () => i18n.resolvedLanguage || i18n.language || DEFAULT_LANGUAGE;
 
 export default i18n;

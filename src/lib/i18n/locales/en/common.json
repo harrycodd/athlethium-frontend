@@ -1,0 +1,31 @@
+{
+  "save": "Save",
+  "cancel": "Cancel",
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "start": "Start Session",
+  "details": "Details",
+  "complete": "Complete",
+  "analyse": "View Analysis",
+  "delete": "Delete",
+  "ok": "OK",
+  "done": "Done",
+  "next": "Next",
+  "back": "Back",
+  "close": "Close",
+  "edit": "Edit",
+  "retry": "Try again",
+  "yes": "Yes",
+  "no": "No",
+  "none": "None",
+  "sports": {
+    "cycling": "Cycling",
+    "running": "Running",
+    "swimming": "Swimming",
+    "strength": "Strength",
+    "stretching": "Mobility",
+    "rest": "Rest"
+  },
+  "language": "Language"
+}
