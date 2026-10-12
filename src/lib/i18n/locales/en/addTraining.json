@@ -1,1 +1,49 @@
-{}
+{
+  "upload": "Upload",
+  "namePlaceholder": "Session Name",
+  "tssBadge": "~{{tss}} TSS",
+  "sports": {
+    "stretching": "Stretching",
+    "other": "Other"
+  },
+  "eventTypes": {
+    "session": "Session",
+    "event": "Event",
+    "goal": "Goal"
+  },
+  "effortLevels": {
+    "recovery": "Recovery (Zone 1)",
+    "steady": "Steady (Zone 2)",
+    "threshold": "Threshold (Zone 3/4)",
+    "hard": "VO2max / Hard (Zone 5)"
+  },
+  "uploading": {
+    "title": "Uploading Workout",
+    "message": "Parsing FIT file and generating analytics. This might take a few seconds..."
+  },
+  "fields": {
+    "date": "Date",
+    "sport": "Sport",
+    "type": "Type",
+    "effortLevel": "Effort Level",
+    "plannedDuration": "Planned Duration",
+    "description": "Description & Goals",
+    "descriptionPlaceholder": "What are the goals or notes for this session?"
+  },
+  "saving": "Saving...",
+  "addToPlan": "Add to Plan",
+  "pickers": {
+    "sport": "Select Sport",
+    "eventType": "Select Event Type",
+    "effortLevel": "Select Effort Level"
+  },
+  "alerts": {
+    "requiredTitle": "Required",
+    "nameRequired": "Please enter a session name",
+    "saveFailed": "Failed to save training session",
+    "uploadSuccess": "Workout uploaded and analyzed successfully!",
+    "uploadErrorTitle": "Upload Error",
+    "uploadFailed": "Failed to upload workout.",
+    "uploadException": "An error occurred during upload."
+  }
+}
