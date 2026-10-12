@@ -381,6 +381,10 @@ export default function GoalCountdown({
     setGoalDuration((goal as any)?.targetDuration || (profile?.goal as any)?.duration || '01:00:00');
     setTargetGoalDate(effectiveGoalDate);
     setGoalNotes(goal?.description || (profile?.goal as any)?.notes || '');
+    const savedArea = profile?.goal?.bodyArea;
+    if (savedArea) {
+      setCustomBodyArea(savedArea);
+    }
     setIsEditing(true);
     setShowDetailsModal(false);
     setShowNewGoalModal(true);
@@ -432,6 +436,8 @@ export default function GoalCountdown({
           targetTimeString: goalDuration,
           targetPace: targetPaceOrSpeed || undefined,
           notes: goalNotes.trim() || undefined,
+          // strength/mobility focus as a code, so it works whatever language the notes are in
+          bodyArea: isStrengthSport || isStretchingSport ? customBodyArea : undefined,
         },
       });
 

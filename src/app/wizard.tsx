@@ -734,6 +734,10 @@ export default function WizardScreen() {
         date: formattedGoalDate,
         sports: [goalSport],
       };
+      if ((milestoneCategory === 'other' || isStrengthSport || isStretchingSport) && customBodyArea) {
+        // strength/mobility focus as a code, so it works whatever language the notes are in
+        goalPayload.bodyArea = customBodyArea;
+      }
       if (numericDistance !== undefined) {
         goalPayload.targetDistance = numericDistance;
         goalPayload.targetDistanceUnit = units === 'Imperial' ? 'mi' : 'km';

@@ -66,6 +66,7 @@ export interface UserProfile {
     targetTimeString?: string; // e.g. "03:45:00"
     targetPace?: string; // e.g. "5:20/km"
     notes?: string;
+    bodyArea?: 'core' | 'upper' | 'lower' | 'all'; // strength/mobility focus
   };
   sportAllocations?: Record<string, { percentage: number; sessionsPerWeek?: number; hoursPerWeek?: number }>;
   sportPercentages?: Record<string, number>;
