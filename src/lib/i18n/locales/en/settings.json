@@ -1,1 +1,146 @@
-{}
+{
+  "title": "Settings",
+  "hoursPerWeek": "hours / week",
+  "units": {
+    "Metric": "Metric",
+    "Imperial": "Imperial",
+    "metricDescription": "km / kg / °C",
+    "imperialDescription": "mi / lbs / °F"
+  },
+  "weekdays": {
+    "Monday": "Monday",
+    "Tuesday": "Tuesday",
+    "Wednesday": "Wednesday",
+    "Thursday": "Thursday",
+    "Friday": "Friday",
+    "Saturday": "Saturday",
+    "Sunday": "Sunday"
+  },
+  "sportNames": {
+    "running": "Running",
+    "cycling": "Cycling",
+    "swimming": "Swimming",
+    "strength": "Strength",
+    "stretching": "Stretching"
+  },
+  "alerts": {
+    "updateFailed": "Failed to update settings",
+    "actionRestricted": "Action Restricted",
+    "cannotDisableFocus": "You cannot disable a sport that is currently your Main Focus.",
+    "needActiveSport": "You must have at least one active sport.",
+    "needMainFocus": "You must have at least one main focus.",
+    "maxFocusTitle": "Maximum 3 Main Focus Sports",
+    "maxFocusMessage": "To ensure effective training adaptations and recovery, you can select up to 3 main focus sports."
+  },
+  "profile": {
+    "title": "Athlete Profile",
+    "defaultName": "Athlete",
+    "summary": "{{name}} · {{units}} · {{days}}d Lookahead",
+    "nameLabel": "Athlete Name",
+    "namePlaceholder": "Enter your name",
+    "unitsLabel": "Measurement Units",
+    "weeklyHoursLabel": "Target Weekly Hours",
+    "dailyAverage": "~{{hours}} hrs daily average",
+    "lookaheadLabel": "Schedule Lookahead Horizon",
+    "daysShort": "{{days}}d"
+  },
+  "language": {
+    "helper": "Upcoming sessions are rewritten in the new language.",
+    "pickerTitle": "Choose Language",
+    "changeFailed": "Could not change the language. Please try again."
+  },
+  "sports": {
+    "title": "Sports & Focus",
+    "summary": "{{active}} Active · ★ {{focus}}",
+    "hint": "Use switches to enable sports. Tap the star to toggle your <bold>Main Focus</bold>."
+  },
+  "metrics": {
+    "title": "Fitness Metrics",
+    "summaryFtp": "FTP {{watts}}W",
+    "summaryPace": "Pace {{pace}}/{{unit}}",
+    "summaryCss": "CSS {{pace}}/100m",
+    "summaryMaxHr": "Max HR {{bpm}} bpm",
+    "heartRateTitle": "Heart Rate & Thresholds",
+    "maxHr": "Max Heart Rate (HRmax)",
+    "restHr": "Resting Heart Rate (RHR)",
+    "fthr": "Functional Threshold Heart Rate (FTHR)",
+    "runningTitle": "Running Metrics",
+    "thresholdPace": "Threshold Pace (FTPa)",
+    "runningPower": "Running Threshold Power (FTP)",
+    "runningPowerPlaceholder": "Optional (e.g. 280)",
+    "watts": "Watts",
+    "cyclingTitle": "Cycling Metrics",
+    "cyclingFtp": "Functional Threshold Power (FTP)",
+    "swimmingTitle": "Swimming Metrics",
+    "css": "Critical Swim Speed (CSS Pace)",
+    "bodyTitle": "Body Composition",
+    "bodyWeight": "Body Weight",
+    "weightPlaceholder": "e.g. 70"
+  },
+  "availability": {
+    "title": "Daily Availability",
+    "summary": "{{hours}} hrs Total Capacity",
+    "totalLabel": "Total Available Capacity",
+    "target": "Target: {{hours}}h",
+    "restDay": "Rest Day",
+    "hours": "{{hours}} hrs"
+  },
+  "equipment": {
+    "title": "Strength Equipment",
+    "summary": "{{available}} of {{total}} Available",
+    "hint": "Select equipment you have available for strength workouts.",
+    "items": {
+      "dumbbells": "Dumbbells",
+      "kettlebell": "Kettlebell",
+      "pullUpBar": "Pull-up Bar",
+      "squatRack": "Squat Rack",
+      "bench": "Bench",
+      "dipBar": "Dip Bar",
+      "cable": "Cable Machine",
+      "latPulldown": "Lat Pulldown",
+      "flyMachine": "Fly Machine",
+      "resistanceBands": "Resistance Bands",
+      "medicineBall": "Medicine Ball"
+    }
+  },
+  "integrations": {
+    "title": "Partner Integrations",
+    "summary": "Strava · {{status}}"
+  },
+  "strava": {
+    "subtitle": "Rides, Runs, Swims & GPS Activities",
+    "description": "Automatically imports your completed workouts, power duration curves, heart rate, and GPS tracks.",
+    "connected": "Connected",
+    "notConnected": "Not Connected",
+    "connect": "Connect with Strava",
+    "disconnect": "Disconnect Strava",
+    "disconnectConfirm": "Are you sure you want to disconnect your Strava account?",
+    "disconnectButton": "Disconnect",
+    "disconnectFailed": "Could not disconnect Strava: {{message}}",
+    "connectedSuccess": "Strava Connected Successfully!",
+    "connectFailed": "Failed to connect to Strava: {{error}}",
+    "authFailed": "Authentication failed: {{message}}"
+  },
+  "account": {
+    "wizardTitle": "Setup Wizard",
+    "wizardMessage": "Would you like to rerun the interactive setup wizard from the beginning?",
+    "rerun": "Rerun",
+    "rerunWizard": "Rerun Setup Wizard",
+    "signOut": "Sign Out",
+    "signOutConfirm": "Are you sure you want to sign out?",
+    "deleteAccount": "Delete Account",
+    "deleteConfirm": "Are you sure you want to permanently delete your account? This action cannot be undone and all your workouts, metrics, and data will be permanently removed.",
+    "deleting": "Deleting...",
+    "deletedTitle": "Account Deleted",
+    "deletedMessage": "Your account and all associated data have been permanently removed.",
+    "deleteFailed": "Failed to delete account. Please try again.",
+    "incorrectPassword": "Incorrect password. Please try again."
+  },
+  "reauth": {
+    "title": "Confirm Account Deletion",
+    "message": "For your security, please enter your password to confirm permanent deletion of your account.",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirm": "Permanently Delete Account"
+  }
+}
