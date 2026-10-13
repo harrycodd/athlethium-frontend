@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TextInput, TouchableOpacity, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import ScreenWrapper from '@/components/ui/screen-wrapper';
 import Text from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
@@ -11,16 +11,27 @@ import { Radius, BorderWidth } from '@/constants/theme';
 import { GlassButton } from '@/components/ui/glass-button';
 import { ChevronLeft, Mail, Lock, ShieldCheck } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
+import { useSignupDraft } from '@/hooks/use-signup-draft';
+
+type Step = 0 | 1 | 2;
 
 export default function SignupScreen() {
-  const [step, setStep] = useState<0 | 1 | 2>(0);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // Each step is its own screen (`/signup?step=1`), so swiping back returns to the previous step.
+  const params = useLocalSearchParams<{ step?: string }>();
+  const step = Math.min(2, Math.max(0, Number(params.step) || 0)) as Step;
+  const { email, password, confirmPassword, setEmail, setPassword, setConfirmPassword, reset } = useSignupDraft();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { colors, isDark } = useTheme();
   const { t } = useTranslation('auth');
+
+  // Leaving signup from the first step (back to login) forgets what was typed.
+  useEffect(() => {
+    if (step !== 0) return;
+    return reset;
+  }, [step, reset]);
+
+  const goToStep = (next: Step) => router.push({ pathname: '/(auth)/signup', params: { step: String(next) } });
 
   const handleNext = () => {
     if (step === 0) {
@@ -28,13 +39,13 @@ export default function SignupScreen() {
         Alert.alert(t('common:error'), t('errors.invalidEmail'));
         return;
       }
-      setStep(1);
+      goToStep(1);
     } else if (step === 1) {
       if (password.length < 6) {
         Alert.alert(t('common:error'), t('errors.passwordTooShort'));
         return;
       }
-      setStep(2);
+      goToStep(2);
     } else if (step === 2) {
       handleFinalSignup();
     }
@@ -50,6 +61,7 @@ export default function SignupScreen() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
       await createUserProfile(userCredential.user.uid, email.trim(), email.trim().split('@')[0]);
+      reset();
       router.replace('/wizard');
     } catch (error: any) {
       const code = error?.code;
@@ -68,14 +80,12 @@ export default function SignupScreen() {
   };
 
   const handleBack = () => {
-    if (step > 0) {
-      setStep((step - 1) as 0 | 1);
+    if (router.canGoBack()) {
+      router.back();
+    } else if (step > 0) {
+      router.replace({ pathname: '/(auth)/signup', params: { step: String(step - 1) } });
     } else {
-      if (router.canGoBack()) {
-        router.back();
-      } else {
-        router.replace('/(auth)/login');
-      }
+      router.replace('/(auth)/login');
     }
   };
 
