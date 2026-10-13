@@ -47,7 +47,9 @@
   "language": {
     "helper": "今後のセッションは新しい言語で書き直されます。",
     "pickerTitle": "言語を選択",
-    "changeFailed": "言語を変更できませんでした。もう一度お試しください。"
+    "changeFailed": "言語を変更できませんでした。もう一度お試しください。",
+    "device": "端末の言語",
+    "deviceCurrent": "端末の言語（{{language}}）"
   },
   "sports": {
     "title": "種目と重点",

@@ -47,7 +47,9 @@
   "language": {
     "helper": "Upcoming sessions are rewritten in the new language.",
     "pickerTitle": "Choose Language",
-    "changeFailed": "Could not change the language. Please try again."
+    "changeFailed": "Could not change the language. Please try again.",
+    "device": "Phone language",
+    "deviceCurrent": "Phone language ({{language}})"
   },
   "sports": {
     "title": "Sports & Focus",

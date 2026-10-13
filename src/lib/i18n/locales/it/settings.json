@@ -47,7 +47,9 @@
   "language": {
     "helper": "Le prossime sedute verranno riscritte nella nuova lingua.",
     "pickerTitle": "Scegli lingua",
-    "changeFailed": "Impossibile cambiare lingua. Riprova."
+    "changeFailed": "Impossibile cambiare lingua. Riprova.",
+    "device": "Lingua del telefono",
+    "deviceCurrent": "Lingua del telefono ({{language}})"
   },
   "sports": {
     "title": "Sport e focus",

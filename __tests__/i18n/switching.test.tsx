@@ -36,18 +36,34 @@ it('formats dates in the current language', async () => {
 });
 
 describe('deviceLanguage', () => {
-  const mockLocale = (locale: string) =>
-    jest.spyOn(Intl, 'DateTimeFormat').mockImplementation(
-      () => ({ resolvedOptions: () => ({ locale }) }) as unknown as Intl.DateTimeFormat
+  const localization = jest.requireActual('expo-localization');
+  const mockLocales = (...tags: string[]) =>
+    jest.spyOn(localization, 'getLocales').mockReturnValue(
+      tags.map((languageTag) => ({ languageTag, languageCode: languageTag.split('-')[0] }))
     );
 
   it('uses a supported phone language without its region', () => {
-    mockLocale('de-AT');
+    mockLocales('de-AT');
     expect(deviceLanguage()).toBe('de');
   });
 
+  it("picks the first of the phone's languages the app supports", () => {
+    mockLocales('pt-BR', 'fr-CA', 'en-US');
+    expect(deviceLanguage()).toBe('fr');
+  });
+
   it('falls back to English for an unsupported phone language', () => {
-    mockLocale('pt-BR');
+    mockLocales('pt-BR');
     expect(deviceLanguage()).toBe('en');
+  });
+
+  it('falls back to Intl when the phone languages are unavailable', () => {
+    jest.spyOn(localization, 'getLocales').mockImplementation(() => {
+      throw new Error('native module missing');
+    });
+    jest.spyOn(Intl, 'DateTimeFormat').mockImplementation(
+      () => ({ resolvedOptions: () => ({ locale: 'it-IT' }) }) as unknown as Intl.DateTimeFormat
+    );
+    expect(deviceLanguage()).toBe('it');
   });
 });
