@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, type TextInputProps } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { getUserProfile } from '@/lib/user-service';
@@ -10,6 +10,45 @@ import { GlassButton } from '@/components/ui/glass-button';
 import { useTheme } from '@/hooks/use-theme';
 import { Radius } from '@/constants/theme';
 import { useTranslation } from 'react-i18next';
+
+const FIELD_HEIGHT = 52;
+
+/**
+ * A login text field. On iOS the native placeholder sits at a different height from typed text, so
+ * the hint is drawn here, centred like the text; the native placeholder stays (invisible) for
+ * VoiceOver and autofill.
+ */
+function LoginField({ placeholder, value, ...props }: TextInputProps & { placeholder: string; value: string }) {
+  const { colors } = useTheme();
+  const drawHint = Platform.OS === 'ios';
+  return (
+    <View
+      style={{
+        height: FIELD_HEIGHT,
+        borderRadius: Radius.lg,
+        borderWidth: 1.5,
+        backgroundColor: colors.surfaceMuted,
+        borderColor: colors.border,
+        justifyContent: 'center',
+      }}
+    >
+      {drawHint && !value && (
+        <View pointerEvents="none" style={{ position: 'absolute', left: 16, right: 16 }}>
+          <Text numberOfLines={1} style={{ fontSize: 16, color: colors.textSecondary }}>
+            {placeholder}
+          </Text>
+        </View>
+      )}
+      <TextInput
+        {...props}
+        value={value}
+        placeholder={placeholder}
+        placeholderTextColor={drawHint ? 'transparent' : colors.textSecondary}
+        style={{ height: '100%', paddingHorizontal: 16, paddingVertical: 0, fontSize: 16, color: colors.text }}
+      />
+    </View>
+  );
+}
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -76,19 +115,8 @@ export default function LoginScreen() {
           >
             {t('email', 'Email')}
           </Text>
-          <TextInput
-            style={{ 
-              height: 52,
-              paddingHorizontal: 16,
-              borderRadius: Radius.lg,
-              borderWidth: 1.5,
-              color: colors.text, 
-              backgroundColor: colors.surfaceMuted,
-              borderColor: colors.border,
-              fontSize: 16,
-            }}
+          <LoginField
             placeholder={t('emailPlaceholder', 'example@email.com')}
-            placeholderTextColor={colors.textSecondary}
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -108,19 +136,8 @@ export default function LoginScreen() {
           >
             {t('password', 'Password')}
           </Text>
-          <TextInput
-            style={{ 
-              height: 52,
-              paddingHorizontal: 16,
-              borderRadius: Radius.lg,
-              borderWidth: 1.5,
-              color: colors.text, 
-              backgroundColor: colors.surfaceMuted,
-              borderColor: colors.border,
-              fontSize: 16,
-            }}
+          <LoginField
             placeholder={t('passwordPlaceholder', '••••••••')}
-            placeholderTextColor={colors.textSecondary}
             value={password}
             onChangeText={setPassword}
             secureTextEntry

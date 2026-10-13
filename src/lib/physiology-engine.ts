@@ -45,7 +45,8 @@ export function calculateTrainingLoadTimeline(
 
     const sport = (w.sport || '').toLowerCase();
     const isStrengthOrMobility = ['strength', 'stretching', 'yoga', 'rest'].includes(sport);
-    const tss = isStrengthOrMobility ? 0 : Number(w.tss ?? w.actual_tss ?? w.plannedTss ?? 0);
+    // A completed planned session keeps its planned load in `tss`; what was actually done is `actual_tss`.
+    const tss = isStrengthOrMobility ? 0 : Number(w.actual_tss ?? w.tss ?? w.plannedTss ?? 0);
 
     dailyTssMap[w.date] = (dailyTssMap[w.date] || 0) + (isNaN(tss) ? 0 : tss);
   });
