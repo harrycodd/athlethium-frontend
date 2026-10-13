@@ -3,6 +3,8 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { UserProfile, subscribeToUserProfile, createUserProfile, updateUserProfile, DEFAULT_PROFILE } from '@/lib/user-service';
 import { deviceTimeZone } from '@/lib/api';
+import i18n, { getCurrentLanguage, isSupportedLanguage } from '@/lib/i18n';
+import { applyLanguage } from '@/lib/i18n/language';
 
 interface AuthContextType {
   user: User | null;
@@ -55,6 +57,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (tz && p.timezone !== tz) {
               updateUserProfile(currentUser.uid, { timezone: tz }).catch((err) =>
                 console.warn("Could not update time zone:", err)
+              );
+            }
+            // The profile's language follows the athlete across devices; older profiles adopt
+            // the language this device is using.
+            if (isSupportedLanguage(p.language)) {
+              if (p.language !== i18n.language) {
+                applyLanguage(p.language).catch((err) => console.warn("Could not apply language:", err));
+              }
+            } else {
+              updateUserProfile(currentUser.uid, { language: getCurrentLanguage() }).catch((err) =>
+                console.warn("Could not save language:", err)
               );
             }
           }

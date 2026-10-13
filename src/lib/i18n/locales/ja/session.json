@@ -1,0 +1,167 @@
+{
+  "sports": {
+    "running": "ランニング",
+    "cycling": "サイクリング",
+    "swimming": "スイミング",
+    "strength": "筋トレ",
+    "stretching": "ストレッチ",
+    "yoga": "ヨガ",
+    "rest": "休養",
+    "other": "その他"
+  },
+  "duration": {
+    "h": "{{h}}時間",
+    "hm": "{{h}}時間{{m}}分",
+    "hms": "{{h}}時間{{m}}分{{s}}秒",
+    "m": "{{m}}分",
+    "ms": "{{m}}分{{s}}秒",
+    "s": "{{s}}秒"
+  },
+  "reps_other": "{{count}}回",
+  "lap": "ラップ{{number}}",
+  "step": "ステップ{{number}}",
+  "details": {
+    "redo": "やり直す",
+    "upload": "アップロード",
+    "namePlaceholder": "セッション名",
+    "completed": "完了",
+    "uploadingTitle": "ワークアウトをアップロード中",
+    "uploadingMessage": "FITファイルを解析し、分析データを作成しています。数秒かかる場合があります...",
+    "tabs": {
+      "analysis": "分析",
+      "structure": "構成"
+    },
+    "date": "日付",
+    "sport": "種目",
+    "plannedDuration": "予定時間",
+    "sessionDuration": "セッション時間",
+    "descriptionGoals": "説明と目標",
+    "descriptionPlaceholder": "このセッションの目標は？",
+    "startActivity": "アクティビティ開始",
+    "selectSport": "種目を選択"
+  },
+  "alerts": {
+    "loadFailed": "セッションの詳細を読み込めませんでした。",
+    "verifyFileTitle": "ファイルの確認",
+    "verifyFileMessage": ".fitファイルではないようです。アップロードしてもよろしいですか？",
+    "uploadAnyway": "アップロードする",
+    "uploadSuccess": "ワークアウトファイルのアップロードと分析が完了しました！",
+    "uploadErrorTitle": "アップロードエラー",
+    "uploadFailed": "ワークアウトファイルをアップロードできませんでした。",
+    "uploadUnexpected": "ファイルのアップロード中にエラーが発生しました。",
+    "saved": "セッションを更新しました。",
+    "saveFailed": "変更を保存できませんでした。",
+    "redoTitle": "ワークアウトをやり直す",
+    "redoMessage": "このワークアウトをやり直し、未完了に戻しますか？",
+    "redoConfirm": "やり直す",
+    "redoFailed": "セッションをやり直せませんでした。",
+    "deleteTitle": "セッションを削除",
+    "deleteMessage": "このセッションを削除しますか？",
+    "deleteFailed": "セッションを削除できませんでした。"
+  },
+  "structure": {
+    "loadingLaps": "ラップデータを読み込み中...",
+    "metrics": {
+      "pace": "ペース",
+      "speed": "速度",
+      "power": "パワー",
+      "hr": "心拍数"
+    },
+    "avgPower": "平均パワー",
+    "avgHr": "平均心拍",
+    "avgPace": "平均ペース",
+    "avgSpeed": "平均速度",
+    "distance": "距離",
+    "empty": "このセッションの構成情報はありません。",
+    "stepName": "{{type}}ステップ",
+    "targetRange": "{{low}}-{{high}}% FTP",
+    "targetAbove": ">{{low}}% FTP",
+    "setsOfReps_other": "{{count}}セット × {{reps}}"
+  },
+  "stepTypes": {
+    "warmup": "ウォームアップ",
+    "interval": "インターバル",
+    "recovery": "リカバリー",
+    "cooldown": "クールダウン",
+    "tempo": "テンポ",
+    "endurance": "エンデュランス",
+    "exercise": "エクササイズ",
+    "work": "メイン"
+  },
+  "analysis": {
+    "loading": "分析データを読み込み中...",
+    "entireSession": "セッション全体",
+    "metrics": {
+      "speed": "速度",
+      "power": "パワー",
+      "heartrate": "心拍数",
+      "elevation": "標高",
+      "cadence": "ケイデンス"
+    },
+    "max": {
+      "speed": "最高速度",
+      "power": "最大パワー",
+      "heartrate": "最大心拍数",
+      "elevation": "最高標高",
+      "cadence": "最大ケイデンス"
+    },
+    "avg": {
+      "speed": "平均速度",
+      "power": "平均パワー",
+      "heartrate": "平均心拍数",
+      "elevation": "平均標高",
+      "cadence": "平均ケイデンス"
+    },
+    "min": {
+      "speed": "最低速度",
+      "power": "最小パワー",
+      "heartrate": "最低心拍数",
+      "elevation": "最低標高",
+      "cadence": "最小ケイデンス"
+    },
+    "normPower": "NP",
+    "bestEfforts": "ベスト記録",
+    "completedWorkout": "完了したワークアウト",
+    "sessionMetrics": "セッション指標",
+    "notAvailable": "データなし"
+  },
+  "stats": {
+    "duration": "時間",
+    "distance": "距離",
+    "avgSpeed": "平均速度",
+    "avgPace": "平均ペース",
+    "avgPower": "平均パワー",
+    "normPower": "NP",
+    "elevation": "標高",
+    "cadence": "ケイデンス",
+    "pace": "ペース",
+    "sets": "セット",
+    "reps": "回数",
+    "volume": "ボリューム",
+    "avgHr": "平均心拍",
+    "maxHr": "最大心拍",
+    "calories": "カロリー",
+    "tss": "TSS"
+  },
+  "strengthLog": {
+    "title": "セットを記録",
+    "totals_other": "{{count}}セット · {{reps}} · 合計{{volume}} {{unit}}",
+    "setNumber": "セット{{number}}",
+    "repsInputLabel": "{{exercise}} セット{{number}}の回数",
+    "weightInputLabel": "{{exercise}} セット{{number}}の重量",
+    "repsPlaceholder": "回数",
+    "addSetLabel": "{{exercise}}のセットを追加",
+    "removeSetLabel": "{{exercise}}のセット{{number}}を削除",
+    "addExercisePlaceholder": "種目を追加（例：ヒップスラスト）",
+    "add": "追加",
+    "save": "セットを保存",
+    "savedTitle": "保存しました",
+    "savedMessage_other": "{{count}}セットを記録しました。",
+    "saveFailed": "セットを保存できませんでした。もう一度お試しください。"
+  },
+  "summary": {
+    "sets": "セット",
+    "setLine": "セット{{number}}：{{detail}}",
+    "done": "完了"
+  }
+}

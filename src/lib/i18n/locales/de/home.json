@@ -1,0 +1,9 @@
+{
+  "greeting": "Guten Morgen, {{name}}",
+  "defaultName": "Athlet",
+  "onTrack": "Du bist auf Kurs für dein Wochenziel.",
+  "targetGoal": "Dein Ziel",
+  "todaysSession": "Heutige Einheit",
+  "logExtra": "Extra eintragen",
+  "noWorkoutsToday": "Heute sind keine Einheiten geplant."
+}

@@ -8,6 +8,7 @@ import Card from './ui/card';
 import { ChevronDown, ChevronUp, Activity, Brain, Moon, Scale, Thermometer, AlertCircle, FileText, CheckCircle2 } from 'lucide-react-native';
 import { cn } from '@/lib/utils';
 import { isAfter, startOfDay } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 type Metrics = {
   physicallyFeeling: number;
@@ -27,12 +28,23 @@ type Props = {
 };
 
 const LEVELS = ['1', '2', '3', '4', '5'];
+// Stored values (saved to Firestore as-is); only their labels are translated.
 const INJURY_OPTIONS = ['None', 'Minor', 'Moderate', 'Severe'];
 const ILLNESS_OPTIONS = ['None', 'Mild', 'Sick'];
+const OPTION_LABEL_KEYS: Record<string, string> = {
+  None: 'options.none',
+  Minor: 'options.minor',
+  Moderate: 'options.moderate',
+  Severe: 'options.severe',
+  Mild: 'options.mild',
+  Sick: 'options.sick',
+};
 
 export default function DailyMetricsInline({ onSave, initialMetrics, isToday = true, date }: Props) {
   const theme = useTheme();
   const { profile } = useAuth();
+  const { t } = useTranslation('readiness');
+  const optionLabel = (value: string) => (OPTION_LABEL_KEYS[value] ? t(OPTION_LABEL_KEYS[value]) : value);
   const isImperial = profile?.units === 'Imperial';
 
   const [expanded, setExpanded] = useState(false);
@@ -117,7 +129,7 @@ export default function DailyMetricsInline({ onSave, initialMetrics, isToday = t
               )}
             >
               <Text className={cn("text-[10px] text-center font-bold", isSelected ? "text-white" : "text-foreground")}>
-                {option}
+                {optionLabel(option)}
               </Text>
             </TouchableOpacity>
           );
@@ -152,10 +164,10 @@ export default function DailyMetricsInline({ onSave, initialMetrics, isToday = t
           )}
         >
           <View className="flex-row items-center justify-center">
-            <Text className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Daily Readiness</Text>
+            <Text className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">{t('dailyReadiness')}</Text>
             {!isToday && (
               <View className="bg-muted px-1.5 py-0.5 rounded-md ml-2">
-                <Text className="text-[10px] font-bold text-muted-foreground uppercase">History</Text>
+                <Text className="text-[10px] font-bold text-muted-foreground uppercase">{t('history')}</Text>
               </View>
             )}
             {initialMetrics && isToday && (
@@ -172,18 +184,18 @@ export default function DailyMetricsInline({ onSave, initialMetrics, isToday = t
                 <CompactMetric icon={Brain} value={metrics.mentallyFeeling} color="#8B5CF6" />
                 <CompactMetric icon={Moon} value={metrics.sleep} color="#6366F1" />
                 <CompactMetric icon={Scale} value={`${metrics.weight}${isImperial ? 'lbs' : 'kg'}`} color="#EC4899" />
-                <CompactMetric icon={AlertCircle} value={metrics.injury} color="#EF4444" />
-                <CompactMetric icon={Thermometer} value={metrics.illness} color="#F59E0B" />
+                <CompactMetric icon={AlertCircle} value={optionLabel(metrics.injury)} color="#EF4444" />
+                <CompactMetric icon={Thermometer} value={optionLabel(metrics.illness)} color="#F59E0B" />
               </View>
             ) : (
               <View className="mt-0.5 items-center">
-                <Text variant="muted" className="text-[11px] italic">No entry recorded</Text>
+                <Text variant="muted" className="text-[11px] italic">{t('noEntry')}</Text>
               </View>
             )
           ) : (
             <View className="mt-1 items-center">
               <Text variant="muted" className="text-[10px] font-medium">
-                {isToday ? "Record your stats for today" : "Viewing past readiness data"}
+                {isToday ? t('recordStats') : t('viewingPast')}
               </Text>
             </View>
           )}
@@ -191,19 +203,19 @@ export default function DailyMetricsInline({ onSave, initialMetrics, isToday = t
 
         {expanded && (
           <View className="p-6 border-t border-border">
-            <SimpleSlider label="Physical Feeling" valueKey="physicallyFeeling" icon={Activity} color="#3B82F6" />
-            <SimpleSlider label="Mental Feeling" valueKey="mentallyFeeling" icon={Brain} color="#8B5CF6" />
-            <SimpleSlider label="Sleep Quality" valueKey="sleep" icon={Moon} color="#6366F1" />
+            <SimpleSlider label={t('physicalFeeling')} valueKey="physicallyFeeling" icon={Activity} color="#3B82F6" />
+            <SimpleSlider label={t('mentalFeeling')} valueKey="mentallyFeeling" icon={Brain} color="#8B5CF6" />
+            <SimpleSlider label={t('sleepQuality')} valueKey="sleep" icon={Moon} color="#6366F1" />
 
-            <SelectionGroup label="Injury" valueKey="injury" options={INJURY_OPTIONS} icon={AlertCircle} color="#EF4444" />
-            <SelectionGroup label="Illness" valueKey="illness" options={ILLNESS_OPTIONS} icon={Thermometer} color="#F59E0B" />
+            <SelectionGroup label={t('injury')} valueKey="injury" options={INJURY_OPTIONS} icon={AlertCircle} color="#EF4444" />
+            <SelectionGroup label={t('illness')} valueKey="illness" options={ILLNESS_OPTIONS} icon={Thermometer} color="#F59E0B" />
 
             <View className="mb-8">
               <View className="flex-row items-center justify-center mb-3">
                 <View style={{ backgroundColor: '#EC489915' }} className="p-1.5 rounded-lg mr-2">
                   <Scale size={16} color="#EC4899" />
                 </View>
-                <Text className="font-bold text-sm">Weight ({isImperial ? 'lbs' : 'kg'})</Text>
+                <Text className="font-bold text-sm">{t('weightWithUnit', { unit: isImperial ? 'lbs' : 'kg' })}</Text>
               </View>
 
               <View
@@ -230,12 +242,12 @@ export default function DailyMetricsInline({ onSave, initialMetrics, isToday = t
                 <View style={{ backgroundColor: '#64748b15' }} className="p-1.5 rounded-lg mr-2">
                   <FileText size={16} color="#64748b" />
                 </View>
-                <Text className="font-bold text-sm">Notes</Text>
+                <Text className="font-bold text-sm">{t('notes')}</Text>
               </View>
               <TextInput
                 value={metrics.notes}
                 onChangeText={(val) => updateMetric('notes', val)}
-                placeholder={isToday ? "How do you feel today?" : "No notes recorded."}
+                placeholder={isToday ? t('notesPlaceholder') : t('noNotes')}
                 placeholderTextColor={theme.textSecondary}
                 multiline
                 numberOfLines={3}
@@ -251,7 +263,7 @@ export default function DailyMetricsInline({ onSave, initialMetrics, isToday = t
 
             {isToday && (
               <GlassButton
-                label="Save Readiness"
+                label={t('save')}
                 variant="glass-primary"
                 size="lg"
                 shape="pill"

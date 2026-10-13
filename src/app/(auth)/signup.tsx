@@ -25,13 +25,13 @@ export default function SignupScreen() {
   const handleNext = () => {
     if (step === 0) {
       if (!email.trim() || !email.includes('@')) {
-        Alert.alert('Error', 'Please enter a valid email address');
+        Alert.alert(t('common:error'), t('errors.invalidEmail'));
         return;
       }
       setStep(1);
     } else if (step === 1) {
       if (password.length < 6) {
-        Alert.alert('Error', 'Password must be at least 6 characters');
+        Alert.alert(t('common:error'), t('errors.passwordTooShort'));
         return;
       }
       setStep(2);
@@ -42,7 +42,7 @@ export default function SignupScreen() {
 
   const handleFinalSignup = async () => {
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      Alert.alert(t('common:error'), t('errors.passwordsDontMatch'));
       return;
     }
 
@@ -54,13 +54,13 @@ export default function SignupScreen() {
     } catch (error: any) {
       const code = error?.code;
       if (code === 'auth/email-already-in-use') {
-        Alert.alert('Registration Error', 'An account already exists with this email address.');
+        Alert.alert(t('errors.registrationTitle'), t('errors.emailInUse'));
       } else if (code === 'auth/invalid-email') {
-        Alert.alert('Registration Error', 'Please enter a valid email address.');
+        Alert.alert(t('errors.registrationTitle'), t('errors.invalidEmailSentence'));
       } else if (code === 'auth/weak-password') {
-        Alert.alert('Registration Error', 'Password is too weak. Please use at least 6 characters.');
+        Alert.alert(t('errors.registrationTitle'), t('errors.weakPassword'));
       } else {
-        Alert.alert('Registration Error', 'Please try again later.');
+        Alert.alert(t('errors.registrationTitle'), t('errors.tryAgainLaterSentence'));
       }
     } finally {
       setLoading(false);
@@ -112,7 +112,7 @@ export default function SignupScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
             <ChevronLeft size={16} color={colors.text} strokeWidth={2.5} />
             <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text, includeFontPadding: false }}>
-              {t('back', 'Back')}
+              {t('common:back')}
             </Text>
           </View>
         </GlassButton>
@@ -125,7 +125,7 @@ export default function SignupScreen() {
           variant={isValid ? "glass-primary" : "glass"}
           shape="pill"
           size="sm"
-          label={step === 2 ? t('signUpButton', 'Sign Up') : 'Next'}
+          label={step === 2 ? t('signUpButton') : t('common:next')}
           style={{ width: step === 2 ? 88 : 74, height: 34 }}
           contentContainerStyle={{ width: step === 2 ? 88 : 74, height: 34, minHeight: 34, paddingHorizontal: 0, paddingVertical: 0, justifyContent: 'center', alignItems: 'center' }}
           textStyle={{
@@ -189,9 +189,9 @@ export default function SignupScreen() {
                 marginBottom: 8,
               }}
             >
-              {step === 0 && t('createAccount', 'Add Account')}
-              {step === 1 && 'Create Password'}
-              {step === 2 && 'Confirm Password'}
+              {step === 0 && t('createAccount')}
+              {step === 1 && t('signup.createPasswordTitle')}
+              {step === 2 && t('confirmPassword')}
             </Text>
             <Text
               style={{
@@ -201,9 +201,9 @@ export default function SignupScreen() {
                 fontWeight: '500',
               }}
             >
-              {step === 0 && 'Enter your email address.'}
-              {step === 1 && 'Choose a password with at least 6 characters.'}
-              {step === 2 && 'Re-enter your password to finish setup.'}
+              {step === 0 && t('signup.emailSubtitle')}
+              {step === 1 && t('signup.passwordSubtitle')}
+              {step === 2 && t('signup.confirmSubtitle')}
             </Text>
           </View>
 
@@ -229,7 +229,7 @@ export default function SignupScreen() {
                   shadowOpacity: email.trim() ? 0.15 : 0,
                   shadowRadius: 8,
                 }}
-                placeholder={t('emailPlaceholder', 'usuario@example.com')}
+                placeholder={t('emailPlaceholder')}
                 placeholderTextColor={colors.textSecondary}
                 value={email}
                 onChangeText={setEmail}
@@ -261,7 +261,7 @@ export default function SignupScreen() {
                   shadowOpacity: password ? 0.15 : 0,
                   shadowRadius: 8,
                 }}
-                placeholder="Password (min 6 characters)"
+                placeholder={t('signup.passwordPlaceholder')}
                 placeholderTextColor={colors.textSecondary}
                 value={password}
                 onChangeText={setPassword}
@@ -292,7 +292,7 @@ export default function SignupScreen() {
                   shadowOpacity: confirmPassword ? 0.15 : 0,
                   shadowRadius: 8,
                 }}
-                placeholder="Confirm your password"
+                placeholder={t('signup.confirmPlaceholder')}
                 placeholderTextColor={colors.textSecondary}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}

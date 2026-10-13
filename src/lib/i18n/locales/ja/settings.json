@@ -1,0 +1,146 @@
+{
+  "title": "設定",
+  "hoursPerWeek": "時間/週",
+  "units": {
+    "Metric": "メートル法",
+    "Imperial": "ヤード・ポンド法",
+    "metricDescription": "km / kg / °C",
+    "imperialDescription": "mi / lbs / °F"
+  },
+  "weekdays": {
+    "Monday": "月曜日",
+    "Tuesday": "火曜日",
+    "Wednesday": "水曜日",
+    "Thursday": "木曜日",
+    "Friday": "金曜日",
+    "Saturday": "土曜日",
+    "Sunday": "日曜日"
+  },
+  "sportNames": {
+    "running": "ランニング",
+    "cycling": "サイクリング",
+    "swimming": "スイミング",
+    "strength": "筋トレ",
+    "stretching": "ストレッチ"
+  },
+  "alerts": {
+    "updateFailed": "設定を更新できませんでした",
+    "actionRestricted": "操作できません",
+    "cannotDisableFocus": "重点種目に設定されている種目は無効にできません。",
+    "needActiveSport": "有効な種目が1つ以上必要です。",
+    "needMainFocus": "重点種目が1つ以上必要です。",
+    "maxFocusTitle": "重点種目は最大3つまで",
+    "maxFocusMessage": "トレーニング効果とリカバリーを確保するため、重点種目は最大3つまで選択できます。"
+  },
+  "profile": {
+    "title": "アスリートプロフィール",
+    "defaultName": "アスリート",
+    "summary": "{{name}} · {{units}} · {{days}}日先まで",
+    "nameLabel": "アスリート名",
+    "namePlaceholder": "名前を入力",
+    "unitsLabel": "単位",
+    "weeklyHoursLabel": "週間目標時間",
+    "dailyAverage": "1日平均 約{{hours}}時間",
+    "lookaheadLabel": "スケジュール作成期間",
+    "daysShort": "{{days}}日"
+  },
+  "language": {
+    "helper": "今後のセッションは新しい言語で書き直されます。",
+    "pickerTitle": "言語を選択",
+    "changeFailed": "言語を変更できませんでした。もう一度お試しください。"
+  },
+  "sports": {
+    "title": "種目と重点",
+    "summary": "有効 {{active}} · ★ {{focus}}",
+    "hint": "スイッチで種目を有効にします。星をタップすると<bold>重点種目</bold>を切り替えられます。"
+  },
+  "metrics": {
+    "title": "フィットネス指標",
+    "summaryFtp": "FTP {{watts}}W",
+    "summaryPace": "ペース {{pace}}/{{unit}}",
+    "summaryCss": "CSS {{pace}}/100m",
+    "summaryMaxHr": "最大心拍 {{bpm}} bpm",
+    "heartRateTitle": "心拍数と閾値",
+    "maxHr": "最大心拍数（HRmax）",
+    "restHr": "安静時心拍数（RHR）",
+    "fthr": "機能的閾値心拍数（FTHR）",
+    "runningTitle": "ランニング指標",
+    "thresholdPace": "閾値ペース（FTPa）",
+    "runningPower": "ランニング閾値パワー（FTP）",
+    "runningPowerPlaceholder": "任意（例：280）",
+    "watts": "ワット",
+    "cyclingTitle": "サイクリング指標",
+    "cyclingFtp": "機能的閾値パワー（FTP）",
+    "swimmingTitle": "スイミング指標",
+    "css": "クリティカルスイムスピード（CSSペース）",
+    "bodyTitle": "体組成",
+    "bodyWeight": "体重",
+    "weightPlaceholder": "例：70"
+  },
+  "availability": {
+    "title": "1日のトレーニング可能時間",
+    "summary": "合計 {{hours}}時間",
+    "totalLabel": "合計トレーニング可能時間",
+    "target": "目標：{{hours}}時間",
+    "restDay": "休養日",
+    "hours": "{{hours}}時間"
+  },
+  "equipment": {
+    "title": "筋トレ器具",
+    "summary": "{{available}}/{{total}} 利用可能",
+    "hint": "筋トレで使える器具を選択してください。",
+    "items": {
+      "dumbbells": "ダンベル",
+      "kettlebell": "ケトルベル",
+      "pullUpBar": "懸垂バー",
+      "squatRack": "スクワットラック",
+      "bench": "ベンチ",
+      "dipBar": "ディップスバー",
+      "cable": "ケーブルマシン",
+      "latPulldown": "ラットプルダウン",
+      "flyMachine": "フライマシン",
+      "resistanceBands": "トレーニングチューブ",
+      "medicineBall": "メディシンボール"
+    }
+  },
+  "integrations": {
+    "title": "外部サービス連携",
+    "summary": "Strava · {{status}}"
+  },
+  "strava": {
+    "subtitle": "ライド、ラン、スイム、GPSアクティビティ",
+    "description": "完了したワークアウト、パワーカーブ、心拍数、GPSトラックを自動で取り込みます。",
+    "connected": "接続済み",
+    "notConnected": "未接続",
+    "connect": "Stravaと接続",
+    "disconnect": "Stravaの接続を解除",
+    "disconnectConfirm": "Stravaアカウントとの接続を解除しますか？",
+    "disconnectButton": "接続解除",
+    "disconnectFailed": "Stravaとの接続を解除できませんでした：{{message}}",
+    "connectedSuccess": "Stravaと接続しました！",
+    "connectFailed": "Stravaに接続できませんでした：{{error}}",
+    "authFailed": "認証に失敗しました：{{message}}"
+  },
+  "account": {
+    "wizardTitle": "セットアップウィザード",
+    "wizardMessage": "セットアップウィザードを最初からやり直しますか？",
+    "rerun": "やり直す",
+    "rerunWizard": "セットアップウィザードをやり直す",
+    "signOut": "ログアウト",
+    "signOutConfirm": "ログアウトしますか？",
+    "deleteAccount": "アカウントを削除",
+    "deleteConfirm": "アカウントを完全に削除しますか？この操作は取り消せません。すべてのワークアウト、指標、データが完全に削除されます。",
+    "deleting": "削除中...",
+    "deletedTitle": "アカウントを削除しました",
+    "deletedMessage": "アカウントと関連するすべてのデータを完全に削除しました。",
+    "deleteFailed": "アカウントを削除できませんでした。もう一度お試しください。",
+    "incorrectPassword": "パスワードが正しくありません。もう一度お試しください。"
+  },
+  "reauth": {
+    "title": "アカウント削除の確認",
+    "message": "セキュリティのため、パスワードを入力してアカウントの完全削除を確認してください。",
+    "passwordLabel": "パスワード",
+    "passwordPlaceholder": "パスワードを入力",
+    "confirm": "アカウントを完全に削除"
+  }
+}

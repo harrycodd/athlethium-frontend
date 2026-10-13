@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { Timer, Navigation, Gauge, Clock } from 'lucide-react-native';
 import Text from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
+import { useTranslation } from 'react-i18next';
 import { Radius, BorderWidth } from '@/constants/theme';
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 
 export function ActivityStats({ totalTime, totalPlannedTime, totalTimeRemaining, distance, pace }: Props) {
   const { colors, isDark } = useTheme();
+  const { t } = useTranslation('activity');
 
   return (
     <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
@@ -33,7 +35,7 @@ export function ActivityStats({ totalTime, totalPlannedTime, totalTimeRemaining,
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 }}>
           <Timer size={12} color="#22c55e" strokeWidth={2.5} />
           <Text style={{ fontSize: 10, fontWeight: '800', color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-            Total Time
+            {t('stats.totalTime')}
           </Text>
         </View>
         <Text style={{ fontSize: 16, fontWeight: '800', color: colors.text, fontVariant: ['tabular-nums'] }}>
@@ -41,7 +43,7 @@ export function ActivityStats({ totalTime, totalPlannedTime, totalTimeRemaining,
         </Text>
         {!!totalPlannedTime && (
           <Text style={{ fontSize: 10, fontWeight: '600', color: colors.textSecondary, marginTop: 1 }}>
-            of {totalPlannedTime}
+            {t('stats.ofPlanned', { planned: totalPlannedTime })}
           </Text>
         )}
       </View>
@@ -62,7 +64,7 @@ export function ActivityStats({ totalTime, totalPlannedTime, totalTimeRemaining,
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 }}>
             <Navigation size={12} color="#06b6d4" strokeWidth={2.5} />
             <Text style={{ fontSize: 10, fontWeight: '800', color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-              Distance
+              {t('stats.distance')}
             </Text>
           </View>
           <Text style={{ fontSize: 16, fontWeight: '800', color: colors.text, fontVariant: ['tabular-nums'] }}>
@@ -87,7 +89,7 @@ export function ActivityStats({ totalTime, totalPlannedTime, totalTimeRemaining,
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 }}>
             <Gauge size={12} color="#f97316" strokeWidth={2.5} />
             <Text style={{ fontSize: 10, fontWeight: '800', color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-              GPS Pace
+              {t('stats.gpsPace')}
             </Text>
           </View>
           <Text style={{ fontSize: 16, fontWeight: '800', color: colors.text, fontVariant: ['tabular-nums'] }}>
@@ -109,7 +111,7 @@ export function ActivityStats({ totalTime, totalPlannedTime, totalTimeRemaining,
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 }}>
             <Clock size={12} color="#a855f7" strokeWidth={2.5} />
             <Text style={{ fontSize: 10, fontWeight: '800', color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-              Remaining
+              {t('stats.remaining')}
             </Text>
           </View>
           <Text style={{ fontSize: 16, fontWeight: '800', color: colors.text, fontVariant: ['tabular-nums'] }}>

@@ -1,0 +1,79 @@
+{
+  "title": "Progress",
+  "subtitle": "Track your fitness metrics over time",
+  "range": {
+    "days_one": "{{count}} Day",
+    "days_other": "{{count}} Days"
+  },
+  "interactiveChart": "Interactive Chart",
+  "presets": {
+    "load": "Load",
+    "readiness": "Readiness",
+    "custom": "Custom",
+    "fitnessFatigue": "Fitness & Fatigue",
+    "dailyReadiness": "Daily Readiness",
+    "customEllipsis": "Custom..."
+  },
+  "axis": {
+    "readiness": "Readiness",
+    "trainingLoad": "Training Load",
+    "weightWithUnit": "Weight ({{unit}})"
+  },
+  "axisBadge": {
+    "L": "L",
+    "R": "R",
+    "S": "S"
+  },
+  "today": "Today",
+  "metricValueLabel": "{{label}}:",
+  "selectAtLeastOne": "Select at least one metric to display.",
+  "editMetrics": "Edit Metrics...",
+  "apply": "Apply",
+  "customGraph": {
+    "title": "Custom Graph",
+    "subtitle": "Select up to 5 metrics ({{selected}}/5 selected)"
+  },
+  "groups": {
+    "training": "Training Load",
+    "readiness": "Daily Readiness",
+    "body": "Body Metrics"
+  },
+  "metrics": {
+    "ctl": {
+      "label": "Fitness (CTL)",
+      "short": "Fitness"
+    },
+    "atl": {
+      "label": "Fatigue (ATL)",
+      "short": "Fatigue"
+    },
+    "form": {
+      "label": "Form (TSB)",
+      "short": "Form"
+    },
+    "sleep": {
+      "label": "Sleep",
+      "short": "Sleep"
+    },
+    "physical": {
+      "label": "Physical",
+      "short": "Physical"
+    },
+    "mental": {
+      "label": "Mental",
+      "short": "Mental"
+    },
+    "weight": {
+      "label": "Weight",
+      "short": "Weight"
+    },
+    "injury": {
+      "label": "Injury",
+      "short": "Injury"
+    },
+    "illness": {
+      "label": "Illness",
+      "short": "Illness"
+    }
+  }
+}

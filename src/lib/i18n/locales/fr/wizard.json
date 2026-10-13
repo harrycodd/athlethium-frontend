@@ -1,0 +1,421 @@
+{
+  "stepOf": "Étape {{current}} sur {{total}}",
+  "hoursPerWeek": "h/semaine",
+  "sports": {
+    "stretching": "Étirements"
+  },
+  "units": {
+    "metric": "Métrique",
+    "imperial": "Impérial",
+    "metricHint": "km / kg / °C",
+    "imperialHint": "mi / lbs / °F"
+  },
+  "weekdays": {
+    "Monday": "Lundi",
+    "Tuesday": "Mardi",
+    "Wednesday": "Mercredi",
+    "Thursday": "Jeudi",
+    "Friday": "Vendredi",
+    "Saturday": "Samedi",
+    "Sunday": "Dimanche"
+  },
+  "goals": {
+    "generalFitness": "Forme générale",
+    "ironman": "Ironman",
+    "halfIronman": "Demi-Ironman (70.3)",
+    "olympicTriathlon": "Triathlon olympique",
+    "sprintTriathlon": "Triathlon sprint",
+    "aquathlon": "Aquathlon",
+    "swimRun": "SwimRun",
+    "duathlon": "Duathlon",
+    "marathon": "Marathon",
+    "halfMarathon": "Semi-marathon",
+    "run10k": "10 km",
+    "run5k": "5 km",
+    "centuryRide": "Cyclosportive 160 km",
+    "tt40k": "CLM 40 km",
+    "tt10Mile": "CLM 10 miles",
+    "freestyle1500m": "1500 m nage libre",
+    "individualMedley400m": "400 m 4 nages",
+    "strokeSpecialization200m": "200 m spécialité",
+    "sprintEvent100m": "Sprint 100 m",
+    "openWater1_5k": "Eau libre 1,5 km",
+    "openWater5k": "Eau libre 5 km",
+    "openWater10k": "Eau libre 10 km",
+    "functionalStrength": "Renforcement fonctionnel et préparation physique",
+    "fullBodyFlexibility": "Souplesse globale",
+    "frontSplitsMastery": "Maîtrise du grand écart latéral",
+    "middleSplitsMastery": "Maîtrise du grand écart facial"
+  },
+  "levels": {
+    "beginner": {
+      "label": "Débutant",
+      "badge": "Premiers pas",
+      "description": "Nouveau dans l'entraînement structuré ou en reprise après une pause (base de 1-3 h/semaine)."
+    },
+    "intermediate": {
+      "label": "Intermédiaire",
+      "badge": "Athlète régulier",
+      "description": "Entraînement régulier de 4-8 h/semaine avec une bonne base aérobie."
+    },
+    "advanced": {
+      "label": "Confirmé",
+      "badge": "Compétiteur assidu",
+      "description": "Des années de pratique régulière en endurance et un gros volume (8-14+ h/semaine)."
+    },
+    "elite": {
+      "label": "Élite / national",
+      "badge": "Haut niveau",
+      "description": "Athlète élite ou podium en groupe d'âge, avec un long passé de gros volume (14-20+ h/semaine)."
+    },
+    "pro": {
+      "label": "Professionnel",
+      "badge": "Athlète à plein temps",
+      "description": "Professionnel à plein temps, 20-30 h/semaine, doubles séances comprises."
+    }
+  },
+  "equipment": {
+    "dumbbells": "Haltères",
+    "kettlebell": "Kettlebell",
+    "pullUpBar": "Barre de traction",
+    "squatRack": "Rack à squat",
+    "bench": "Banc",
+    "dipBar": "Barres à dips",
+    "cable": "Poulie",
+    "latPulldown": "Tirage vertical",
+    "flyMachine": "Machine à écartés",
+    "resistanceBands": "Bandes élastiques",
+    "medicineBall": "Médecine-ball"
+  },
+  "milestones": {
+    "stretching": {
+      "fullFrontSplits": {
+        "label": "Grand écart latéral complet",
+        "note": "Grand écart latéral jusqu'au sol"
+      },
+      "middleSplits": {
+        "label": "Grand écart facial",
+        "note": "Amplitude d'abduction des hanches"
+      },
+      "palmsToFloor": {
+        "label": "Paumes au sol",
+        "note": "Souplesse des ischios et de la chaîne postérieure"
+      },
+      "deepSquat": {
+        "label": "Squat profond",
+        "note": "Mobilité profonde des chevilles et des hanches"
+      },
+      "pigeonPose": {
+        "label": "Posture du pigeon à 90°",
+        "note": "Souplesse des fessiers et des rotateurs de hanche"
+      },
+      "ankleDorsiflexion": {
+        "label": "Flexion dorsale de cheville",
+        "note": "Amplitude complète de la cheville"
+      },
+      "thoracicBridge": {
+        "label": "Pont thoracique",
+        "note": "Pont complet et extension de la colonne thoracique"
+      },
+      "spinalTwists": {
+        "label": "Décompression et torsions du dos",
+        "note": "Mobilité de la colonne et équilibre en rotation"
+      },
+      "lSit": {
+        "label": "Mobilité L-sit",
+        "note": "Compression abdominale et amplitude des fléchisseurs de hanche"
+      },
+      "overheadShoulder": {
+        "label": "Mobilité des épaules bras levés",
+        "note": "Flexion active des épaules à 180°"
+      },
+      "chestOpener": {
+        "label": "Ouverture pectoraux et épaules",
+        "note": "Souplesse des pectoraux et du tendon du biceps"
+      },
+      "thoracicExtension": {
+        "label": "Extension thoracique",
+        "note": "Mobilité posturale du haut du dos"
+      },
+      "fullBodyFlow": {
+        "label": "Enchaînement mobilité complet",
+        "note": "Routine de mobilité quotidienne complète"
+      },
+      "fullBodyMastery": {
+        "label": "Souplesse globale avancée",
+        "note": "Souplesse complète de toutes les articulations"
+      }
+    },
+    "strength": {
+      "pullUps": {
+        "label": "10 tractions strictes",
+        "note": "10 répétitions strictes d'affilée"
+      },
+      "pushUps": {
+        "label": "50 pompes d'affilée",
+        "note": "50 pompes sans pause"
+      },
+      "benchPress": {
+        "label": "Développé couché au PDC",
+        "note": "Développé couché à 1× le poids de corps"
+      },
+      "handstandPushUps": {
+        "label": "Pompes en équilibre",
+        "note": "Pompes strictes en équilibre contre un mur"
+      },
+      "muscleUp": {
+        "label": "Maîtrise du muscle-up",
+        "note": "Muscle-ups stricts à la barre ou aux anneaux"
+      },
+      "overheadPress": {
+        "label": "Développé militaire (0,75× PDC)",
+        "note": "Développé militaire strict à la barre"
+      },
+      "squat": {
+        "label": "Squat à 1,5× PDC",
+        "note": "Back squat à 1,5× le poids de corps"
+      },
+      "deadlift": {
+        "label": "Soulevé de terre à 2× PDC",
+        "note": "Soulevé de terre classique à 2× le poids de corps"
+      },
+      "pistolSquats": {
+        "label": "Pistol squats (sur une jambe)",
+        "note": "5 répétitions propres par jambe"
+      },
+      "bulgarianSplitSquat": {
+        "label": "Squat bulgare lourd",
+        "note": "Force et stabilité sur une jambe"
+      },
+      "plank": {
+        "label": "Gainage de 3 minutes",
+        "note": "180 s de planche stricte en continu"
+      },
+      "dragonFlag": {
+        "label": "Maîtrise du dragon flag",
+        "note": "Dragon flag strict au poids de corps"
+      },
+      "hangingLegRaises": {
+        "label": "Relevés de jambes suspendu (15 rép.)",
+        "note": "Relevés stricts pieds à la barre"
+      },
+      "abWheel": {
+        "label": "Roue abdominale depuis les pieds",
+        "note": "Roue abdominale en extension complète"
+      },
+      "cleanAndJerk": {
+        "label": "Épaulé-jeté de référence",
+        "note": "Référence en haltérophilie"
+      },
+      "functionalStrength": {
+        "label": "Force fonctionnelle avancée",
+        "note": "Force et puissance fonctionnelles globales"
+      }
+    }
+  },
+  "defaults": {
+    "goalName": "Mon objectif de forme",
+    "goalNameForType": "Objectif {{goal}}",
+    "swimGoalName": "Objectif 1500 m nage",
+    "customMilestoneNotes": "Étape personnalisée"
+  },
+  "goalEvent": {
+    "description": "Objectif principal : {{goal}}",
+    "metaGoal": "Objectif",
+    "metaTarget": "Objectif {{time}}"
+  },
+  "alerts": {
+    "required": "Champ requis",
+    "nameRequired": "Veuillez saisir votre nom pour continuer.",
+    "sportRequired": "Veuillez sélectionner au moins un sport actif.",
+    "focusRequired": "Veuillez choisir au moins un sport prioritaire parmi vos sports actifs.",
+    "goalNameRequired": "Veuillez saisir ou choisir un nom pour votre objectif.",
+    "finishFailed": "Échec de la finalisation de l'assistant",
+    "restricted": "Action impossible",
+    "oneActiveSport": "Vous devez avoir au moins un sport actif.",
+    "enableSportFirst": "Veuillez d'abord activer ce sport dans vos sports actifs.",
+    "oneMainFocus": "Vous devez avoir au moins un sport prioritaire.",
+    "maxFocus": {
+      "title": "3 sports prioritaires maximum",
+      "message": "Pour une adaptation à l'entraînement et une récupération efficaces, vous pouvez choisir jusqu'à 3 sports prioritaires."
+    },
+    "disconnectStrava": {
+      "title": "Déconnecter Strava",
+      "message": "Voulez-vous vraiment déconnecter votre compte Strava ?",
+      "confirm": "Déconnecter"
+    },
+    "stravaConnected": "Strava connecté avec succès !",
+    "stravaFailed": "Échec de la connexion à Strava : {{error}}",
+    "authFailed": "Échec de l'authentification : {{message}}",
+    "minimumTarget": {
+      "title": "Minimum atteint",
+      "message": "Le total de vos disponibilités ne peut pas être inférieur à votre volume hebdo visé ({{hours}} h)."
+    }
+  },
+  "steps": {
+    "name": {
+      "title": "Bienvenue, athlète",
+      "subtitle": "Comment devons-nous vous appeler pendant votre préparation ?",
+      "placeholder": "Saisissez votre nom"
+    },
+    "preferences": {
+      "title": "Préférences",
+      "subtitle": "Choisissez vos unités de mesure et votre volume d'entraînement hebdomadaire.",
+      "unitsLabel": "Unités de mesure",
+      "weeklyHoursLabel": "Heures d'entraînement par semaine",
+      "dailyAverage": "~{{hours}} h en moyenne par jour"
+    },
+    "sports": {
+      "title": "Sports et priorités",
+      "subtitle": "Activez vos disciplines et touchez l'étoile pour choisir votre sport prioritaire."
+    },
+    "primaryGoal": {
+      "title": "Objectif principal",
+      "subtitle": "Choisissez la discipline visée pour votre entraînement."
+    },
+    "goal": {
+      "title": "Fixez votre objectif",
+      "subtitle": "Visez des étapes et des dates précises pour votre sport prioritaire.",
+      "mainFocusSport": "SPORT PRIORITAIRE",
+      "focusedOnly": "★ Sports prioritaires uniquement",
+      "focusedSport": "★ {{sport}}",
+      "flexibilityMilestoneLabel": "ÉTAPE DE SOUPLESSE / PRIORITÉ",
+      "strengthBenchmarkLabel": "RÉFÉRENCE DE FORCE / PRIORITÉ",
+      "selectFlexibilityMilestone": "Choisir une étape de souplesse",
+      "selectStrengthBenchmark": "Choisir une référence de force",
+      "category": "Catégorie : {{category}}",
+      "allFocusAreas": "toutes les zones",
+      "categoryValues": {
+        "legs": "jambes",
+        "core": "tronc",
+        "upper": "haut du corps",
+        "other": "autre"
+      },
+      "targetAreaLabel": "ZONE DU CORPS CIBLÉE PAR L'ALGORITHME",
+      "nameLabelStretching": "NOM DE L'OBJECTIF / DE L'ÉTAPE",
+      "nameLabelStrength": "NOM DE L'OBJECTIF / DE LA RÉFÉRENCE",
+      "nameLabel": "NOM DE L'OBJECTIF / DE L'ÉVÉNEMENT",
+      "namePlaceholderStretching": "ex. grand écart latéral, paumes au sol, autre",
+      "namePlaceholderStrength": "ex. 10 tractions strictes, squat à 100 kg, autre",
+      "namePlaceholder": "ex. marathon d'automne, objectif moins de 4 h",
+      "swimDistanceLabel": "DISTANCE DE NAGE VISÉE (MÈTRES / YARDS)",
+      "distanceLabelMiles": "DISTANCE VISÉE (MILES)",
+      "distanceLabelKm": "DISTANCE VISÉE (KILOMÈTRES)",
+      "yards": "Yards",
+      "meters": "Mètres",
+      "imperialMi": "Impérial (mi)",
+      "metricKm": "Métrique (km)",
+      "presetTimeTrial": "{{distance}} (CLM)",
+      "distancePlaceholderSwim": "Distance en mètres/yards (ex. 1500)",
+      "distancePlaceholderMiles": "Distance en miles (ex. 26,2)",
+      "distancePlaceholderKm": "Distance en km (ex. 42,2)",
+      "finishTimeLabel": "TEMPS FINAL VISÉ (HH:MM:SS)",
+      "eventDateLabel": "DATE DE L'ÉVÉNEMENT",
+      "weeksAway_one": "dans {{count}} semaine",
+      "weeksAway_other": "dans {{count}} semaines",
+      "weeksPreset": "+{{weeks}} sem.",
+      "changeDate": "Changer la date",
+      "selectTargetDate": "Choisir la date cible",
+      "notesLabelStretching": "PRIORITÉ MOBILITÉ / NOTES (FACULTATIF)",
+      "notesLabelStrength": "INDICATEURS DE RÉFÉRENCE / NOTES (FACULTATIF)",
+      "notesLabel": "NOTES SUR L'OBJECTIF (FACULTATIF)",
+      "notesPlaceholderStretching": "ex. 15 min de mobilité des hanches par jour, toucher le sol",
+      "notesPlaceholderStrength": "ex. 10 rép. strictes, 1RM à 100 kg",
+      "notesPlaceholder": "ex. moins de 3:45, negative split"
+    },
+    "distribution": {
+      "title": "Répartition de l'entraînement",
+      "subtitle": "Répartissez vos {{hours}} heures hebdomadaires ou vos séances entre chaque sport.",
+      "percentageMode": "% du temps",
+      "sessionsMode": "Séances/semaine",
+      "totalAllocated": "TOTAL RÉPARTI",
+      "mainFocus": "★ Prioritaire",
+      "hoursPerWeek": "({{hours}} h/sem.)",
+      "sessionsPerWeek_one": "séance/sem.",
+      "sessionsPerWeek_other": "séances/sem."
+    },
+    "availability": {
+      "title": "Disponibilités habituelles",
+      "subtitle": "Indiquez vos heures d'entraînement disponibles habituelles. Vous pourrez toujours ajuster certains jours dans votre calendrier.",
+      "totalCapacity": "Disponibilité totale",
+      "target": "Objectif : {{hours}} h",
+      "restDay": "Jour de repos",
+      "hours": "{{hours}} h"
+    },
+    "equipment": {
+      "title": "Matériel de renforcement",
+      "subtitle": "Sélectionnez le matériel dont vous disposez pour vos séances."
+    },
+    "integrations": {
+      "title": "Applications partenaires",
+      "subtitle": "Connectez vos plateformes d'entraînement pour synchroniser automatiquement activités, GPS et données de puissance.",
+      "stravaSubtitle": "Vélo, course, natation et activités GPS",
+      "connected": "Connecté",
+      "stravaDescription": "Importe automatiquement vos séances réalisées, courbes de puissance, fréquence cardiaque et traces GPS.",
+      "disconnectStrava": "Déconnecter Strava",
+      "connectStrava": "Se connecter à Strava",
+      "garminSubtitle": "Appareils Edge, Forerunner et Fenix",
+      "wahooSubtitle": "Compteurs GPS vélo ELEMNT",
+      "comingSoon": "BIENTÔT DISPONIBLE",
+      "settingsHint": "Vous pouvez aussi connecter, déconnecter ou gérer vos comptes à tout moment dans les réglages."
+    },
+    "fitness": {
+      "title": "Niveau actuel",
+      "subtitle": "Choisissez votre niveau d'entraînement ou saisissez vos valeurs seuil actuelles.",
+      "pace": "Allure {{pace}}/{{unit}}",
+      "figuresTitle": "Valeurs d'entraînement actuelles",
+      "figuresSubtitle": "Ajustez les valeurs pour qu'elles correspondent à votre dernier test de seuil.",
+      "thresholdHr": "FC seuil (FTHR)",
+      "maxHr": "FC max",
+      "cyclingFtp": "FTP vélo (puissance au seuil fonctionnel)",
+      "watts": "Watts",
+      "runningPace": "Allure seuil en course (mm:ss)",
+      "swimCss": "Vitesse critique de nage (CSS mm:ss)",
+      "bodyWeight": "Poids",
+      "advancedCtl": "Avancé : saisir la CTL manuellement",
+      "currentCtl": "Actuelle : {{ctl}} CTL",
+      "ctlLabel": "Charge chronique (CTL / condition)",
+      "ctlInfo": "La CTL représente la moyenne glissante sur 42 jours de votre charge d'entraînement quotidienne. Si vous utilisez TrainingPeaks ou la Forme Strava, saisissez votre valeur actuelle pour que la charge initiale de votre plan corresponde exactement à votre condition."
+    },
+    "summary": {
+      "title": "Prêt à vous entraîner",
+      "subtitle": "Vérifiez la configuration de votre profil.",
+      "athleteName": "Nom de l'athlète",
+      "units": "Unités",
+      "weeklyHours": "Heures hebdo visées",
+      "hours_one": "{{count}} heure",
+      "hours_other": "{{count}} heures",
+      "mainFocus": "Sport prioritaire",
+      "primaryGoal": "Objectif principal",
+      "timeDistribution": "Répartition du temps",
+      "weeklyTotal": "{{hours}} h/semaine au total",
+      "sportBreakdown": "({{hours}} h • {{sessions}}×/sem.)",
+      "targetMilestone": "Étape visée",
+      "fitnessLevel": "Niveau",
+      "fitnessLevelValue": "{{level}} ({{ctl}} CTL)",
+      "integrations": "Connexions",
+      "stravaConnected": "Strava connecté",
+      "standalone": "Sans connexion",
+      "generating": "Création de votre plan d'entraînement personnalisé…"
+    }
+  },
+  "bodyAreas": {
+    "all": "Corps entier",
+    "core": "Tronc",
+    "upper": "Haut du corps",
+    "lower": "Bas du corps / jambes"
+  },
+  "milestonePicker": {
+    "selectFlexibilityTarget": "Choisir un objectif de souplesse",
+    "selectStrengthBenchmark": "Choisir une référence de force",
+    "categories": {
+      "all": "Toutes les zones",
+      "legs": "Jambes",
+      "core": "Tronc",
+      "upper": "Haut du corps",
+      "other": "Autre / personnalisé"
+    },
+    "otherTitle": "Autre / objectif personnalisé",
+    "otherDescription": "Choisissez la zone du corps ciblée et saisissez votre mouvement"
+  }
+}

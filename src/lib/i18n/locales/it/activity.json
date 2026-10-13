@@ -1,0 +1,107 @@
+{
+  "notFound": "Seduta non trovata",
+  "goBack": "Indietro",
+  "breakthrough": {
+    "title": "Nuova soglia! 🏆",
+    "cyclingFtp": "Nuovo record di FTP! FTP ciclismo aggiornata da {{oldFtp}}W a {{newFtp}}W.",
+    "runningPace": "Nuovo passo soglia! Passo soglia di corsa aggiornato a {{pace}}/km."
+  },
+  "finishWorkout": {
+    "title": "Termina allenamento",
+    "message": "Vuoi davvero terminare questo allenamento e salvare i risultati?"
+  },
+  "endSession": {
+    "title": "Termina seduta",
+    "shortMessage": "Questa seduta dura meno di 2 minuti. Cosa vuoi fare?",
+    "message": "Vuoi davvero terminare questa seduta e salvare i risultati?"
+  },
+  "actions": {
+    "finish": "Termina",
+    "resume": "Riprendi",
+    "discard": "Scarta",
+    "finishAndSave": "Termina e salva"
+  },
+  "controls": {
+    "pause": "PAUSA",
+    "play": "AVVIA",
+    "finishWorkout": "TERMINA ALLENAMENTO",
+    "nextStep": "FASE SUCCESSIVA"
+  },
+  "timer": {
+    "stepRemaining": "Residuo fase",
+    "stepElapsed": "Trascorso fase",
+    "countdown": "CONTO ALLA ROVESCIA",
+    "elapsed": "TRASCORSO",
+    "labelWithMode": "{{label}} ({{mode}})"
+  },
+  "stats": {
+    "totalTime": "Tempo totale",
+    "ofPlanned": "su {{planned}}",
+    "distance": "Distanza",
+    "gpsPace": "Passo GPS",
+    "remaining": "Rimanente"
+  },
+  "stepOf": "Fase {{current}} di {{total}}",
+  "nextUp": "PROSSIMO · {{type}}",
+  "currentStep": "Fase attuale",
+  "defaultStepName": "Fase: {{type}}",
+  "defaultSegmentName": "Segmento {{number}}",
+  "defaultWorkoutName": "Allenamento",
+  "sports": {
+    "running": "Corsa",
+    "cycling": "Ciclismo",
+    "swimming": "Nuoto",
+    "strength": "Forza",
+    "stretching": "Stretching",
+    "yoga": "Yoga",
+    "rest": "Riposo"
+  },
+  "stepTypes": {
+    "warmup": "Riscaldamento",
+    "interval": "Ripetuta",
+    "recovery": "Recupero",
+    "cooldown": "Defaticamento",
+    "tempo": "Medio",
+    "endurance": "Fondo",
+    "exercise": "Esercizio",
+    "work": "Lavoro",
+    "sprint": "Sprint",
+    "rest": "Riposo",
+    "threshold": "Soglia",
+    "strength": "Forza",
+    "stretching": "Stretching",
+    "mobility": "Mobilità"
+  },
+  "targets": {
+    "metricLabel": "METRICA TARGET",
+    "steadyPace": "Passo costante",
+    "intensityLabel": "INTENSITÀ TARGET",
+    "steadyEffort": "Sforzo costante",
+    "zone2Aerobic": "Z2 aerobica",
+    "powerLabel": "POTENZA TARGET",
+    "paceLabel": "PASSO TARGET",
+    "cssPaceLabel": "PASSO CSS TARGET",
+    "repsLabel": "RIPETIZIONI TARGET",
+    "heartRateLabel": "FC TARGET",
+    "sessionLabel": "TARGET SEDUTA",
+    "warmupZone": "50-65% FTP · Zona riscaldamento",
+    "thresholdZone": "95-105% FTP · Zona soglia",
+    "activeRecovery": "45-55% FTP · Recupero attivo",
+    "cooldownZone": "45-60% FTP · Zona defaticamento",
+    "enduranceZone": "65-75% FTP · Zona fondo",
+    "racePace": "Soglia / passo gara 5-10 km",
+    "easyAerobicPace": "Passo aerobico facile / recupero",
+    "steadyEndurancePace": "Z2 · Passo di fondo costante",
+    "criticalSwimSpeed": "Velocità critica di nuoto · Soglia",
+    "aerobicRecoveryPace": "Passo aerobico / recupero",
+    "setsReps": "{{sets}} serie × {{reps}} ripetizioni",
+    "reps": "{{reps}} ripetizioni",
+    "qualityReps": "Ripetizioni di qualità",
+    "eccentricForm": "Controlla bene la fase eccentrica",
+    "hrZone": "Zona FC target",
+    "thresholdHr": "FC soglia Z3-4",
+    "executeSegment": "Esegui il segmento",
+    "followGuidance": "Segui le indicazioni della ripetuta",
+    "zone2AerobicEndurance": "Z2 fondo aerobico"
+  }
+}

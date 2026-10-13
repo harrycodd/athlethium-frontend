@@ -1,0 +1,25 @@
+{
+  "dailyReadiness": "Tagesform",
+  "recordStats": "Trag deine Werte für heute ein",
+  "history": "Verlauf",
+  "noEntry": "Kein Eintrag vorhanden",
+  "viewingPast": "Du siehst frühere Tagesform-Daten",
+  "physicalFeeling": "Körperliches Befinden",
+  "mentalFeeling": "Mentales Befinden",
+  "sleepQuality": "Schlafqualität",
+  "injury": "Verletzung",
+  "illness": "Krankheit",
+  "weightWithUnit": "Gewicht ({{unit}})",
+  "notes": "Notizen",
+  "notesPlaceholder": "Wie fühlst du dich heute?",
+  "noNotes": "Keine Notizen vorhanden.",
+  "save": "Tagesform speichern",
+  "options": {
+    "none": "Keine",
+    "minor": "Leicht",
+    "moderate": "Mittel",
+    "severe": "Schwer",
+    "mild": "Leicht",
+    "sick": "Krank"
+  }
+}

@@ -1,11 +1,15 @@
 import { cleanSets, displayToKg, initialSets, kgToDisplay, setTotals, summaryStats } from '@/lib/session-stats';
 import type { Workout } from '@/lib/workout-service';
+import i18n from '@/lib/i18n';
 
 const base = { userId: 'u', name: 'x', description: '', date: '2026-10-12', completed: true, status: 'completed' } as const;
-const labels = (w: Partial<Workout>, imperial = false) =>
-  summaryStats({ ...base, sport: 'cycling', ...w } as Workout, imperial).map((t) => t.label);
+// tiles carry translation keys; check them as an English-speaking user sees them
+const english = (w: Partial<Workout>, imperial: boolean) =>
+  summaryStats({ ...base, sport: 'cycling', ...w } as Workout, imperial)
+    .map(({ labelKey, ...rest }) => ({ label: i18n.t(labelKey, { ns: 'session' }), ...rest }));
+const labels = (w: Partial<Workout>, imperial = false) => english(w, imperial).map((t) => t.label);
 const value = (w: Partial<Workout>, label: string, imperial = false) =>
-  summaryStats({ ...base, sport: 'cycling', ...w } as Workout, imperial).find((t) => t.label === label);
+  english(w, imperial).find((t) => t.label === label);
 
 const RIDE = { duration_seconds: 3600, distance_m: 30000, avg_speed_ms: 8.33, elevation_m: 400, avg_power: 210,
   normalized_power: 225, avg_heart_rate: 140, max_heart_rate: 171, avg_cadence: 88, calories: 900 };

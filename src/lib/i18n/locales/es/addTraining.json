@@ -1,0 +1,49 @@
+{
+  "upload": "Subir",
+  "namePlaceholder": "Nombre de la sesión",
+  "tssBadge": "~{{tss}} TSS",
+  "sports": {
+    "stretching": "Estiramientos",
+    "other": "Otro"
+  },
+  "eventTypes": {
+    "session": "Sesión",
+    "event": "Evento",
+    "goal": "Objetivo"
+  },
+  "effortLevels": {
+    "recovery": "Recuperación (zona 1)",
+    "steady": "Constante (zona 2)",
+    "threshold": "Umbral (zona 3/4)",
+    "hard": "VO2max / Intenso (zona 5)"
+  },
+  "uploading": {
+    "title": "Subiendo entrenamiento",
+    "message": "Procesando el archivo FIT y generando el análisis. Puede tardar unos segundos..."
+  },
+  "fields": {
+    "date": "Fecha",
+    "sport": "Deporte",
+    "type": "Tipo",
+    "effortLevel": "Nivel de esfuerzo",
+    "plannedDuration": "Duración prevista",
+    "description": "Descripción y objetivos",
+    "descriptionPlaceholder": "¿Cuáles son los objetivos o notas de esta sesión?"
+  },
+  "saving": "Guardando...",
+  "addToPlan": "Añadir al plan",
+  "pickers": {
+    "sport": "Elige deporte",
+    "eventType": "Elige tipo de evento",
+    "effortLevel": "Elige nivel de esfuerzo"
+  },
+  "alerts": {
+    "requiredTitle": "Obligatorio",
+    "nameRequired": "Introduce un nombre para la sesión",
+    "saveFailed": "No se pudo guardar la sesión de entrenamiento",
+    "uploadSuccess": "¡Entrenamiento subido y analizado correctamente!",
+    "uploadErrorTitle": "Error al subir",
+    "uploadFailed": "No se pudo subir el entrenamiento.",
+    "uploadException": "Se produjo un error durante la subida."
+  }
+}

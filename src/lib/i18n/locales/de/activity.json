@@ -1,0 +1,107 @@
+{
+  "notFound": "Einheit nicht gefunden",
+  "goBack": "Zurück",
+  "breakthrough": {
+    "title": "Schwellen-Durchbruch! 🏆",
+    "cyclingFtp": "Neuer FTP-Durchbruch! Deine Rad-FTP wurde von {{oldFtp}}W auf {{newFtp}}W aktualisiert.",
+    "runningPace": "Neuer Durchbruch bei der Schwellenpace! Deine Lauf-Schwellenpace wurde auf {{pace}}/km aktualisiert."
+  },
+  "finishWorkout": {
+    "title": "Einheit beenden",
+    "message": "Willst du diese Einheit wirklich beenden und deine Ergebnisse speichern?"
+  },
+  "endSession": {
+    "title": "Einheit beenden",
+    "shortMessage": "Diese Einheit ist kürzer als 2 Minuten. Was möchtest du tun?",
+    "message": "Willst du diese Einheit wirklich beenden und deine Ergebnisse speichern?"
+  },
+  "actions": {
+    "finish": "Beenden",
+    "resume": "Fortsetzen",
+    "discard": "Verwerfen",
+    "finishAndSave": "Beenden & speichern"
+  },
+  "controls": {
+    "pause": "PAUSE",
+    "play": "START",
+    "finishWorkout": "EINHEIT BEENDEN",
+    "nextStep": "NÄCHSTER SCHRITT"
+  },
+  "timer": {
+    "stepRemaining": "Schritt übrig",
+    "stepElapsed": "Schritt vergangen",
+    "countdown": "COUNTDOWN",
+    "elapsed": "VERGANGEN",
+    "labelWithMode": "{{label}} ({{mode}})"
+  },
+  "stats": {
+    "totalTime": "Gesamtzeit",
+    "ofPlanned": "von {{planned}}",
+    "distance": "Distanz",
+    "gpsPace": "GPS-Pace",
+    "remaining": "Verbleibend"
+  },
+  "stepOf": "Schritt {{current}} von {{total}}",
+  "nextUp": "ALS NÄCHSTES · {{type}}",
+  "currentStep": "Aktueller Schritt",
+  "defaultStepName": "{{type}}-Schritt",
+  "defaultSegmentName": "Segment {{number}}",
+  "defaultWorkoutName": "Trainingseinheit",
+  "sports": {
+    "running": "Laufen",
+    "cycling": "Radfahren",
+    "swimming": "Schwimmen",
+    "strength": "Kraft",
+    "stretching": "Dehnen",
+    "yoga": "Yoga",
+    "rest": "Ruhetag"
+  },
+  "stepTypes": {
+    "warmup": "Aufwärmen",
+    "interval": "Intervall",
+    "recovery": "Regeneration",
+    "cooldown": "Cool-down",
+    "tempo": "Tempo",
+    "endurance": "Grundlage",
+    "exercise": "Übung",
+    "work": "Belastung",
+    "sprint": "Sprint",
+    "rest": "Pause",
+    "threshold": "Schwelle",
+    "strength": "Kraft",
+    "stretching": "Dehnen",
+    "mobility": "Mobilität"
+  },
+  "targets": {
+    "metricLabel": "ZIELWERT",
+    "steadyPace": "Gleichmäßige Pace",
+    "intensityLabel": "ZIELINTENSITÄT",
+    "steadyEffort": "Gleichmäßige Belastung",
+    "zone2Aerobic": "Zone 2 · GA1",
+    "powerLabel": "ZIELLEISTUNG",
+    "paceLabel": "ZIELPACE",
+    "cssPaceLabel": "ZIEL-CSS-PACE",
+    "repsLabel": "ZIEL-WDH.",
+    "heartRateLabel": "ZIEL-HERZFREQUENZ",
+    "sessionLabel": "ZIEL DER EINHEIT",
+    "warmupZone": "50-65% FTP · Aufwärmzone",
+    "thresholdZone": "95-105% FTP · Schwellenzone",
+    "activeRecovery": "45-55% FTP · Aktive Regeneration",
+    "cooldownZone": "45-60% FTP · Cool-down-Zone",
+    "enduranceZone": "65-75% FTP · Grundlagenzone (GA1)",
+    "racePace": "Schwelle / 5-10-km-Wettkampfpace",
+    "easyAerobicPace": "Lockere GA1- / Regenerationspace",
+    "steadyEndurancePace": "Zone 2 · Gleichmäßige GA1-Pace",
+    "criticalSwimSpeed": "Critical Swim Speed · Schwelle",
+    "aerobicRecoveryPace": "GA1- / Regenerationspace",
+    "setsReps": "{{sets}} Sätze × {{reps}} Wdh.",
+    "reps": "{{reps}} Wdh.",
+    "qualityReps": "Saubere Wiederholungen",
+    "eccentricForm": "Achte auf eine kontrollierte exzentrische Phase",
+    "hrZone": "Ziel-HF-Zone",
+    "thresholdHr": "Zone 3-4 · Schwellen-HF",
+    "executeSegment": "Segment absolvieren",
+    "followGuidance": "Folge den Vorgaben des Intervalls",
+    "zone2AerobicEndurance": "Zone 2 · Grundlagenausdauer (GA1)"
+  }
+}

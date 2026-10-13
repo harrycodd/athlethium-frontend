@@ -36,26 +36,32 @@ import { Radius, BorderWidth } from '@/constants/theme';
 import { GlassButton } from '@/components/ui/glass-button';
 import { cn } from "@/lib/utils";
 import * as DocumentPicker from 'expo-document-picker';
+import { useTranslation } from 'react-i18next';
+import { formatDate } from '@/lib/i18n/format';
 
-const SPORT_OPTIONS: { label: string; value: ActivityType }[] = [
-  { label: 'Running', value: 'running' },
-  { label: 'Cycling', value: 'cycling' },
-  { label: 'Swimming', value: 'swimming' },
-  { label: 'Strength', value: 'strength' },
-  { label: 'Stretching', value: 'stretching' },
-  { label: 'Other', value: 'other' },
+const SPORT_OPTIONS: { labelKey: string; value: ActivityType }[] = [
+  { labelKey: 'common:sports.running', value: 'running' },
+  { labelKey: 'common:sports.cycling', value: 'cycling' },
+  { labelKey: 'common:sports.swimming', value: 'swimming' },
+  { labelKey: 'common:sports.strength', value: 'strength' },
+  { labelKey: 'sports.stretching', value: 'stretching' },
+  { labelKey: 'sports.other', value: 'other' },
 ];
 
+// Stored as the workout's `type`; only the displayed label is translated.
 const EVENT_TYPES = ['Session', 'Event', 'Goal'];
+const EVENT_TYPE_KEYS: Record<string, string> = { Session: 'session', Event: 'event', Goal: 'goal' };
 
+// `label` is written into the stored workout `meta` string, so it stays English; `key` is the display label.
 const EFFORT_LEVELS = [
-  { label: 'Recovery (Zone 1)', factor: 25 },
-  { label: 'Steady (Zone 2)', factor: 45 },
-  { label: 'Threshold (Zone 3/4)', factor: 60 },
-  { label: 'VO2max / Hard (Zone 5)', factor: 80 },
+  { key: 'recovery', label: 'Recovery (Zone 1)', factor: 25 },
+  { key: 'steady', label: 'Steady (Zone 2)', factor: 45 },
+  { key: 'threshold', label: 'Threshold (Zone 3/4)', factor: 60 },
+  { key: 'hard', label: 'VO2max / Hard (Zone 5)', factor: 80 },
 ];
 
 export default function AddTrainingScreen() {
+  const { t } = useTranslation('addTraining');
   const router = useRouter();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
@@ -77,6 +83,13 @@ export default function AddTrainingScreen() {
   const [showEffortPicker, setShowEffortPicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  const sportLabel = (value: string) => {
+    const option = SPORT_OPTIONS.find(s => s.value === value);
+    return option ? t(option.labelKey) : value;
+  };
+  const eventTypeLabel = (value: string) => (EVENT_TYPE_KEYS[value] ? t(`eventTypes.${EVENT_TYPE_KEYS[value]}`) : value);
+  const effortLabel = (level: (typeof EFFORT_LEVELS)[number]) => t(`effortLevels.${level.key}`);
 
   const formatDurationInput = (text: string) => {
     const cleaned = text.replace(/[^0-9]/g, '');
@@ -105,7 +118,7 @@ export default function AddTrainingScreen() {
   const handleSave = async () => {
     if (!user) return;
     if (!name.trim()) {
-      Alert.alert('Required', 'Please enter a session name');
+      Alert.alert(t('alerts.requiredTitle'), t('alerts.nameRequired'));
       return;
     }
 
@@ -144,7 +157,7 @@ export default function AddTrainingScreen() {
       router.back();
     } catch (error) {
       console.error('Failed to add training:', error);
-      Alert.alert('Error', 'Failed to save training session');
+      Alert.alert(t('common:error'), t('alerts.saveFailed'));
     } finally {
       setLoading(false);
     }
@@ -167,7 +180,7 @@ export default function AddTrainingScreen() {
       const uploadResult = await uploadFitFile(user!.uid, file);
 
       if (uploadResult.success) {
-        Alert.alert('Success', 'Workout uploaded and analyzed successfully!');
+        Alert.alert(t('common:success'), t('alerts.uploadSuccess'));
         if (router.canGoBack()) {
           router.back();
         } else {
@@ -175,11 +188,11 @@ export default function AddTrainingScreen() {
         }
       } else {
         console.error('Upload failed:', uploadResult.error);
-        Alert.alert('Upload Error', uploadResult.error || 'Failed to upload workout.');
+        Alert.alert(t('alerts.uploadErrorTitle'), uploadResult.error || t('alerts.uploadFailed'));
       }
     } catch (error: any) {
       console.error('Upload error:', error);
-      Alert.alert('Error', error?.message || 'An error occurred during upload.');
+      Alert.alert(t('common:error'), error?.message || t('alerts.uploadException'));
     } finally {
       setUploading(false);
     }
@@ -237,7 +250,7 @@ export default function AddTrainingScreen() {
             >
               <View className="flex-row items-center justify-center gap-1">
                 <ChevronLeft size={16} color={theme.colors.text} strokeWidth={2.5} />
-                <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text }}>Back</Text>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text }}>{t('common:back')}</Text>
               </View>
             </GlassButton>
 
@@ -252,7 +265,7 @@ export default function AddTrainingScreen() {
               >
                 <View className="flex-row items-center justify-center gap-1.5">
                   <Upload size={13} color={theme.colors.primary} />
-                  <Text style={{ fontSize: 13, fontWeight: '700', color: theme.colors.primary }}>Upload</Text>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: theme.colors.primary }}>{t('upload')}</Text>
                 </View>
               </GlassButton>
             </View>
@@ -263,7 +276,7 @@ export default function AddTrainingScreen() {
             <TextInput
               value={name}
               onChangeText={setName}
-              placeholder="Session Name"
+              placeholder={t('namePlaceholder')}
               placeholderTextColor={theme.colors.textSecondary}
               multiline={true}
               className="text-2xl font-black tracking-tight"
@@ -287,7 +300,7 @@ export default function AddTrainingScreen() {
                 }}
               >
                 <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.primary, textTransform: 'capitalize' }}>
-                  {sport}
+                  {sportLabel(sport)}
                 </Text>
               </View>
 
@@ -303,7 +316,7 @@ export default function AddTrainingScreen() {
                 }}
               >
                 <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.textSecondary }}>
-                  {eventType}
+                  {eventTypeLabel(eventType)}
                 </Text>
               </View>
 
@@ -320,7 +333,7 @@ export default function AddTrainingScreen() {
                   }}
                 >
                   <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.textSecondary }}>
-                    ~{calculateTSS()} TSS
+                    {t('tssBadge', { tss: calculateTSS() })}
                   </Text>
                 </View>
               )}
@@ -338,7 +351,7 @@ export default function AddTrainingScreen() {
                   }}
                 >
                   <Text style={{ fontSize: 11, fontWeight: '700', color: '#60a5fa' }}>
-                    {effortLevel.label}
+                    {effortLabel(effortLevel)}
                   </Text>
                 </View>
               )}
@@ -360,9 +373,9 @@ export default function AddTrainingScreen() {
                 className="w-full shadow-lg"
               >
                 <ActivityIndicator size="large" color={theme.colors.primary} />
-                <Text variant="h2" className="mt-5 mb-2 text-center">Uploading Workout</Text>
+                <Text variant="h2" className="mt-5 mb-2 text-center">{t('uploading.title')}</Text>
                 <Text variant="muted" className="text-center text-xs">
-                  Parsing FIT file and generating analytics. This might take a few seconds...
+                  {t('uploading.message')}
                 </Text>
               </View>
             </View>
@@ -373,14 +386,14 @@ export default function AddTrainingScreen() {
               {/* Row 1: Date & Sport */}
               <View className="flex-row gap-2 items-stretch">
                 <PickerButton
-                  label="Date"
-                  value={format(selectedDate, 'EEE, MMM do')}
+                  label={t('fields.date')}
+                  value={formatDate(selectedDate, 'EEE, MMM do')}
                   icon={CalendarIcon}
                   onPress={() => setShowDatePicker(true)}
                 />
                 <PickerButton
-                  label="Sport"
-                  value={SPORT_OPTIONS.find(s => s.value === sport)?.label || sport}
+                  label={t('fields.sport')}
+                  value={sportLabel(sport)}
                   icon={Activity}
                   onPress={() => setShowSportPicker(true)}
                 />
@@ -389,15 +402,15 @@ export default function AddTrainingScreen() {
               {/* Row 2: Type & Effort Level */}
               <View className="flex-row gap-2 items-stretch">
                 <PickerButton
-                  label="Type"
-                  value={eventType}
+                  label={t('fields.type')}
+                  value={eventTypeLabel(eventType)}
                   icon={Tag}
                   onPress={() => setShowTypePicker(true)}
                 />
                 {!isStrengthOrMobility && (
                   <PickerButton
-                    label="Effort Level"
-                    value={effortLevel.label}
+                    label={t('fields.effortLevel')}
+                    value={effortLabel(effortLevel)}
                     icon={Zap}
                     onPress={() => setShowEffortPicker(true)}
                   />
@@ -407,7 +420,7 @@ export default function AddTrainingScreen() {
               {/* Planned Duration */}
               <View className="mb-4">
                 <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">
-                  Planned Duration
+                  {t('fields.plannedDuration')}
                 </Text>
                 <View
                   style={{
@@ -436,12 +449,12 @@ export default function AddTrainingScreen() {
               {/* Description & Goals */}
               <View className="mb-6">
                 <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">
-                  Description & Goals
+                  {t('fields.description')}
                 </Text>
                 <TextInput
                   value={description}
                   onChangeText={setDescription}
-                  placeholder="What are the goals or notes for this session?"
+                  placeholder={t('fields.descriptionPlaceholder')}
                   placeholderTextColor={theme.colors.textSecondary}
                   multiline
                   style={{
@@ -466,7 +479,7 @@ export default function AddTrainingScreen() {
           <View className="px-4 pt-3 pb-8 border-t border-border bg-background">
             <View className="flex-row gap-2">
               <GlassButton
-                label={loading ? "Saving..." : "Add to Plan"}
+                label={loading ? t('saving') : t('addToPlan')}
                 variant="glass-primary"
                 size="lg"
                 shape="pill"
@@ -498,8 +511,8 @@ export default function AddTrainingScreen() {
       <SelectionModal
         visible={showSportPicker}
         onClose={() => setShowSportPicker(false)}
-        title="Select Sport"
-        options={SPORT_OPTIONS}
+        title={t('pickers.sport')}
+        options={SPORT_OPTIONS.map(s => ({ label: t(s.labelKey), value: s.value }))}
         selectedValue={sport}
         onSelect={(val: any) => setSport(val)}
       />
@@ -507,8 +520,8 @@ export default function AddTrainingScreen() {
       <SelectionModal
         visible={showTypePicker}
         onClose={() => setShowTypePicker(false)}
-        title="Select Event Type"
-        options={EVENT_TYPES.map(t => ({ label: t, value: t }))}
+        title={t('pickers.eventType')}
+        options={EVENT_TYPES.map(type => ({ label: eventTypeLabel(type), value: type }))}
         selectedValue={eventType}
         onSelect={(val: any) => setEventType(val)}
       />
@@ -516,8 +529,8 @@ export default function AddTrainingScreen() {
       <SelectionModal
         visible={showEffortPicker}
         onClose={() => setShowEffortPicker(false)}
-        title="Select Effort Level"
-        options={EFFORT_LEVELS.map(e => ({ label: e.label, value: e }))}
+        title={t('pickers.effortLevel')}
+        options={EFFORT_LEVELS.map(e => ({ label: effortLabel(e), value: e }))}
         selectedValue={effortLevel}
         onSelect={(val: any) => setEffortLevel(val)}
       />
@@ -526,6 +539,7 @@ export default function AddTrainingScreen() {
 }
 
 function SelectionModal({ visible, onClose, title, options, selectedValue, onSelect }: any) {
+  const { t } = useTranslation('addTraining');
   const theme = useTheme();
 
   return (
@@ -559,7 +573,7 @@ function SelectionModal({ visible, onClose, title, options, selectedValue, onSel
             );
           })}
           <GlassButton
-            label="Cancel"
+            label={t('common:cancel')}
             variant="glass"
             size="lg"
             shape="pill"

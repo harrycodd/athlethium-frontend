@@ -6,6 +6,7 @@ import { ActivityType } from '@/types/activity';
 import { GlassButton } from '@/components/ui/glass-button';
 import { useTheme } from '@/hooks/use-theme';
 import { PlayableStep } from '@/hooks/use-activity-tracker';
+import { useTranslation } from 'react-i18next';
 import { Radius, BorderWidth } from '@/constants/theme';
 
 interface Props {
@@ -28,6 +29,17 @@ const iconConfig: Record<string, { icon: any; color: string; bg: string }> = {
   other: { icon: Activity, color: '#6b7280', bg: 'rgba(107, 114, 128, 0.12)' },
 };
 
+// Labels for sport codes as shown in the recorder (stretching reads "Stretching" here, not "Mobility").
+const SPORT_LABEL_KEYS: Record<string, string> = {
+  running: 'sports.running',
+  cycling: 'sports.cycling',
+  swimming: 'sports.swimming',
+  strength: 'sports.strength',
+  stretching: 'sports.stretching',
+  yoga: 'sports.yoga',
+  rest: 'sports.rest',
+};
+
 export function ActivityHeader({
   name,
   type,
@@ -40,6 +52,9 @@ export function ActivityHeader({
   const config = iconConfig[sportKey] || iconConfig.other;
   const Icon = config.icon;
   const { colors, isDark } = useTheme();
+  const { t } = useTranslation('activity');
+  // `type` is the stored sport code; show its translated label.
+  const sportLabel = SPORT_LABEL_KEYS[sportKey] ? t(SPORT_LABEL_KEYS[sportKey]) : type;
 
   const totalSteps = steps.length || 1;
   const stepNumber = Math.min(totalSteps, currentStepIndex + 1);
@@ -87,11 +102,11 @@ export function ActivityHeader({
                   textTransform: 'uppercase',
                 }}
               >
-                {type}
+                {sportLabel}
               </Text>
               <Text style={{ fontSize: 11, color: colors.textSecondary }}>·</Text>
               <Text style={{ fontSize: 11, fontWeight: '600', color: colors.textSecondary }}>
-                Step {stepNumber} of {totalSteps}
+                {t('stepOf', { current: stepNumber, total: totalSteps })}
               </Text>
             </View>
           </View>

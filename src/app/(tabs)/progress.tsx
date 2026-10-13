@@ -17,6 +17,8 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Workout } from '@/lib/workout-service';
 import { calculateTrainingLoadTimeline } from '@/lib/physiology-engine';
+import { useTranslation } from 'react-i18next';
+import { formatDate } from '@/lib/i18n/format';
 
 const screenWidth = Dimensions.get('window').width;
 const CHART_WIDTH = screenWidth;
@@ -25,28 +27,35 @@ const CHART_CONTAINER_WIDTH = CHART_WIDTH - (CHART_SIDE_PADDING * 2);
 const INITIAL_SPACING = 12;
 const END_SPACING = 12;
 
-const METRIC_CONFIG: Record<string, { label: string, color: string, group: 'training' | 'readiness' | 'body' }> = {
-  ctl: { label: 'Fitness (CTL)', color: '#10B981', group: 'training' },
-  atl: { label: 'Fatigue (ATL)', color: '#F97316', group: 'training' },
-  form: { label: 'Form (TSB)', color: '#3B82F6', group: 'training' },
-  sleep: { label: 'Sleep', color: '#6366F1', group: 'readiness' },
-  physical: { label: 'Physical', color: '#8B5CF6', group: 'readiness' },
-  mental: { label: 'Mental', group: 'readiness', color: '#A855F7' },
-  weight: { label: 'Weight', color: '#EC4899', group: 'body' },
-  injury: { label: 'Injury', color: '#EF4444', group: 'readiness' },
-  illness: { label: 'Illness', color: '#F43F5E', group: 'readiness' },
+// Labels are translation keys under `metrics.<key>.label` / `metrics.<key>.short` (progress.json).
+const METRIC_CONFIG: Record<string, { color: string, group: 'training' | 'readiness' | 'body' }> = {
+  ctl: { color: '#10B981', group: 'training' },
+  atl: { color: '#F97316', group: 'training' },
+  form: { color: '#3B82F6', group: 'training' },
+  sleep: { color: '#6366F1', group: 'readiness' },
+  physical: { color: '#8B5CF6', group: 'readiness' },
+  mental: { group: 'readiness', color: '#A855F7' },
+  weight: { color: '#EC4899', group: 'body' },
+  injury: { color: '#EF4444', group: 'readiness' },
+  illness: { color: '#F43F5E', group: 'readiness' },
 };
 
+// Group titles are translation keys under `groups.<id>`.
 const METRIC_GROUPS = [
-  { id: 'training', title: 'Training Load', keys: ['ctl', 'atl', 'form'] },
-  { id: 'readiness', title: 'Daily Readiness', keys: ['sleep', 'physical', 'mental', 'injury', 'illness'] },
-  { id: 'body', title: 'Body Metrics', keys: ['weight'] },
+  { id: 'training', keys: ['ctl', 'atl', 'form'] },
+  { id: 'readiness', keys: ['sleep', 'physical', 'mental', 'injury', 'illness'] },
+  { id: 'body', keys: ['weight'] },
 ];
+
+const PRESET_LABEL_KEYS = { Load: 'presets.load', Readiness: 'presets.readiness', Custom: 'presets.custom' } as const;
 
 export default function ProgressScreen() {
   const theme = useTheme();
   const { profile } = useAuth();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation('progress');
+  const metricLabel = (key: string) => t(`metrics.${key}.label`);
+  const metricShortLabel = (key: string) => t(`metrics.${key}.short`);
 
   const [activeRange, setActiveRange] = useState<'7d' | '14d' | '28d'>('14d');
   const [activePreset, setActivePreset] = useState<'Load' | 'Readiness' | 'Custom'>('Load');
@@ -120,7 +129,7 @@ export default function ProgressScreen() {
         return `${val.toFixed(1)} ${isImperial ? 'lbs' : 'kg'}`;
       case 'injury':
       case 'illness':
-        return val === 1 ? 'Yes' : 'None';
+        return val === 1 ? t('common:yes') : t('common:none');
       default:
         return `${val}`;
     }
@@ -240,12 +249,12 @@ export default function ProgressScreen() {
   let leftLabelPrecision = 0;
 
   if (leftAxisGroup === 'readiness') {
-    leftAxisTitle = 'Readiness';
+    leftAxisTitle = t('axis.readiness');
     leftAxisColor = '#8B5CF6'; // Violet
     leftLabelBounds = readinessBounds;
     leftLabelPrecision = 0;
   } else if (leftAxisGroup === 'body') {
-    leftAxisTitle = `Weight (${profile?.units === 'Imperial' ? 'lbs' : 'kg'})`;
+    leftAxisTitle = t('axis.weightWithUnit', { unit: profile?.units === 'Imperial' ? 'lbs' : 'kg' });
     leftAxisColor = '#EC4899'; // Pink
     leftLabelBounds = bodyBounds;
     leftLabelPrecision = 1;
@@ -258,12 +267,12 @@ export default function ProgressScreen() {
   let rightLabelPrecision = 0;
 
   if (rightAxisGroup === 'training') {
-    rightAxisTitle = 'Training Load';
+    rightAxisTitle = t('axis.trainingLoad');
     rightAxisColor = '#10B981'; // Emerald
     rightLabelBounds = trainingBounds;
     rightLabelPrecision = 0;
   } else if (rightAxisGroup === 'body') {
-    rightAxisTitle = `Weight (${profile?.units === 'Imperial' ? 'lbs' : 'kg'})`;
+    rightAxisTitle = t('axis.weightWithUnit', { unit: profile?.units === 'Imperial' ? 'lbs' : 'kg' });
     rightAxisColor = '#EC4899'; // Pink
     rightLabelBounds = bodyBounds;
     rightLabelPrecision = 1;
@@ -355,16 +364,16 @@ export default function ProgressScreen() {
       <ScreenWrapper className="px-0" scrollable={false} withBottomInset={false}>
         <View className="flex-1" style={{ paddingBottom: insets.bottom + 60 }}>
           <View className="px-4">
-            <Header title="Progress" subtitle="Track your fitness metrics over time" />
+            <Header title={t('title')} subtitle={t('subtitle')} />
 
             <View className="flex-row justify-between gap-2 mb-6">
-              <RangeButton range="7d" label="7 Days" />
-              <RangeButton range="14d" label="14 Days" />
-              <RangeButton range="28d" label="28 Days" />
+              <RangeButton range="7d" label={t('range.days', { count: 7 })} />
+              <RangeButton range="14d" label={t('range.days', { count: 14 })} />
+              <RangeButton range="28d" label={t('range.days', { count: 28 })} />
             </View>
 
             <View className="flex-row items-center justify-between mb-6 z-10 relative">
-              <Text variant="h3">Interactive Chart</Text>
+              <Text variant="h3">{t('interactiveChart')}</Text>
               <GlassButton
                 variant="glass"
                 size="sm"
@@ -374,7 +383,7 @@ export default function ProgressScreen() {
                 contentContainerStyle={{ paddingHorizontal: 0, paddingVertical: 0, width: '100%', height: 34, justifyContent: 'center', alignItems: 'center' }}
               >
                 <View className="flex-row items-center justify-center gap-1.5">
-                  <Text style={{ fontSize: 13, fontWeight: '700', color: theme.colors.text }}>{activePreset}</Text>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: theme.colors.text }}>{t(PRESET_LABEL_KEYS[activePreset])}</Text>
                   <ChevronDown size={14} color={theme.colors.text} strokeWidth={2.5} />
                 </View>
               </GlassButton>
@@ -403,7 +412,7 @@ export default function ProgressScreen() {
                   )}
                 >
                   <Text className={cn("text-sm font-semibold", activePreset === 'Load' ? "text-primary font-bold" : "text-foreground")}>
-                    Fitness & Fatigue
+                    {t('presets.fitnessFatigue')}
                   </Text>
                   {activePreset === 'Load' && <Check size={16} color={theme.primary} />}
                 </TouchableOpacity>
@@ -416,7 +425,7 @@ export default function ProgressScreen() {
                   )}
                 >
                   <Text className={cn("text-sm font-semibold", activePreset === 'Readiness' ? "text-primary font-bold" : "text-foreground")}>
-                    Daily Readiness
+                    {t('presets.dailyReadiness')}
                   </Text>
                   {activePreset === 'Readiness' && <Check size={16} color={theme.primary} />}
                 </TouchableOpacity>
@@ -429,7 +438,7 @@ export default function ProgressScreen() {
                   )}
                 >
                   <Text className={cn("text-sm font-semibold", activePreset === 'Custom' ? "text-primary font-bold" : "text-foreground")}>
-                    Custom...
+                    {t('presets.customEllipsis')}
                   </Text>
                   {activePreset === 'Custom' && <Check size={16} color={theme.primary} />}
                 </TouchableOpacity>
@@ -522,12 +531,12 @@ export default function ProgressScreen() {
                     <View className="flex-row items-center gap-1.5">
                       <Calendar size={13} color={theme.colors.primary} />
                       <Text style={{ fontSize: 12, fontWeight: '700', color: theme.colors.text }}>
-                        {format(new Date(selectedDay.date + 'T12:00:00'), 'EEE, MMM d, yyyy')}
+                        {formatDate(new Date(selectedDay.date + 'T12:00:00'), 'EEE, MMM d, yyyy')}
                       </Text>
                       {selectedDay.date === format(new Date(), 'yyyy-MM-dd') && (
                         <View className="bg-primary/20 px-1.5 py-0.5 rounded-full ml-1">
                           <Text style={{ fontSize: 9, fontWeight: '700', color: theme.colors.primary }}>
-                            Today
+                            {t('today')}
                           </Text>
                         </View>
                       )}
@@ -550,7 +559,7 @@ export default function ProgressScreen() {
                         <View key={key} className="flex-row items-center bg-card/60 rounded-lg px-2 py-0.5 border border-border/40">
                           <View className="w-2 h-2 rounded-full mr-1.5" style={{ backgroundColor: config.color }} />
                           <Text style={{ fontSize: 10, color: theme.colors.textSecondary, marginRight: 3 }}>
-                            {config.label.split(' (')[0]}:
+                            {t('metricValueLabel', { label: metricShortLabel(key) })}
                           </Text>
                           <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.text }}>
                             {formatMetricValue(key, val)}
@@ -621,7 +630,7 @@ export default function ProgressScreen() {
                   />
                 ) : (
                   <View style={{ height: chartHeight, width: CHART_CONTAINER_WIDTH, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text variant="muted">Select at least one metric to display.</Text>
+                    <Text variant="muted">{t('selectAtLeastOne')}</Text>
                   </View>
                 )}
               </View>
@@ -635,9 +644,9 @@ export default function ProgressScreen() {
                   return (
                     <View key={key} className="flex-row items-center mr-1">
                       <View className="w-2.5 h-2.5 rounded-full mr-1.5" style={{ backgroundColor: METRIC_CONFIG[key].color }} />
-                      <Text variant="small" className="font-bold">{METRIC_CONFIG[key].label}</Text>
+                      <Text variant="small" className="font-bold">{metricLabel(key)}</Text>
                       <Text style={{ fontSize: 10, color: theme.textSecondary, marginLeft: 3 }}>
-                        ({badgeChar})
+                        ({t(`axisBadge.${badgeChar}`)})
                       </Text>
                     </View>
                   );
@@ -647,7 +656,7 @@ export default function ProgressScreen() {
               {activePreset === 'Custom' && (
                 <View className="mt-3.5">
                   <GlassButton
-                    label="Edit Metrics..."
+                    label={t('editMetrics')}
                     variant="glass-primary"
                     size="sm"
                     shape="pill"
@@ -669,9 +678,9 @@ export default function ProgressScreen() {
           <View className="bg-card rounded-t-[32px] p-6 pb-12 h-[82%] border-t border-border">
             <View className="flex-row justify-between items-center mb-4">
               <View>
-                <Text variant="h2">Custom Graph</Text>
+                <Text variant="h2">{t('customGraph.title')}</Text>
                 <Text variant="muted" className="text-xs mt-1">
-                  Select up to 5 metrics ({selectedMetrics.length}/5 selected)
+                  {t('customGraph.subtitle', { selected: selectedMetrics.length })}
                 </Text>
               </View>
               <GlassButton
@@ -690,7 +699,7 @@ export default function ProgressScreen() {
               {METRIC_GROUPS.map((group) => (
                 <View key={group.id} className="mb-5">
                   <Text className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-2">
-                    {group.title}
+                    {t(`groups.${group.id}`)}
                   </Text>
                   
                   <View 
@@ -720,7 +729,7 @@ export default function ProgressScreen() {
                           <View className="flex-row items-center flex-1 pr-3">
                             <View className="w-3.5 h-3.5 rounded-full mr-3" style={{ backgroundColor: config.color }} />
                             <Text className="text-sm font-semibold text-foreground">
-                              {config.label}
+                              {metricLabel(key)}
                             </Text>
                           </View>
                           
@@ -744,7 +753,7 @@ export default function ProgressScreen() {
             </ScrollView>
 
             <GlassButton
-              label="Apply"
+              label={t('apply')}
               variant="glass-primary"
               size="lg"
               shape="pill"

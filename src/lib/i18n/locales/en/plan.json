@@ -1,0 +1,20 @@
+{
+  "title": "Your Plan",
+  "todaysSchedule": "Today's Schedule",
+  "scheduledSessions": "Scheduled Sessions",
+  "emptyDay": "No sessions scheduled for this day.",
+  "dailyMax": {
+    "title": "Daily Max",
+    "limitFor": "Limit for {{date}}",
+    "hoursShort_one": "{{count}} hr",
+    "hoursShort_other": "{{count}} hrs",
+    "modalTitle": "Daily Max Hours",
+    "hoursOption_one": "{{count}} Hour",
+    "hoursOption_other": "{{count}} Hours"
+  },
+  "calendar": {
+    "today": "Today",
+    "expand": "Expand",
+    "collapse": "Collapse"
+  }
+}

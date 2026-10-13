@@ -31,6 +31,8 @@ import {
   Timer,
 } from "lucide-react-native";
 import { Radius, BorderWidth } from "@/constants/theme";
+import { Trans, useTranslation } from "react-i18next";
+import { formatDate } from "@/lib/i18n/format";
 
 type Props = {
   goal?: Workout | null;
@@ -46,59 +48,92 @@ type BodyArea = 'core' | 'upper' | 'lower' | 'all';
 
 interface MilestoneOption {
   category: 'legs' | 'core' | 'upper' | 'all';
-  label: string;
-  note: string;
+  /** Key under `goal:milestones.<sport>.<key>` ({ label, note }). */
+  key: string;
 }
 
 const STRETCHING_MILESTONES: MilestoneOption[] = [
   // Legs
-  { category: 'legs', label: 'Full Front Splits', note: 'Flat ground front splits mobility' },
-  { category: 'legs', label: 'Side / Middle Splits', note: 'Center splits hip abduction range' },
-  { category: 'legs', label: 'Palms to Floor', note: 'Hamstring & posterior chain flexibility' },
-  { category: 'legs', label: 'Deep Squat Mobility', note: 'Deep ankle & hip opener mobility' },
-  { category: 'legs', label: 'Pigeon Pose 90°', note: 'Glute & deep rotator hip flexibility' },
-  { category: 'legs', label: 'Ankle Dorsiflexion', note: 'Full ankle range of motion' },
+  { category: 'legs', key: 'fullFrontSplits' },
+  { category: 'legs', key: 'middleSplits' },
+  { category: 'legs', key: 'palmsToFloor' },
+  { category: 'legs', key: 'deepSquat' },
+  { category: 'legs', key: 'pigeonPose' },
+  { category: 'legs', key: 'ankleDorsiflexion' },
 
   // Core
-  { category: 'core', label: 'Thoracic Bridge', note: 'Full backbend & thoracic spine extension' },
-  { category: 'core', label: 'L-Sit Mobility', note: 'Core compression & hip flexor range' },
-  { category: 'core', label: 'Spinal Decompression & Twists', note: 'Spine mobility and rotational balance' },
+  { category: 'core', key: 'thoracicBridge' },
+  { category: 'core', key: 'lSit' },
+  { category: 'core', key: 'spinalDecompression' },
 
   // Upper Body
-  { category: 'upper', label: 'Overhead Shoulder Mobility', note: '180° active overhead shoulder flexion' },
-  { category: 'upper', label: 'Chest & Anterior Shoulder Opener', note: 'Pectoral and bicep tendon flexibility' },
-  { category: 'upper', label: 'Thoracic Extension', note: 'Upper back postural mobility' },
+  { category: 'upper', key: 'overheadShoulder' },
+  { category: 'upper', key: 'chestOpener' },
+  { category: 'upper', key: 'thoracicExtension' },
 
   // All / Full Body
-  { category: 'all', label: 'Full Body Mobility Flow', note: 'Complete daily mobility routine' },
-  { category: 'all', label: 'Full Body Flexibility Mastery', note: 'Comprehensive multi-joint flexibility' },
+  { category: 'all', key: 'fullBodyFlow' },
+  { category: 'all', key: 'fullBodyMastery' },
 ];
 
 const STRENGTH_MILESTONES: MilestoneOption[] = [
   // Upper Body
-  { category: 'upper', label: '10 Strict Pull-ups', note: '10 consecutive strict reps' },
-  { category: 'upper', label: '50 Push-ups unbroken', note: '50 unbroken push-ups' },
-  { category: 'upper', label: 'Bodyweight Bench Press', note: '1x bodyweight bench press' },
-  { category: 'upper', label: 'Handstand Push-ups', note: 'Strict handstand push-ups against wall' },
-  { category: 'upper', label: 'Muscle-Up Mastery', note: 'Strict bar / ring muscle-ups' },
-  { category: 'upper', label: 'Overhead Press (0.75x BW)', note: 'Strict barbell overhead press' },
+  { category: 'upper', key: 'pullUps' },
+  { category: 'upper', key: 'pushUps' },
+  { category: 'upper', key: 'benchPress' },
+  { category: 'upper', key: 'handstandPushUps' },
+  { category: 'upper', key: 'muscleUp' },
+  { category: 'upper', key: 'overheadPress' },
 
   // Legs
-  { category: 'legs', label: '1.5x BW Squat', note: '1.5x bodyweight barbell back squat' },
-  { category: 'legs', label: '2x BW Deadlift', note: '2x bodyweight conventional deadlift' },
-  { category: 'legs', label: 'Pistol Squats (Single Leg)', note: '5 clean reps per leg' },
-  { category: 'legs', label: 'Bulgarian Split Squat Heavy', note: 'Single-leg strength & stability' },
+  { category: 'legs', key: 'squat' },
+  { category: 'legs', key: 'deadlift' },
+  { category: 'legs', key: 'pistolSquats' },
+  { category: 'legs', key: 'bulgarianSplitSquat' },
 
   // Core
-  { category: 'core', label: '3-Minute Plank Hold', note: '180s continuous strict core plank' },
-  { category: 'core', label: 'Dragon Flag Mastery', note: 'Strict bodyweight dragon flag' },
-  { category: 'core', label: 'Hanging Leg Raises (15 reps)', note: 'Toes-to-bar strict leg raises' },
-  { category: 'core', label: 'Ab Wheel Rollouts from Toes', note: 'Full extension ab wheel rollouts' },
+  { category: 'core', key: 'plank' },
+  { category: 'core', key: 'dragonFlag' },
+  { category: 'core', key: 'hangingLegRaises' },
+  { category: 'core', key: 'abWheel' },
 
   // All / Full Body
-  { category: 'all', label: 'Clean & Jerk Benchmark', note: 'Olympic weightlifting benchmark' },
-  { category: 'all', label: 'Functional Strength Mastery', note: 'Full body functional strength & power' },
+  { category: 'all', key: 'cleanAndJerk' },
+  { category: 'all', key: 'functionalStrength' },
 ];
+
+/**
+ * Goal template values are stored as-is (profile `goal.type`) and matched by the distance/duration
+ * defaults below, so they stay English. Only the label shown for them is translated.
+ */
+const GOAL_TYPE_KEYS: Record<string, string> = {
+  'General Fitness': 'generalFitness',
+  'Ironman': 'ironman',
+  'Half Ironman (70.3)': 'halfIronman',
+  'Olympic Triathlon': 'olympicTriathlon',
+  'Sprint Triathlon': 'sprintTriathlon',
+  'Aquathlon': 'aquathlon',
+  'SwimRun': 'swimRun',
+  'Duathlon': 'duathlon',
+  'Marathon': 'marathon',
+  'Half Marathon': 'halfMarathon',
+  '10K': 'tenK',
+  '5K': 'fiveK',
+  'Century Ride': 'centuryRide',
+  '40K TT': 'fortyKTT',
+  '10 Mile TT': 'tenMileTT',
+  '1500m Freestyle': 'freestyle1500',
+  '400m Individual Medley': 'individualMedley400',
+  '200m Stroke Specialization': 'strokeSpecialization200',
+  '100m Sprint Event': 'sprintEvent100',
+  'Open Water 1.5K': 'openWater1500',
+  'Open Water 5K': 'openWater5K',
+  'Open Water 10K': 'openWater10K',
+  'Functional Strength & Conditioning': 'functionalStrength',
+  'Full Body Flexibility': 'fullBodyFlexibility',
+  'Front Splits Mastery': 'frontSplitsMastery',
+  'Middle Splits Mastery': 'middleSplitsMastery',
+};
 
 const getDynamicGoals = (focused_sports: string[] = []) => {
   const goals = ['General Fitness'];
@@ -202,11 +237,12 @@ const getDefaultDurationForGoal = (goalName: string) => {
 
 export default function GoalCountdown({
   goal,
-  eventName = "Target Event",
+  eventName,
   goalDate = new Date(),
   className,
   onGoalUpdated,
 }: Props) {
+  const { t } = useTranslation('goal');
   const theme = useTheme();
   const { colors, isDark } = theme;
   const { user, profile } = useAuth();
@@ -219,7 +255,7 @@ export default function GoalCountdown({
   // Full Wizard Goal form state
   const [goalSport, setGoalSport] = useState('running');
   const [trainingGoalType, setTrainingGoalType] = useState('General Fitness');
-  const [goalNameInput, setGoalNameInput] = useState('My Fitness Target');
+  const [goalNameInput, setGoalNameInput] = useState(() => t('form.defaultGoalName'));
   const [goalDistance, setGoalDistance] = useState('');
   const [goalDuration, setGoalDuration] = useState('01:00:00');
   const [targetGoalDate, setTargetGoalDate] = useState<Date>(addWeeks(new Date(), 12));
@@ -231,7 +267,7 @@ export default function GoalCountdown({
   const [saving, setSaving] = useState(false);
 
   const effectiveGoalDate = goal?.date ? new Date(goal.date) : goalDate;
-  const effectiveName = goal?.name || eventName;
+  const effectiveName = goal?.name || eventName || t('defaultEventName');
   const now = new Date();
 
   // Calculate days remaining
@@ -303,9 +339,21 @@ export default function GoalCountdown({
 
   const targetPaceOrSpeed = calculateTargetPaceOrSpeed();
 
+  // Display labels only: sport codes and goal types are stored untranslated.
+  const sportLabel = (sport: string) => {
+    if (sport === 'stretching') return t('sports.stretching');
+    if ((SPORTS as readonly string[]).includes(sport)) return t(`common:sports.${sport}`);
+    return sport;
+  };
+  const goalTypeLabel = (goalType: string) =>
+    GOAL_TYPE_KEYS[goalType] ? t(`goalTypes.${GOAL_TYPE_KEYS[goalType]}`) : goalType;
+  const milestoneSport = isStretchingSport ? 'stretching' : 'strength';
+  const milestoneLabel = (m: MilestoneOption) => t(`milestones.${milestoneSport}.${m.key}.label`);
+  const milestoneNote = (m: MilestoneOption) => t(`milestones.${milestoneSport}.${m.key}.note`);
+
   const handleSelectGoalType = (goalType: string) => {
     setTrainingGoalType(goalType);
-    setGoalNameInput(`${goalType} Target`);
+    setGoalNameInput(t('form.goalNameFromTemplate', { goal: goalTypeLabel(goalType) }));
     const defDist = getDefaultDistanceForGoal(goalType, units);
     const defDur = getDefaultDurationForGoal(goalType);
     if (defDist) setGoalDistance(defDist);
@@ -333,6 +381,10 @@ export default function GoalCountdown({
     setGoalDuration((goal as any)?.targetDuration || (profile?.goal as any)?.duration || '01:00:00');
     setTargetGoalDate(effectiveGoalDate);
     setGoalNotes(goal?.description || (profile?.goal as any)?.notes || '');
+    const savedArea = profile?.goal?.bodyArea;
+    if (savedArea) {
+      setCustomBodyArea(savedArea);
+    }
     setIsEditing(true);
     setShowDetailsModal(false);
     setShowNewGoalModal(true);
@@ -340,7 +392,7 @@ export default function GoalCountdown({
 
   const handleSaveGoal = async () => {
     if (!user || !goalNameInput.trim()) {
-      Alert.alert('Required', 'Please enter or select a goal title.');
+      Alert.alert(t('alerts.requiredTitle'), t('alerts.requiredMessage'));
       return;
     }
 
@@ -384,6 +436,8 @@ export default function GoalCountdown({
           targetTimeString: goalDuration,
           targetPace: targetPaceOrSpeed || undefined,
           notes: goalNotes.trim() || undefined,
+          // strength/mobility focus as a code, so it works whatever language the notes are in
+          bodyArea: isStrengthSport || isStretchingSport ? customBodyArea : undefined,
         },
       });
 
@@ -398,7 +452,7 @@ export default function GoalCountdown({
       if (onGoalUpdated) onGoalUpdated();
     } catch (err) {
       console.error('Error saving goal:', err);
-      Alert.alert('Error', 'Failed to save goal.');
+      Alert.alert(t('common:error'), t('alerts.saveFailed'));
     } finally {
       setSaving(false);
     }
@@ -413,7 +467,7 @@ export default function GoalCountdown({
       });
       setShowDetailsModal(false);
       if (onGoalUpdated) onGoalUpdated();
-      Alert.alert('🎉 Congratulations!', 'Goal marked as achieved! What would you like to achieve next?');
+      Alert.alert(t('alerts.achievedTitle'), t('alerts.achievedMessage'));
     } catch (err) {
       console.error('Error completing goal:', err);
     }
@@ -446,7 +500,7 @@ export default function GoalCountdown({
                   </View>
                   <View>
                     <Text variant="small" className="text-amber-500 font-bold text-xs uppercase tracking-wider">
-                      Goal Target Reached!
+                      {t('card.reachedTitle')}
                     </Text>
                     <Text className="text-base font-extrabold text-foreground" numberOfLines={1}>
                       {effectiveName}
@@ -459,10 +513,10 @@ export default function GoalCountdown({
 
               <View className="mt-3 pt-3 border-t border-border flex-row items-center justify-between">
                 <Text variant="muted" className="text-xs font-semibold">
-                  What is your next goal?
+                  {t('card.nextGoalPrompt')}
                 </Text>
                 <GlassButton
-                  label="+ Set Next Goal"
+                  label={t('card.setNextGoal')}
                   variant="glass-primary"
                   size="sm"
                   shape="pill"
@@ -479,20 +533,23 @@ export default function GoalCountdown({
               <View className="flex-row justify-between items-start">
                 <View className="flex-1 pr-2">
                   <Text variant="muted" className="font-medium text-xs">
-                    {effectiveName} Countdown
+                    {t('card.countdownTitle', { name: effectiveName })}
                   </Text>
                   <View className="flex-row items-baseline mt-1">
-                    <Text className="text-2xl font-bold text-foreground">
-                      {Math.max(0, daysRemaining)}
-                    </Text>
-                    <Text variant="muted" className="ml-1 text-sm font-semibold">
-                      days to go
-                    </Text>
+                    <Trans
+                      t={t}
+                      i18nKey="card.daysToGo"
+                      count={Math.max(0, daysRemaining)}
+                      components={{
+                        num: <Text className="text-2xl font-bold text-foreground" />,
+                        label: <Text variant="muted" className="ml-1 text-sm font-semibold" />,
+                      }}
+                    />
                   </View>
                 </View>
 
                 <GlassButton
-                  label="Details"
+                  label={t('common:details')}
                   variant="glass"
                   size="sm"
                   shape="pill"
@@ -521,10 +578,10 @@ export default function GoalCountdown({
                 <View className="mt-4">
                   <View className="flex-row justify-between mb-1.5">
                     <Text variant="small" className="text-muted-foreground text-xs">
-                      Plan Progress
+                      {t('card.planProgress')}
                     </Text>
                     <Text variant="small" className="text-foreground font-bold text-[10px]">
-                      Week {currentWeek} of {totalWeeks} ({Math.round(progress * 100)}%)
+                      {t('card.weekProgressPercent', { week: currentWeek, total: totalWeeks, percent: Math.round(progress * 100) })}
                     </Text>
                   </View>
                   <View className="h-1.5 bg-muted rounded-full overflow-hidden">
@@ -551,7 +608,7 @@ export default function GoalCountdown({
             <View className="flex-row justify-between items-center mb-4">
               <View className="flex-row items-center gap-2">
                 <Target size={20} color={theme.colors.primary} />
-                <Text variant="h2">Goal Details</Text>
+                <Text variant="h2">{t('details.title')}</Text>
               </View>
               <GlassButton
                 size="icon"
@@ -573,12 +630,12 @@ export default function GoalCountdown({
                 <View className="flex-row items-center gap-1">
                   <CalendarIcon size={13} color={theme.colors.textSecondary} />
                   <Text variant="muted" className="text-xs font-semibold">
-                    {format(effectiveGoalDate, 'EEEE, MMMM do, yyyy')}
+                    {formatDate(effectiveGoalDate, 'EEEE, MMMM do, yyyy')}
                   </Text>
                 </View>
                 {goal?.sport && (
                   <View className="px-2 py-0.5 rounded-full bg-primary/10 border border-primary/25">
-                    <Text className="text-[10px] font-bold text-primary capitalize">{goal.sport}</Text>
+                    <Text className="text-[10px] font-bold text-primary capitalize">{sportLabel(goal.sport)}</Text>
                   </View>
                 )}
                 {(goal as any)?.targetPace && (
@@ -593,10 +650,10 @@ export default function GoalCountdown({
             <View className="bg-muted/30 rounded-2xl p-4 border border-border mb-6">
               <View className="flex-row justify-between items-center mb-2">
                 <Text className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                  Training Block Progress
+                  {t('details.blockProgress')}
                 </Text>
                 <Text className="text-xs font-bold text-foreground">
-                  Week {currentWeek} of {totalWeeks}
+                  {t('details.weekProgress', { week: currentWeek, total: totalWeeks })}
                 </Text>
               </View>
 
@@ -609,17 +666,17 @@ export default function GoalCountdown({
 
               <View className="flex-row justify-between items-center text-xs">
                 <Text variant="muted" className="text-[11px]">
-                  {daysElapsed} days completed
+                  {t('details.daysCompleted', { count: daysElapsed })}
                 </Text>
                 <Text variant="muted" className="text-[11px] font-bold text-primary">
-                  {Math.max(0, daysRemaining)} days remaining
+                  {t('details.daysRemaining', { count: Math.max(0, daysRemaining) })}
                 </Text>
               </View>
 
               {goal?.description ? (
                 <View className="mt-3 pt-3 border-t border-border/40">
                   <Text variant="muted" className="text-xs italic">
-                    &ldquo;{goal.description}&rdquo;
+                    {t('details.quotedDescription', { text: goal.description })}
                   </Text>
                 </View>
               ) : null}
@@ -627,7 +684,7 @@ export default function GoalCountdown({
 
             <View className="gap-2.5">
               <GlassButton
-                label="Mark as Achieved"
+                label={t('details.markAchieved')}
                 variant="glass-primary"
                 size="md"
                 shape="pill"
@@ -638,7 +695,7 @@ export default function GoalCountdown({
 
               <View className="flex-row gap-2">
                 <GlassButton
-                  label="Edit Goal"
+                  label={t('details.editGoal')}
                   variant="glass"
                   size="md"
                   shape="pill"
@@ -647,7 +704,7 @@ export default function GoalCountdown({
                   contentContainerStyle={{ height: 40, justifyContent: 'center', alignItems: 'center' }}
                 />
                 <GlassButton
-                  label="+ Set Next Goal"
+                  label={t('card.setNextGoal')}
                   variant="glass"
                   size="md"
                   shape="pill"
@@ -681,9 +738,9 @@ export default function GoalCountdown({
                   <Flag size={20} color="#f59e0b" strokeWidth={2.2} />
                 </View>
                 <View>
-                  <Text variant="h2">{isEditing ? 'Edit Goal' : 'Set Your Goal'}</Text>
+                  <Text variant="h2">{isEditing ? t('form.editTitle') : t('form.newTitle')}</Text>
                   <Text variant="muted" className="text-xs">
-                    Target specific milestones and race dates
+                    {t('form.subtitle')}
                   </Text>
                 </View>
               </View>
@@ -703,7 +760,7 @@ export default function GoalCountdown({
               {/* 1. SPORT SELECTOR */}
               <View className="mb-4">
                 <Text className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-2">
-                  Sport Focus
+                  {t('form.sportFocus')}
                 </Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
                   {SPORTS.map(sport => {
@@ -714,18 +771,18 @@ export default function GoalCountdown({
                         onPress={() => {
                           setGoalSport(sport);
                           if (sport === 'stretching') {
-                            setGoalNameInput('Full Front Splits');
-                            setGoalNotes('Flat ground front splits mobility');
+                            setGoalNameInput(t('milestones.stretching.fullFrontSplits.label'));
+                            setGoalNotes(t('milestones.stretching.fullFrontSplits.note'));
                           } else if (sport === 'strength') {
-                            setGoalNameInput('10 Strict Pull-ups');
-                            setGoalNotes('10 consecutive strict reps');
+                            setGoalNameInput(t('milestones.strength.pullUps.label'));
+                            setGoalNotes(t('milestones.strength.pullUps.note'));
                           } else if (sport === 'swimming') {
-                            setGoalNameInput('1500m Swim Target');
+                            setGoalNameInput(t('form.swimGoalName'));
                             setGoalDistance('1500');
                           } else {
                             const defDist = getDefaultDistanceForGoal(trainingGoalType, units);
                             if (defDist) setGoalDistance(defDist);
-                            setGoalNameInput(`${trainingGoalType} Target`);
+                            setGoalNameInput(t('form.goalNameFromTemplate', { goal: goalTypeLabel(trainingGoalType) }));
                           }
                         }}
                         style={{
@@ -738,7 +795,7 @@ export default function GoalCountdown({
                         }}
                       >
                         <Text style={{ fontSize: 13, fontWeight: '700', color: isSelected ? colors.primary : colors.text, textTransform: 'capitalize' }}>
-                          ★ {sport}
+                          ★ {sportLabel(sport)}
                         </Text>
                       </TouchableOpacity>
                     );
@@ -750,7 +807,7 @@ export default function GoalCountdown({
               {isCardioSport && (
                 <View className="mb-4">
                   <Text className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-2">
-                    Goal Templates
+                    {t('form.goalTemplates')}
                   </Text>
                   <View className="flex-row flex-wrap gap-2">
                     {getDynamicGoals([goalSport]).map((preset) => {
@@ -769,7 +826,7 @@ export default function GoalCountdown({
                           }}
                         >
                           <Text style={{ fontSize: 11, fontWeight: '700', color: isSelected ? colors.primary : colors.text }}>
-                            {preset}
+                            {goalTypeLabel(preset)}
                           </Text>
                         </TouchableOpacity>
                       );
@@ -782,7 +839,7 @@ export default function GoalCountdown({
               {(isStretchingSport || isStrengthSport) && (
                 <View className="mb-4">
                   <Text className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-2">
-                    {isStretchingSport ? 'Flexibility Milestone / Focus' : 'Strength Benchmark / Focus'}
+                    {isStretchingSport ? t('form.flexibilityMilestoneFocus') : t('form.strengthBenchmarkFocus')}
                   </Text>
 
                   <TouchableOpacity
@@ -802,10 +859,10 @@ export default function GoalCountdown({
                   >
                     <View style={{ flex: 1, marginRight: 10 }}>
                       <Text style={{ fontSize: 15, fontWeight: '700', color: colors.text }} numberOfLines={1}>
-                        {goalNameInput || (isStretchingSport ? 'Select Flexibility Milestone' : 'Select Strength Benchmark')}
+                        {goalNameInput || (isStretchingSport ? t('form.selectFlexibilityMilestone') : t('form.selectStrengthBenchmark'))}
                       </Text>
                       <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2, textTransform: 'capitalize' }} numberOfLines={1}>
-                        Category: {milestoneCategory === 'all' ? 'All Focus Areas' : milestoneCategory}
+                        {t('form.category', { category: milestoneCategory === 'all' ? t('form.allFocusAreas') : t(`form.categories.${milestoneCategory}`) })}
                       </Text>
                     </View>
                     <View
@@ -828,17 +885,11 @@ export default function GoalCountdown({
               {(milestoneCategory === 'other' || isStrengthSport || isStretchingSport) && (
                 <View className="mb-4">
                   <Text className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-2">
-                    Target Anatomical Area for Training Algorithm
+                    {t('form.anatomicalArea')}
                   </Text>
                   <View style={{ flexDirection: 'row', gap: 8 }}>
                     {(['all', 'core', 'upper', 'lower'] as const).map(area => {
                       const isSelected = customBodyArea === area;
-                      const areaLabels: Record<BodyArea, string> = {
-                        all: 'All Body',
-                        core: 'Core',
-                        upper: 'Upper Body',
-                        lower: 'Lower / Legs',
-                      };
                       return (
                         <TouchableOpacity
                           key={area}
@@ -855,7 +906,7 @@ export default function GoalCountdown({
                           }}
                         >
                           <Text style={{ fontSize: 11, fontWeight: '700', color: isSelected ? colors.primary : colors.text, textAlign: 'center' }}>
-                            {areaLabels[area]}
+                            {t(`form.bodyAreas.${area}`)}
                           </Text>
                         </TouchableOpacity>
                       );
@@ -867,7 +918,7 @@ export default function GoalCountdown({
               {/* 5. GOAL / EVENT NAME INPUT */}
               <View className="mb-4">
                 <Text className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-2">
-                  {isStretchingSport ? 'Custom Goal / Milestone Name' : isStrengthSport ? 'Custom Benchmark Name' : 'Goal / Event Name'}
+                  {isStretchingSport ? t('form.nameLabelStretching') : isStrengthSport ? t('form.nameLabelStrength') : t('form.nameLabel')}
                 </Text>
                 <TextInput
                   style={{
@@ -883,10 +934,10 @@ export default function GoalCountdown({
                   }}
                   placeholder={
                     isStretchingSport
-                      ? "e.g. Front Splits, Palms to Floor, Custom"
+                      ? t('form.namePlaceholderStretching')
                       : isStrengthSport
-                        ? "e.g. 10 Strict Pull-ups, 100kg Squat, Custom"
-                        : "e.g. Autumn Marathon, Sub-4h Target"
+                        ? t('form.namePlaceholderStrength')
+                        : t('form.namePlaceholder')
                   }
                   placeholderTextColor={colors.textSecondary}
                   value={goalNameInput}
@@ -899,10 +950,10 @@ export default function GoalCountdown({
                 <View className="mb-4">
                   <View className="flex-row justify-between items-center mb-2 px-1">
                     <Text className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                      {goalSport === 'swimming' ? 'Target Swim Distance (Meters/Yards)' : `Target Distance (${units === 'Imperial' ? 'Miles' : 'Kilometers'})`}
+                      {goalSport === 'swimming' ? t('form.swimDistanceLabel') : (units === 'Imperial' ? t('form.distanceLabelMiles') : t('form.distanceLabelKm'))}
                     </Text>
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.primary }}>
-                      {goalSport === 'swimming' ? (units === 'Imperial' ? 'Yards' : 'Meters') : (units === 'Imperial' ? 'Imperial (mi)' : 'Metric (km)')}
+                      {goalSport === 'swimming' ? (units === 'Imperial' ? t('form.yards') : t('form.meters')) : (units === 'Imperial' ? t('form.imperialMi') : t('form.metricKm'))}
                     </Text>
                   </View>
 
@@ -911,8 +962,8 @@ export default function GoalCountdown({
                     {goalSport === 'running' && [
                       { label: units === 'Imperial' ? '5K (3.1m)' : '5K', val: units === 'Imperial' ? '3.1' : '5.0' },
                       { label: units === 'Imperial' ? '10K (6.2m)' : '10K', val: units === 'Imperial' ? '6.2' : '10.0' },
-                      { label: units === 'Imperial' ? 'Half 13.1m' : 'Half 21.1k', val: units === 'Imperial' ? '13.1' : '21.1' },
-                      { label: units === 'Imperial' ? 'Full 26.2m' : 'Full 42.2k', val: units === 'Imperial' ? '26.2' : '42.2' },
+                      { label: units === 'Imperial' ? t('form.distanceChips.halfMi') : t('form.distanceChips.halfKm'), val: units === 'Imperial' ? '13.1' : '21.1' },
+                      { label: units === 'Imperial' ? t('form.distanceChips.fullMi') : t('form.distanceChips.fullKm'), val: units === 'Imperial' ? '26.2' : '42.2' },
                     ].map(p => (
                       <TouchableOpacity
                         key={p.label}
@@ -998,8 +1049,8 @@ export default function GoalCountdown({
                     }}
                     placeholder={
                       goalSport === 'swimming'
-                        ? "Distance in meters/yards (e.g. 1500)"
-                        : `Distance in ${units === 'Imperial' ? 'miles (e.g. 26.2)' : 'km (e.g. 42.2)'}`
+                        ? t('form.swimDistancePlaceholder')
+                        : units === 'Imperial' ? t('form.distancePlaceholderMiles') : t('form.distancePlaceholderKm')
                     }
                     placeholderTextColor={colors.textSecondary}
                     value={goalDistance}
@@ -1014,7 +1065,7 @@ export default function GoalCountdown({
                 <View className="mb-4">
                   <View className="flex-row justify-between items-center mb-2 px-1">
                     <Text className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                      Target Finish Time (HH:MM:SS)
+                      {t('form.finishTime')}
                     </Text>
                     {targetPaceOrSpeed && (
                       <View className="flex-row items-center gap-1 bg-primary/15 px-2 py-0.5 rounded-full">
@@ -1060,10 +1111,10 @@ export default function GoalCountdown({
               <View className="mb-4">
                 <View className="flex-row justify-between items-center mb-2 px-1">
                   <Text className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                    Target Event Date
+                    {t('form.eventDate')}
                   </Text>
                   <Text style={{ fontSize: 11, fontWeight: '700', color: colors.primary }}>
-                    {weeksUntilGoal} weeks away
+                    {t('form.weeksAway', { count: weeksUntilGoal })}
                   </Text>
                 </View>
 
@@ -1087,7 +1138,7 @@ export default function GoalCountdown({
                         }}
                       >
                         <Text style={{ fontSize: 12, fontWeight: '700', color: isSelected ? colors.primary : colors.text }}>
-                          +{w}w
+                          {t('form.weeksPreset', { weeks: w })}
                         </Text>
                       </TouchableOpacity>
                     );
@@ -1112,11 +1163,11 @@ export default function GoalCountdown({
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                     <CalendarIcon size={16} color={colors.primary} />
                     <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-                      {format(targetGoalDate, 'MMMM d, yyyy')}
+                      {formatDate(targetGoalDate, 'MMMM d, yyyy')}
                     </Text>
                   </View>
                   <Text style={{ fontSize: 12, fontWeight: '700', color: colors.primary }}>
-                    Change Date
+                    {t('form.changeDate')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -1124,7 +1175,7 @@ export default function GoalCountdown({
               {/* 9. TARGET NOTES / FOCUS DESCRIPTION */}
               <View className="mb-6">
                 <Text className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-1 mb-2">
-                  {isStretchingSport ? 'Mobility Focus / Notes (Optional)' : isStrengthSport ? 'Benchmark Target Notes (Optional)' : 'Target Notes (Optional)'}
+                  {isStretchingSport ? t('form.notesLabelStretching') : isStrengthSport ? t('form.notesLabelStrength') : t('form.notesLabel')}
                 </Text>
                 <TextInput
                   style={{
@@ -1141,10 +1192,10 @@ export default function GoalCountdown({
                   }}
                   placeholder={
                     isStretchingSport
-                      ? "e.g. Daily 15m hip mobility routine, reach flat ground"
+                      ? t('form.notesPlaceholderStretching')
                       : isStrengthSport
-                        ? "e.g. 10 strict reps, 100 kg 1RM target"
-                        : "e.g. Sub-3:45 finish, negative split pacing"
+                        ? t('form.notesPlaceholderStrength')
+                        : t('form.notesPlaceholder')
                   }
                   placeholderTextColor={colors.textSecondary}
                   value={goalNotes}
@@ -1156,7 +1207,7 @@ export default function GoalCountdown({
             </ScrollView>
 
             <GlassButton
-              label={isEditing ? 'Save & Update Plan' : 'Set Goal & Generate Plan'}
+              label={isEditing ? t('form.saveUpdate') : t('form.saveCreate')}
               variant="glass-primary"
               size="lg"
               shape="pill"
@@ -1192,10 +1243,10 @@ export default function GoalCountdown({
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <View>
                 <Text style={{ fontSize: 20, fontWeight: '800', color: colors.text }}>
-                  {isStretchingSport ? 'Flexibility Milestones' : 'Strength Benchmarks'}
+                  {isStretchingSport ? t('milestonePicker.flexibilityTitle') : t('milestonePicker.strengthTitle')}
                 </Text>
                 <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>
-                  Select a milestone to calibrate your weekly progression.
+                  {t('milestonePicker.subtitle')}
                 </Text>
               </View>
               <GlassButton
@@ -1214,12 +1265,6 @@ export default function GoalCountdown({
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingBottom: 16 }}>
               {(['all', 'legs', 'core', 'upper'] as const).map(cat => {
                 const isSelected = milestoneCategory === cat;
-                const catLabels: Record<string, string> = {
-                  all: 'All Milestones',
-                  legs: 'Legs & Hips',
-                  core: 'Core & Spine',
-                  upper: 'Upper Body',
-                };
                 return (
                   <TouchableOpacity
                     key={cat}
@@ -1234,7 +1279,7 @@ export default function GoalCountdown({
                     }}
                   >
                     <Text style={{ fontSize: 12, fontWeight: '700', color: isSelected ? colors.primary : colors.text }}>
-                      {catLabels[cat]}
+                      {t(`milestonePicker.categories.${cat}`)}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -1245,13 +1290,14 @@ export default function GoalCountdown({
             <ScrollView style={{ maxHeight: 340 }} showsVerticalScrollIndicator={false}>
               <View style={{ gap: 8, paddingBottom: 16 }}>
                 {filteredMilestones.map(m => {
-                  const isSelected = goalNameInput === m.label;
+                  const label = milestoneLabel(m);
+                  const isSelected = goalNameInput === label;
                   return (
                     <TouchableOpacity
-                      key={m.label}
+                      key={m.key}
                       onPress={() => {
-                        setGoalNameInput(m.label);
-                        setGoalNotes(m.note);
+                        setGoalNameInput(label);
+                        setGoalNotes(milestoneNote(m));
                         setShowMilestonePicker(false);
                       }}
                       activeOpacity={0.75}
@@ -1268,10 +1314,10 @@ export default function GoalCountdown({
                     >
                       <View style={{ flex: 1, marginRight: 12 }}>
                         <Text style={{ fontSize: 14, fontWeight: '700', color: isSelected ? colors.primary : colors.text }}>
-                          {m.label}
+                          {label}
                         </Text>
                         <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2 }}>
-                          {m.note}
+                          {milestoneNote(m)}
                         </Text>
                       </View>
                       {isSelected && <Check size={16} color={colors.primary} strokeWidth={2.5} />}
@@ -1284,7 +1330,7 @@ export default function GoalCountdown({
                   onPress={() => {
                     setMilestoneCategory('other');
                     setGoalNameInput('');
-                    setGoalNotes('Custom milestone target');
+                    setGoalNotes(t('form.customMilestoneNote'));
                     setShowMilestonePicker(false);
                   }}
                   activeOpacity={0.75}
@@ -1301,10 +1347,10 @@ export default function GoalCountdown({
                 >
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 14, fontWeight: '700', color: milestoneCategory === 'other' ? colors.primary : colors.text }}>
-                      Other / Custom Target
+                      {t('milestonePicker.otherTitle')}
                     </Text>
                     <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2 }}>
-                      Select target anatomical area and enter custom movement
+                      {t('milestonePicker.otherNote')}
                     </Text>
                   </View>
                   {milestoneCategory === 'other' && <Check size={16} color={colors.primary} strokeWidth={2.5} />}
@@ -1336,14 +1382,14 @@ export default function GoalCountdown({
             >
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                 <Text style={{ fontSize: 17, fontWeight: '700', color: colors.text }}>
-                  Select Target Date
+                  {t('datePicker.title')}
                 </Text>
                 <GlassButton
                   onPress={() => setShowDatePicker(false)}
                   shape="pill"
                   size="sm"
                   variant="glass-primary"
-                  label="Done"
+                  label={t('common:done')}
                   style={{ height: 34, minWidth: 64 }}
                 />
               </View>

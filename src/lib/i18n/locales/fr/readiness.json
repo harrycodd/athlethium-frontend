@@ -1,0 +1,25 @@
+{
+  "dailyReadiness": "Ressenti du jour",
+  "recordStats": "Notez votre état du jour",
+  "history": "Historique",
+  "noEntry": "Aucune saisie",
+  "viewingPast": "Ressenti d'un jour passé",
+  "physicalFeeling": "Forme physique",
+  "mentalFeeling": "Forme mentale",
+  "sleepQuality": "Qualité du sommeil",
+  "injury": "Blessure",
+  "illness": "Maladie",
+  "weightWithUnit": "Poids ({{unit}})",
+  "notes": "Notes",
+  "notesPlaceholder": "Comment vous sentez-vous aujourd'hui ?",
+  "noNotes": "Aucune note.",
+  "save": "Enregistrer",
+  "options": {
+    "none": "Aucune",
+    "minor": "Légère",
+    "moderate": "Modérée",
+    "severe": "Grave",
+    "mild": "Bénigne",
+    "sick": "Malade"
+  }
+}

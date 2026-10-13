@@ -1,0 +1,271 @@
+{
+  "defaultEventName": "Zielwettkampf",
+  "sports": {
+    "stretching": "Dehnen"
+  },
+  "card": {
+    "reachedTitle": "Ziel erreicht!",
+    "nextGoalPrompt": "Was ist dein nächstes Ziel?",
+    "setNextGoal": "+ Nächstes Ziel setzen",
+    "countdownTitle": "Countdown: {{name}}",
+    "daysToGo_one": "<num>{{count}}</num><label>Tag noch</label>",
+    "daysToGo_other": "<num>{{count}}</num><label>Tage noch</label>",
+    "planProgress": "Planfortschritt",
+    "weekProgressPercent": "Woche {{week}} von {{total}} ({{percent}}%)"
+  },
+  "details": {
+    "title": "Zieldetails",
+    "blockProgress": "Fortschritt im Trainingsblock",
+    "weekProgress": "Woche {{week}} von {{total}}",
+    "daysCompleted_one": "{{count}} Tag geschafft",
+    "daysCompleted_other": "{{count}} Tage geschafft",
+    "daysRemaining_one": "{{count}} Tag verbleibend",
+    "daysRemaining_other": "{{count}} Tage verbleibend",
+    "quotedDescription": "„{{text}}“",
+    "markAchieved": "Als erreicht markieren",
+    "editGoal": "Ziel bearbeiten"
+  },
+  "form": {
+    "editTitle": "Ziel bearbeiten",
+    "newTitle": "Setz dir ein Ziel",
+    "subtitle": "Plane konkrete Meilensteine und Wettkampftermine",
+    "sportFocus": "Sportart",
+    "goalTemplates": "Zielvorlagen",
+    "flexibilityMilestoneFocus": "Beweglichkeits-Meilenstein / Fokus",
+    "strengthBenchmarkFocus": "Kraft-Benchmark / Fokus",
+    "selectFlexibilityMilestone": "Beweglichkeits-Meilenstein wählen",
+    "selectStrengthBenchmark": "Kraft-Benchmark wählen",
+    "category": "Kategorie: {{category}}",
+    "allFocusAreas": "Alle Bereiche",
+    "categories": {
+      "legs": "Beine",
+      "core": "Rumpf",
+      "upper": "Oberkörper",
+      "other": "Sonstiges"
+    },
+    "anatomicalArea": "Körperbereich für den Trainingsalgorithmus",
+    "bodyAreas": {
+      "all": "Ganzkörper",
+      "core": "Rumpf",
+      "upper": "Oberkörper",
+      "lower": "Unterkörper / Beine"
+    },
+    "nameLabelStretching": "Eigenes Ziel / Meilenstein",
+    "nameLabelStrength": "Eigener Benchmark",
+    "nameLabel": "Ziel / Wettkampf",
+    "namePlaceholderStretching": "z. B. Längsspagat, Handflächen zum Boden, Eigenes",
+    "namePlaceholderStrength": "z. B. 10 saubere Klimmzüge, 100 kg Kniebeuge, Eigenes",
+    "namePlaceholder": "z. B. Herbstmarathon, Sub 4 h",
+    "defaultGoalName": "Mein Fitnessziel",
+    "goalNameFromTemplate": "Ziel: {{goal}}",
+    "swimGoalName": "Ziel: 1500 m Schwimmen",
+    "customMilestoneNote": "Eigener Meilenstein",
+    "swimDistanceLabel": "Ziel-Schwimmdistanz (Meter/Yards)",
+    "distanceLabelMiles": "Zieldistanz (Meilen)",
+    "distanceLabelKm": "Zieldistanz (Kilometer)",
+    "yards": "Yards",
+    "meters": "Meter",
+    "imperialMi": "Imperial (mi)",
+    "metricKm": "Metrisch (km)",
+    "distanceChips": {
+      "halfMi": "HM 13,1 mi",
+      "halfKm": "HM 21,1 km",
+      "fullMi": "Marathon 26,2 mi",
+      "fullKm": "Marathon 42,2 km"
+    },
+    "swimDistancePlaceholder": "Distanz in Metern/Yards (z. B. 1500)",
+    "distancePlaceholderMiles": "Distanz in Meilen (z. B. 26,2)",
+    "distancePlaceholderKm": "Distanz in km (z. B. 42,2)",
+    "finishTime": "Zielzeit (HH:MM:SS)",
+    "eventDate": "Wettkampfdatum",
+    "weeksAway_one": "in {{count}} Woche",
+    "weeksAway_other": "in {{count}} Wochen",
+    "weeksPreset": "+{{weeks}} Wo.",
+    "changeDate": "Datum ändern",
+    "notesLabelStretching": "Mobilitätsfokus / Notizen (optional)",
+    "notesLabelStrength": "Notizen zum Benchmark (optional)",
+    "notesLabel": "Notizen zum Ziel (optional)",
+    "notesPlaceholderStretching": "z. B. täglich 15 min Hüftmobilität, flach auf den Boden kommen",
+    "notesPlaceholderStrength": "z. B. 10 saubere Wdh., 100 kg 1RM als Ziel",
+    "notesPlaceholder": "z. B. unter 3:45 finishen, Negativ-Split",
+    "saveUpdate": "Speichern & Plan anpassen",
+    "saveCreate": "Ziel setzen & Plan erstellen"
+  },
+  "milestonePicker": {
+    "flexibilityTitle": "Beweglichkeits-Meilensteine",
+    "strengthTitle": "Kraft-Benchmarks",
+    "subtitle": "Wähle einen Meilenstein, um deine wöchentliche Progression abzustimmen.",
+    "categories": {
+      "all": "Alle Meilensteine",
+      "legs": "Beine & Hüfte",
+      "core": "Rumpf & Wirbelsäule",
+      "upper": "Oberkörper"
+    },
+    "otherTitle": "Sonstiges / Eigenes Ziel",
+    "otherNote": "Wähle den Körperbereich und gib eine eigene Übung ein"
+  },
+  "datePicker": {
+    "title": "Zieldatum wählen"
+  },
+  "alerts": {
+    "requiredTitle": "Pflichtfeld",
+    "requiredMessage": "Bitte gib einen Zielnamen ein oder wähle einen aus.",
+    "saveFailed": "Ziel konnte nicht gespeichert werden.",
+    "achievedTitle": "🎉 Glückwunsch!",
+    "achievedMessage": "Ziel als erreicht markiert! Was willst du als Nächstes schaffen?"
+  },
+  "goalTypes": {
+    "generalFitness": "Allgemeine Fitness",
+    "ironman": "Ironman",
+    "halfIronman": "Mitteldistanz (70.3)",
+    "olympicTriathlon": "Olympische Distanz",
+    "sprintTriathlon": "Sprint-Triathlon",
+    "aquathlon": "Aquathlon",
+    "swimRun": "SwimRun",
+    "duathlon": "Duathlon",
+    "marathon": "Marathon",
+    "halfMarathon": "Halbmarathon",
+    "tenK": "10 km",
+    "fiveK": "5 km",
+    "centuryRide": "160-km-Ausfahrt",
+    "fortyKTT": "40 km EZF",
+    "tenMileTT": "10 Meilen EZF",
+    "freestyle1500": "1500 m Freistil",
+    "individualMedley400": "400 m Lagen",
+    "strokeSpecialization200": "200 m Spezialstrecke",
+    "sprintEvent100": "100 m Sprint",
+    "openWater1500": "Freiwasser 1,5 km",
+    "openWater5K": "Freiwasser 5 km",
+    "openWater10K": "Freiwasser 10 km",
+    "functionalStrength": "Funktionelle Kraft & Athletik",
+    "fullBodyFlexibility": "Ganzkörper-Beweglichkeit",
+    "frontSplitsMastery": "Längsspagat meistern",
+    "middleSplitsMastery": "Querspagat meistern"
+  },
+  "milestones": {
+    "stretching": {
+      "fullFrontSplits": {
+        "label": "Voller Längsspagat",
+        "note": "Längsspagat flach am Boden"
+      },
+      "middleSplits": {
+        "label": "Seit- / Querspagat",
+        "note": "Hüftabduktion für den Querspagat"
+      },
+      "palmsToFloor": {
+        "label": "Handflächen zum Boden",
+        "note": "Beweglichkeit von Beinbeuger & hinterer Kette"
+      },
+      "deepSquat": {
+        "label": "Tiefe Hocke",
+        "note": "Mobilität für Sprunggelenk & Hüfte"
+      },
+      "pigeonPose": {
+        "label": "Taube 90°",
+        "note": "Beweglichkeit von Gesäß & tiefen Hüftrotatoren"
+      },
+      "ankleDorsiflexion": {
+        "label": "Dorsalflexion Sprunggelenk",
+        "note": "Volle Beweglichkeit im Sprunggelenk"
+      },
+      "thoracicBridge": {
+        "label": "Brücke",
+        "note": "Volle Rückbeuge & Streckung der BWS"
+      },
+      "lSit": {
+        "label": "L-Sitz",
+        "note": "Rumpfkompression & Hüftbeuger-Beweglichkeit"
+      },
+      "spinalDecompression": {
+        "label": "Wirbelsäule: Entlastung & Rotation",
+        "note": "Mobilität und Rotationsbalance der Wirbelsäule"
+      },
+      "overheadShoulder": {
+        "label": "Schultermobilität über Kopf",
+        "note": "180° aktive Schulterflexion über Kopf"
+      },
+      "chestOpener": {
+        "label": "Brust- & vordere Schulteröffnung",
+        "note": "Beweglichkeit von Brustmuskel und Bizepssehne"
+      },
+      "thoracicExtension": {
+        "label": "BWS-Streckung",
+        "note": "Haltungsmobilität im oberen Rücken"
+      },
+      "fullBodyFlow": {
+        "label": "Ganzkörper-Mobility-Flow",
+        "note": "Komplette tägliche Mobilitätsroutine"
+      },
+      "fullBodyMastery": {
+        "label": "Ganzkörper-Beweglichkeit meistern",
+        "note": "Umfassende Beweglichkeit aller Gelenke"
+      }
+    },
+    "strength": {
+      "pullUps": {
+        "label": "10 saubere Klimmzüge",
+        "note": "10 saubere Wdh. am Stück"
+      },
+      "pushUps": {
+        "label": "50 Liegestütze am Stück",
+        "note": "50 Liegestütze ohne Pause"
+      },
+      "benchPress": {
+        "label": "Bankdrücken mit Körpergewicht",
+        "note": "1x Körpergewicht beim Bankdrücken"
+      },
+      "handstandPushUps": {
+        "label": "Handstand-Liegestütze",
+        "note": "Saubere Handstand-Liegestütze an der Wand"
+      },
+      "muscleUp": {
+        "label": "Muscle-up meistern",
+        "note": "Saubere Muscle-ups an Stange / Ringen"
+      },
+      "overheadPress": {
+        "label": "Schulterdrücken (0,75x KG)",
+        "note": "Sauberes Schulterdrücken mit Langhantel"
+      },
+      "squat": {
+        "label": "Kniebeuge 1,5x KG",
+        "note": "Langhantel-Kniebeuge mit 1,5x Körpergewicht"
+      },
+      "deadlift": {
+        "label": "Kreuzheben 2x KG",
+        "note": "Klassisches Kreuzheben mit 2x Körpergewicht"
+      },
+      "pistolSquats": {
+        "label": "Pistol Squats (einbeinig)",
+        "note": "5 saubere Wdh. pro Bein"
+      },
+      "bulgarianSplitSquat": {
+        "label": "Bulgarian Split Squat schwer",
+        "note": "Einbeinige Kraft & Stabilität"
+      },
+      "plank": {
+        "label": "3 Minuten Plank",
+        "note": "180 s sauberer Unterarmstütz am Stück"
+      },
+      "dragonFlag": {
+        "label": "Dragon Flag meistern",
+        "note": "Saubere Dragon Flag mit Körpergewicht"
+      },
+      "hangingLegRaises": {
+        "label": "Hängendes Beinheben (15 Wdh.)",
+        "note": "Saubere Toes-to-Bar"
+      },
+      "abWheel": {
+        "label": "Ab-Wheel-Rollouts auf den Zehen",
+        "note": "Ab-Wheel-Rollouts in voller Streckung"
+      },
+      "cleanAndJerk": {
+        "label": "Stoßen-Benchmark",
+        "note": "Benchmark aus dem Gewichtheben"
+      },
+      "functionalStrength": {
+        "label": "Funktionelle Kraft meistern",
+        "note": "Funktionelle Ganzkörperkraft & Explosivkraft"
+      }
+    }
+  }
+}

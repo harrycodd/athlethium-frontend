@@ -1,0 +1,25 @@
+{
+  "dailyReadiness": "Prontezza giornaliera",
+  "recordStats": "Registra i tuoi dati di oggi",
+  "history": "Storico",
+  "noEntry": "Nessun dato registrato",
+  "viewingPast": "Stai vedendo dati passati",
+  "physicalFeeling": "Sensazioni fisiche",
+  "mentalFeeling": "Sensazioni mentali",
+  "sleepQuality": "Qualità del sonno",
+  "injury": "Infortunio",
+  "illness": "Malattia",
+  "weightWithUnit": "Peso ({{unit}})",
+  "notes": "Note",
+  "notesPlaceholder": "Come ti senti oggi?",
+  "noNotes": "Nessuna nota registrata.",
+  "save": "Salva prontezza",
+  "options": {
+    "none": "Nessuno",
+    "minor": "Lieve",
+    "moderate": "Moderato",
+    "severe": "Grave",
+    "mild": "Leggera",
+    "sick": "Malato"
+  }
+}

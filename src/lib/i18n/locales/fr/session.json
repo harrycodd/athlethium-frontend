@@ -1,0 +1,171 @@
+{
+  "sports": {
+    "running": "Course à pied",
+    "cycling": "Cyclisme",
+    "swimming": "Natation",
+    "strength": "Renforcement",
+    "stretching": "Étirements",
+    "yoga": "Yoga",
+    "rest": "Repos",
+    "other": "Autre"
+  },
+  "duration": {
+    "h": "{{h}} h",
+    "hm": "{{h}} h {{m}} min",
+    "hms": "{{h}} h {{m}} min {{s}} s",
+    "m": "{{m}} min",
+    "ms": "{{m}} min {{s}} s",
+    "s": "{{s}} s"
+  },
+  "reps_one": "{{count}} rép.",
+  "reps_other": "{{count}} rép.",
+  "lap": "Tour {{number}}",
+  "step": "Étape {{number}}",
+  "details": {
+    "redo": "Refaire",
+    "upload": "Importer",
+    "namePlaceholder": "Nom de la séance",
+    "completed": "Terminée",
+    "uploadingTitle": "Import de la séance",
+    "uploadingMessage": "Lecture du fichier FIT et calcul des analyses. Cela peut prendre quelques secondes…",
+    "tabs": {
+      "analysis": "Analyse",
+      "structure": "Structure"
+    },
+    "date": "Date",
+    "sport": "Sport",
+    "plannedDuration": "Durée prévue",
+    "sessionDuration": "Durée de la séance",
+    "descriptionGoals": "Description et objectifs",
+    "descriptionPlaceholder": "Quels sont les objectifs de cette séance ?",
+    "startActivity": "Démarrer l'activité",
+    "selectSport": "Choisir un sport"
+  },
+  "alerts": {
+    "loadFailed": "Impossible de charger les détails de la séance.",
+    "verifyFileTitle": "Vérifier le fichier",
+    "verifyFileMessage": "Ce fichier ne semble pas être un fichier .fit. Voulez-vous vraiment l'importer ?",
+    "uploadAnyway": "Importer quand même",
+    "uploadSuccess": "Fichier de séance importé et analysé avec succès !",
+    "uploadErrorTitle": "Erreur d'import",
+    "uploadFailed": "Échec de l'import du fichier de séance.",
+    "uploadUnexpected": "Une erreur s'est produite pendant l'import du fichier.",
+    "saved": "Séance mise à jour.",
+    "saveFailed": "Échec de l'enregistrement des modifications.",
+    "redoTitle": "Refaire la séance",
+    "redoMessage": "Voulez-vous vraiment refaire cette séance et la marquer comme non terminée ?",
+    "redoConfirm": "Refaire",
+    "redoFailed": "Impossible de refaire la séance.",
+    "deleteTitle": "Supprimer la séance",
+    "deleteMessage": "Voulez-vous vraiment supprimer cette séance ?",
+    "deleteFailed": "Échec de la suppression de la séance."
+  },
+  "structure": {
+    "loadingLaps": "Chargement des tours…",
+    "metrics": {
+      "pace": "Allure",
+      "speed": "Vitesse",
+      "power": "Puissance",
+      "hr": "Fréquence cardiaque"
+    },
+    "avgPower": "Puiss. moy.",
+    "avgHr": "FC moy.",
+    "avgPace": "Allure moy.",
+    "avgSpeed": "Vitesse moy.",
+    "distance": "Distance",
+    "empty": "Aucun détail de structure pour cette séance.",
+    "stepName": "Étape {{type}}",
+    "targetRange": "{{low}}-{{high}} % FTP",
+    "targetAbove": ">{{low}} % FTP",
+    "setsOfReps_one": "{{count}} série × {{reps}}",
+    "setsOfReps_other": "{{count}} séries × {{reps}}"
+  },
+  "stepTypes": {
+    "warmup": "Échauffement",
+    "interval": "Fractionné",
+    "recovery": "Récupération",
+    "cooldown": "Retour au calme",
+    "tempo": "Tempo",
+    "endurance": "Endurance",
+    "exercise": "Exercice",
+    "work": "Effort"
+  },
+  "analysis": {
+    "loading": "Chargement de l'analyse…",
+    "entireSession": "Séance complète",
+    "metrics": {
+      "speed": "Vitesse",
+      "power": "Puissance",
+      "heartrate": "Fréquence cardiaque",
+      "elevation": "Altitude",
+      "cadence": "Cadence"
+    },
+    "max": {
+      "speed": "Vitesse max",
+      "power": "Puissance max",
+      "heartrate": "FC max",
+      "elevation": "Altitude max",
+      "cadence": "Cadence max"
+    },
+    "avg": {
+      "speed": "Vitesse moy.",
+      "power": "Puissance moy.",
+      "heartrate": "FC moy.",
+      "elevation": "Altitude moy.",
+      "cadence": "Cadence moy."
+    },
+    "min": {
+      "speed": "Vitesse min",
+      "power": "Puissance min",
+      "heartrate": "FC min",
+      "elevation": "Altitude min",
+      "cadence": "Cadence min"
+    },
+    "normPower": "Puiss. norm.",
+    "bestEfforts": "Meilleurs efforts",
+    "completedWorkout": "Séance réalisée",
+    "sessionMetrics": "Données de la séance",
+    "notAvailable": "N/D"
+  },
+  "stats": {
+    "duration": "Durée",
+    "distance": "Distance",
+    "avgSpeed": "Vitesse moy.",
+    "avgPace": "Allure moy.",
+    "avgPower": "Puiss. moy.",
+    "normPower": "Puiss. norm.",
+    "elevation": "Dénivelé",
+    "cadence": "Cadence",
+    "pace": "Allure",
+    "sets": "Séries",
+    "reps": "Rép.",
+    "volume": "Volume",
+    "avgHr": "FC moy.",
+    "maxHr": "FC max",
+    "calories": "Calories",
+    "tss": "TSS"
+  },
+  "strengthLog": {
+    "title": "Notez vos séries",
+    "totals_one": "{{count}} série · {{reps}} · {{volume}} {{unit}} au total",
+    "totals_other": "{{count}} séries · {{reps}} · {{volume}} {{unit}} au total",
+    "setNumber": "Série {{number}}",
+    "repsInputLabel": "Répétitions de la série {{number}} de {{exercise}}",
+    "weightInputLabel": "Charge de la série {{number}} de {{exercise}}",
+    "repsPlaceholder": "rép.",
+    "addSetLabel": "Ajouter une série de {{exercise}}",
+    "removeSetLabel": "Supprimer la série {{number}} de {{exercise}}",
+    "addExercisePlaceholder": "Ajouter un exercice (ex. hip thrust)",
+    "add": "Ajouter",
+    "save": "Enregistrer",
+    "savedTitle": "Enregistré",
+    "savedMessage_one": "{{count}} série enregistrée.",
+    "savedMessage_other": "{{count}} séries enregistrées.",
+    "saveFailed": "Impossible d'enregistrer vos séries. Veuillez réessayer."
+  },
+  "summary": {
+    "sets": "Séries",
+    "setLine": "Série {{number}} : {{detail}}",
+    "done": "terminé"
+  }
+}

@@ -4,7 +4,8 @@ import { Zap, Heart, Gauge, Dumbbell, Clock, Sparkles } from 'lucide-react-nativ
 import Text from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
 import { Radius, BorderWidth } from '@/constants/theme';
-import { PlayableStep } from '@/hooks/use-activity-tracker';
+import { PlayableStep, stepTypeLabel } from '@/hooks/use-activity-tracker';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   step: PlayableStep | null;
@@ -15,14 +16,15 @@ interface Props {
 
 export function ActivitySegment({ step, title, description }: Props) {
   const { colors, isDark } = useTheme();
+  const { t } = useTranslation('activity');
 
   if (!step && !title && !description) return null;
 
-  const stepName = step?.name || title || 'Current Step';
-  const stepType = (step?.type || 'INTERVAL').toUpperCase();
+  const stepName = step?.name || title || t('currentStep');
+  const stepType = stepTypeLabel(t, step?.type || 'interval').toUpperCase();
   const stepColor = step?.color || colors.primary;
-  const targetLabel = step?.targetLabel || 'TARGET METRIC';
-  const targetValue = step?.targetValue || 'Steady Pace';
+  const targetLabel = step?.targetLabel || t('targets.metricLabel');
+  const targetValue = step?.targetValue || t('targets.steadyPace');
   const targetSubtext = step?.targetSubtext || '';
   const notes = step?.notes || step?.description || description || '';
 
@@ -84,7 +86,7 @@ export function ActivitySegment({ step, title, description }: Props) {
 
         {step?.totalSteps && (
           <Text style={{ fontSize: 12, fontWeight: '700', color: colors.textSecondary }}>
-            Step {step.index + 1} of {step.totalSteps}
+            {t('stepOf', { current: step.index + 1, total: step.totalSteps })}
           </Text>
         )}
       </View>

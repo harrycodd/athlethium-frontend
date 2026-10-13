@@ -10,6 +10,7 @@ import { getWorkout, updateWorkout, Workout } from '@/lib/workout-service';
 import { useAuth } from '@/hooks/use-auth';
 import { useTheme } from '@/hooks/use-theme';
 import { serverTimestamp } from 'firebase/firestore';
+import { useTranslation } from 'react-i18next';
 
 import { calculateInAppRecordedTss, checkAndAutoUpdateFtp } from '@/lib/physiology-engine';
 
@@ -25,6 +26,7 @@ export default function ActivityScreen() {
   const router = useRouter();
   const { colors, isDark } = useTheme();
   const { profile } = useAuth();
+  const { t } = useTranslation('activity');
 
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
@@ -56,8 +58,8 @@ export default function ActivityScreen() {
   if (!workout) {
     return (
       <ScreenWrapper scrollable={false} className="px-6 justify-center items-center" withTopInset={true}>
-        <Text variant="h2" className="mb-4">Session not found</Text>
-        <GlassButton label="Go Back" variant="glass" size="md" shape="pill" onPress={() => router.back()} />
+        <Text variant="h2" className="mb-4">{t('notFound')}</Text>
+        <GlassButton label={t('goBack')} variant="glass" size="md" shape="pill" onPress={() => router.back()} />
       </ScreenWrapper>
     );
   }
@@ -115,7 +117,7 @@ export default function ActivityScreen() {
       // Automatically check for FTP / Threshold improvements
       const ftpUpdate = await checkAndAutoUpdateFtp(profile, workout, statsPayload);
       if (ftpUpdate.updated && ftpUpdate.message) {
-        Alert.alert('Threshold Breakthrough! 🏆', ftpUpdate.message);
+        Alert.alert(t('breakthrough.title'), ftpUpdate.message);
       }
     } catch (error) {
       console.error('Failed to save workout stats:', error);
@@ -129,12 +131,12 @@ export default function ActivityScreen() {
       tracker.goToNextStep();
     } else {
       Alert.alert(
-        'Finish Workout',
-        'Are you sure you want to finish this workout and save your results?',
+        t('finishWorkout.title'),
+        t('finishWorkout.message'),
         [
-          { text: 'Cancel', style: 'cancel' },
+          { text: t('common:cancel'), style: 'cancel' },
           {
-            text: 'Finish',
+            text: t('actions.finish'),
             onPress: async () => {
               await saveWorkoutResults();
               router.replace('/(tabs)');
@@ -148,19 +150,19 @@ export default function ActivityScreen() {
   const handleClose = async () => {
     if (tracker.totalTimeElapsed < 120) {
       Alert.alert(
-        'End Session',
-        'This session is under 2 minutes. What would you like to do?',
+        t('endSession.title'),
+        t('endSession.shortMessage'),
         [
           {
-            text: 'Finish',
+            text: t('actions.finish'),
             onPress: async () => {
               await saveWorkoutResults();
               router.replace('/(tabs)');
             },
           },
-          { text: 'Resume', style: 'cancel' },
+          { text: t('actions.resume'), style: 'cancel' },
           {
-            text: 'Discard',
+            text: t('actions.discard'),
             style: 'destructive',
             onPress: () => router.back(),
           },
@@ -168,12 +170,12 @@ export default function ActivityScreen() {
       );
     } else {
       Alert.alert(
-        'End Session',
-        'Are you sure you want to finish this session and save your results?',
+        t('endSession.title'),
+        t('endSession.message'),
         [
-          { text: 'Resume', style: 'cancel' },
+          { text: t('actions.resume'), style: 'cancel' },
           {
-            text: 'Finish & Save',
+            text: t('actions.finishAndSave'),
             onPress: async () => {
               await saveWorkoutResults();
               router.replace('/(tabs)');
@@ -192,8 +194,8 @@ export default function ActivityScreen() {
 
   const timerLabel =
     tracker.timerMode === 'countdown' && tracker.stepTimeRemaining !== null
-      ? 'Step Remaining'
-      : 'Step Elapsed';
+      ? t('timer.stepRemaining')
+      : t('timer.stepElapsed');
 
   return (
     <ScreenWrapper scrollable={false} className="px-4 pb-6" withTopInset={true}>
@@ -253,7 +255,7 @@ export default function ActivityScreen() {
           canGoPrevious={tracker.currentStepIndex > 0}
           onPrevious={tracker.goToPreviousStep}
           isLastStep={isLastStep}
-          nextLabel={isLastStep ? 'FINISH WORKOUT' : 'NEXT STEP'}
+          nextLabel={isLastStep ? t('controls.finishWorkout') : t('controls.nextStep')}
           onNext={handleNext}
         />
       </ScrollView>

@@ -33,13 +33,24 @@ jest.mock('firebase/auth', () => ({
   getReactNativePersistence: jest.fn(),
 }));
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, fallback?: string) => fallback ?? key,
-    i18n: { language: 'en', changeLanguage: jest.fn() },
-  }),
-  initReactI18next: { type: '3rdParty', init: jest.fn() },
-}));
+// Real translations, in English: screens render exactly what an English-speaking user sees.
+import i18n from '@/lib/i18n';
+
+const missingKeys: string[] = [];
+i18n.options.saveMissing = true;
+i18n.options.missingKeyHandler = (_lngs, ns, key) => {
+  missingKeys.push(`${ns}:${key}`);
+};
+
+beforeAll(async () => {
+  await i18n.changeLanguage('en');
+});
+
+afterEach(() => {
+  // a screen asked for a translation that doesn't exist (it would show the raw key to users)
+  const missing = missingKeys.splice(0);
+  if (missing.length) throw new Error(`Missing translation keys: ${[...new Set(missing)].join(', ')}`);
+});
 
 export const mockRouter = {
   push: jest.fn(),

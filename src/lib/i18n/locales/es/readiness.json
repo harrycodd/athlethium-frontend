@@ -1,0 +1,25 @@
+{
+  "dailyReadiness": "Disposición diaria",
+  "recordStats": "Registra cómo estás hoy",
+  "history": "Historial",
+  "noEntry": "Sin registro",
+  "viewingPast": "Viendo datos de disposición anteriores",
+  "physicalFeeling": "Sensación física",
+  "mentalFeeling": "Sensación mental",
+  "sleepQuality": "Calidad del sueño",
+  "injury": "Lesión",
+  "illness": "Enfermedad",
+  "weightWithUnit": "Peso ({{unit}})",
+  "notes": "Notas",
+  "notesPlaceholder": "¿Cómo te sientes hoy?",
+  "noNotes": "No hay notas registradas.",
+  "save": "Guardar disposición",
+  "options": {
+    "none": "Ninguna",
+    "minor": "Leve",
+    "moderate": "Moderada",
+    "severe": "Grave",
+    "mild": "Leve",
+    "sick": "Enfermo"
+  }
+}

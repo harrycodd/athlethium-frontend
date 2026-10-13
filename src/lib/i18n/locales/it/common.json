@@ -1,0 +1,38 @@
+{
+  "save": "Salva",
+  "cancel": "Annulla",
+  "loading": "Caricamento...",
+  "error": "Errore",
+  "success": "Fatto",
+  "start": "Inizia seduta",
+  "details": "Dettagli",
+  "complete": "Completa",
+  "analyse": "Vedi analisi",
+  "delete": "Elimina",
+  "ok": "OK",
+  "done": "Fatto",
+  "next": "Avanti",
+  "back": "Indietro",
+  "close": "Chiudi",
+  "edit": "Modifica",
+  "retry": "Riprova",
+  "yes": "Sì",
+  "no": "No",
+  "none": "Nessuno",
+  "sports": {
+    "cycling": "Ciclismo",
+    "running": "Corsa",
+    "swimming": "Nuoto",
+    "strength": "Forza",
+    "stretching": "Stretching",
+    "rest": "Riposo"
+  },
+  "language": "Lingua",
+  "toggleComplete": {
+    "redoTitle": "Rifai allenamento",
+    "completeTitle": "Completa allenamento",
+    "redoMessage": "Vuoi davvero rifare questo allenamento e segnarlo come non completato?",
+    "completeMessage": "Vuoi segnare questo allenamento come completato?",
+    "redo": "Rifai"
+  }
+}

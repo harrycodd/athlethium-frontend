@@ -1,0 +1,107 @@
+{
+  "notFound": "セッションが見つかりません",
+  "goBack": "戻る",
+  "breakthrough": {
+    "title": "閾値を更新しました！🏆",
+    "cyclingFtp": "FTPを更新しました！サイクリングのFTPが{{oldFtp}}Wから{{newFtp}}Wになりました。",
+    "runningPace": "閾値ペースを更新しました！ランニングの閾値ペースが{{pace}}/kmになりました。"
+  },
+  "finishWorkout": {
+    "title": "ワークアウトを終了",
+    "message": "このワークアウトを終了して結果を保存しますか？"
+  },
+  "endSession": {
+    "title": "セッションを終了",
+    "shortMessage": "このセッションは2分未満です。どうしますか？",
+    "message": "このセッションを終了して結果を保存しますか？"
+  },
+  "actions": {
+    "finish": "終了",
+    "resume": "再開",
+    "discard": "破棄",
+    "finishAndSave": "終了して保存"
+  },
+  "controls": {
+    "pause": "一時停止",
+    "play": "再開",
+    "finishWorkout": "ワークアウト終了",
+    "nextStep": "次のステップ"
+  },
+  "timer": {
+    "stepRemaining": "ステップ残り",
+    "stepElapsed": "ステップ経過",
+    "countdown": "カウントダウン",
+    "elapsed": "経過時間",
+    "labelWithMode": "{{label}}（{{mode}}）"
+  },
+  "stats": {
+    "totalTime": "合計時間",
+    "ofPlanned": "/ {{planned}}",
+    "distance": "距離",
+    "gpsPace": "GPSペース",
+    "remaining": "残り"
+  },
+  "stepOf": "ステップ {{current}}/{{total}}",
+  "nextUp": "次 · {{type}}",
+  "currentStep": "現在のステップ",
+  "defaultStepName": "{{type}}ステップ",
+  "defaultSegmentName": "セグメント{{number}}",
+  "defaultWorkoutName": "ワークアウト",
+  "sports": {
+    "running": "ランニング",
+    "cycling": "サイクリング",
+    "swimming": "スイミング",
+    "strength": "筋トレ",
+    "stretching": "ストレッチ",
+    "yoga": "ヨガ",
+    "rest": "休養"
+  },
+  "stepTypes": {
+    "warmup": "ウォームアップ",
+    "interval": "インターバル",
+    "recovery": "リカバリー",
+    "cooldown": "クールダウン",
+    "tempo": "テンポ",
+    "endurance": "エンデュランス",
+    "exercise": "エクササイズ",
+    "work": "メイン",
+    "sprint": "スプリント",
+    "rest": "レスト",
+    "threshold": "閾値",
+    "strength": "筋トレ",
+    "stretching": "ストレッチ",
+    "mobility": "モビリティ"
+  },
+  "targets": {
+    "metricLabel": "目標指標",
+    "steadyPace": "一定ペース",
+    "intensityLabel": "目標強度",
+    "steadyEffort": "一定強度",
+    "zone2Aerobic": "ゾーン2 有酸素",
+    "powerLabel": "目標パワー",
+    "paceLabel": "目標ペース",
+    "cssPaceLabel": "目標CSSペース",
+    "repsLabel": "目標回数",
+    "heartRateLabel": "目標心拍数",
+    "sessionLabel": "セッション目標",
+    "warmupZone": "50-65% FTP · ウォームアップゾーン",
+    "thresholdZone": "95-105% FTP · 閾値ゾーン",
+    "activeRecovery": "45-55% FTP · アクティブリカバリー",
+    "cooldownZone": "45-60% FTP · クールダウンゾーン",
+    "enduranceZone": "65-75% FTP · エンデュランスゾーン",
+    "racePace": "閾値 / 5K-10Kレースペース",
+    "easyAerobicPace": "楽な有酸素 / リカバリーペース",
+    "steadyEndurancePace": "ゾーン2 · 一定のエンデュランスペース",
+    "criticalSwimSpeed": "クリティカルスイムスピード · 閾値",
+    "aerobicRecoveryPace": "有酸素 / リカバリーペース",
+    "setsReps": "{{sets}}セット × {{reps}}回",
+    "reps": "{{reps}}回",
+    "qualityReps": "質の高い反復",
+    "eccentricForm": "エキセントリック動作をコントロールすることを意識しましょう",
+    "hrZone": "目標心拍ゾーン",
+    "thresholdHr": "ゾーン3-4 閾値心拍",
+    "executeSegment": "セグメントを実施",
+    "followGuidance": "設定されたインターバルの指示に従いましょう",
+    "zone2AerobicEndurance": "ゾーン2 有酸素エンデュランス"
+  }
+}

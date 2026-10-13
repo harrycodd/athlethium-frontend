@@ -1,5 +1,6 @@
 import "@/global.css";
 import "@/lib/i18n";
+import { restoreLanguage } from "@/lib/i18n/language";
 import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router/react-navigation';
 import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -8,6 +9,9 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { Stack, router, useSegments, useRootNavigationState } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from '@/hooks/use-auth';
+
+// A language picked on this device before wins over the phone's language until the profile loads.
+restoreLanguage();
 
 LogBox.ignoreLogs([
   'BloomFilter error',
@@ -107,6 +111,7 @@ function RootLayoutNav() {
           name="activity/[id]" 
           options={{ 
             headerShown: false,
+            // i18n-ignore: presentation mode, not text
             presentation: 'fullScreenModal',
             animation: 'slide_from_bottom'
           }} 

@@ -1,0 +1,20 @@
+{
+  "title": "Dein Plan",
+  "todaysSchedule": "Heute geplant",
+  "scheduledSessions": "Geplante Einheiten",
+  "emptyDay": "Für diesen Tag sind keine Einheiten geplant.",
+  "dailyMax": {
+    "title": "Tagesmaximum",
+    "limitFor": "Limit für {{date}}",
+    "hoursShort_one": "{{count}} Std.",
+    "hoursShort_other": "{{count}} Std.",
+    "modalTitle": "Max. Stunden pro Tag",
+    "hoursOption_one": "{{count}} Stunde",
+    "hoursOption_other": "{{count}} Stunden"
+  },
+  "calendar": {
+    "today": "Heute",
+    "expand": "Aufklappen",
+    "collapse": "Zuklappen"
+  }
+}

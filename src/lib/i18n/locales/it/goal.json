@@ -1,0 +1,271 @@
+{
+  "defaultEventName": "Evento obiettivo",
+  "sports": {
+    "stretching": "Stretching"
+  },
+  "card": {
+    "reachedTitle": "Obiettivo raggiunto!",
+    "nextGoalPrompt": "Qual è il tuo prossimo obiettivo?",
+    "setNextGoal": "+ Nuovo obiettivo",
+    "countdownTitle": "Conto alla rovescia: {{name}}",
+    "daysToGo_one": "<num>{{count}}</num><label>giorno rimasto</label>",
+    "daysToGo_other": "<num>{{count}}</num><label>giorni rimasti</label>",
+    "planProgress": "Avanzamento piano",
+    "weekProgressPercent": "Settimana {{week}} di {{total}} ({{percent}}%)"
+  },
+  "details": {
+    "title": "Dettagli obiettivo",
+    "blockProgress": "Avanzamento del blocco",
+    "weekProgress": "Settimana {{week}} di {{total}}",
+    "daysCompleted_one": "{{count}} giorno completato",
+    "daysCompleted_other": "{{count}} giorni completati",
+    "daysRemaining_one": "Manca {{count}} giorno",
+    "daysRemaining_other": "Mancano {{count}} giorni",
+    "quotedDescription": "“{{text}}”",
+    "markAchieved": "Segna come raggiunto",
+    "editGoal": "Modifica obiettivo"
+  },
+  "form": {
+    "editTitle": "Modifica obiettivo",
+    "newTitle": "Fissa il tuo obiettivo",
+    "subtitle": "Punta a traguardi precisi e date di gara",
+    "sportFocus": "Sport principale",
+    "goalTemplates": "Modelli di obiettivo",
+    "flexibilityMilestoneFocus": "Traguardo di flessibilità / focus",
+    "strengthBenchmarkFocus": "Test di forza / focus",
+    "selectFlexibilityMilestone": "Scegli traguardo di flessibilità",
+    "selectStrengthBenchmark": "Scegli test di forza",
+    "category": "Categoria: {{category}}",
+    "allFocusAreas": "Tutte le aree",
+    "categories": {
+      "legs": "Gambe",
+      "core": "Core",
+      "upper": "Parte alta",
+      "other": "Altro"
+    },
+    "anatomicalArea": "Area anatomica da allenare",
+    "bodyAreas": {
+      "all": "Tutto il corpo",
+      "core": "Core",
+      "upper": "Parte alta",
+      "lower": "Parte bassa / gambe"
+    },
+    "nameLabelStretching": "Nome obiettivo / traguardo personalizzato",
+    "nameLabelStrength": "Nome test personalizzato",
+    "nameLabel": "Nome obiettivo / evento",
+    "namePlaceholderStretching": "es. spaccata frontale, palmi a terra, personalizzato",
+    "namePlaceholderStrength": "es. 10 trazioni strict, squat 100 kg, personalizzato",
+    "namePlaceholder": "es. Maratona d'autunno, sotto le 4h",
+    "defaultGoalName": "Il mio obiettivo",
+    "goalNameFromTemplate": "Obiettivo {{goal}}",
+    "swimGoalName": "Obiettivo 1500 m nuoto",
+    "customMilestoneNote": "Traguardo personalizzato",
+    "swimDistanceLabel": "Distanza di nuoto obiettivo (metri/iarde)",
+    "distanceLabelMiles": "Distanza obiettivo (miglia)",
+    "distanceLabelKm": "Distanza obiettivo (chilometri)",
+    "yards": "Iarde",
+    "meters": "Metri",
+    "imperialMi": "Imperiale (mi)",
+    "metricKm": "Metrico (km)",
+    "distanceChips": {
+      "halfMi": "Mezza 13.1m",
+      "halfKm": "Mezza 21.1k",
+      "fullMi": "Intera 26.2m",
+      "fullKm": "Intera 42.2k"
+    },
+    "swimDistancePlaceholder": "Distanza in metri/iarde (es. 1500)",
+    "distancePlaceholderMiles": "Distanza in miglia (es. 26.2)",
+    "distancePlaceholderKm": "Distanza in km (es. 42.2)",
+    "finishTime": "Tempo finale obiettivo (HH:MM:SS)",
+    "eventDate": "Data dell'evento",
+    "weeksAway_one": "tra {{count}} settimana",
+    "weeksAway_other": "tra {{count}} settimane",
+    "weeksPreset": "+{{weeks}} sett.",
+    "changeDate": "Cambia data",
+    "notesLabelStretching": "Focus mobilità / note (facoltativo)",
+    "notesLabelStrength": "Note sul test (facoltativo)",
+    "notesLabel": "Note sull'obiettivo (facoltativo)",
+    "notesPlaceholderStretching": "es. 15 min al giorno di mobilità dell'anca, arrivare a terra",
+    "notesPlaceholderStrength": "es. 10 ripetizioni strict, 1RM da 100 kg",
+    "notesPlaceholder": "es. chiudere sotto 3:45, split negativo",
+    "saveUpdate": "Salva e aggiorna piano",
+    "saveCreate": "Fissa obiettivo e crea piano"
+  },
+  "milestonePicker": {
+    "flexibilityTitle": "Traguardi di flessibilità",
+    "strengthTitle": "Test di forza",
+    "subtitle": "Scegli un traguardo per calibrare la progressione settimanale.",
+    "categories": {
+      "all": "Tutti i traguardi",
+      "legs": "Gambe e anche",
+      "core": "Core e colonna",
+      "upper": "Parte alta"
+    },
+    "otherTitle": "Altro / obiettivo personalizzato",
+    "otherNote": "Scegli l'area anatomica e inserisci un movimento personalizzato"
+  },
+  "datePicker": {
+    "title": "Scegli la data obiettivo"
+  },
+  "alerts": {
+    "requiredTitle": "Campo obbligatorio",
+    "requiredMessage": "Inserisci o scegli un nome per l'obiettivo.",
+    "saveFailed": "Impossibile salvare l'obiettivo.",
+    "achievedTitle": "🎉 Complimenti!",
+    "achievedMessage": "Obiettivo raggiunto! Cosa vuoi conquistare adesso?"
+  },
+  "goalTypes": {
+    "generalFitness": "Forma fisica generale",
+    "ironman": "Ironman",
+    "halfIronman": "Half Ironman (70.3)",
+    "olympicTriathlon": "Triathlon olimpico",
+    "sprintTriathlon": "Triathlon sprint",
+    "aquathlon": "Aquathlon",
+    "swimRun": "SwimRun",
+    "duathlon": "Duathlon",
+    "marathon": "Maratona",
+    "halfMarathon": "Mezza maratona",
+    "tenK": "10K",
+    "fiveK": "5K",
+    "centuryRide": "Granfondo 160 km",
+    "fortyKTT": "Cronometro 40 km",
+    "tenMileTT": "Cronometro 10 miglia",
+    "freestyle1500": "1500 m stile libero",
+    "individualMedley400": "400 m misti",
+    "strokeSpecialization200": "200 m specialità",
+    "sprintEvent100": "100 m sprint",
+    "openWater1500": "Acque libere 1,5 km",
+    "openWater5K": "Acque libere 5 km",
+    "openWater10K": "Acque libere 10 km",
+    "functionalStrength": "Forza funzionale e condizionamento",
+    "fullBodyFlexibility": "Flessibilità total body",
+    "frontSplitsMastery": "Spaccata frontale",
+    "middleSplitsMastery": "Spaccata laterale"
+  },
+  "milestones": {
+    "stretching": {
+      "fullFrontSplits": {
+        "label": "Spaccata frontale completa",
+        "note": "Mobilità per la spaccata frontale a terra"
+      },
+      "middleSplits": {
+        "label": "Spaccata laterale",
+        "note": "Ampiezza di abduzione dell'anca in spaccata laterale"
+      },
+      "palmsToFloor": {
+        "label": "Palmi a terra",
+        "note": "Flessibilità di femorali e catena posteriore"
+      },
+      "deepSquat": {
+        "label": "Mobilità squat profondo",
+        "note": "Apertura profonda di caviglie e anche"
+      },
+      "pigeonPose": {
+        "label": "Posizione del piccione 90°",
+        "note": "Flessibilità di glutei e rotatori profondi dell'anca"
+      },
+      "ankleDorsiflexion": {
+        "label": "Dorsiflessione caviglia",
+        "note": "Escursione completa della caviglia"
+      },
+      "thoracicBridge": {
+        "label": "Ponte toracico",
+        "note": "Inarcamento completo ed estensione della colonna toracica"
+      },
+      "lSit": {
+        "label": "Mobilità L-sit",
+        "note": "Compressione del core e ampiezza dei flessori dell'anca"
+      },
+      "spinalDecompression": {
+        "label": "Decompressione e torsioni spinali",
+        "note": "Mobilità della colonna ed equilibrio rotazionale"
+      },
+      "overheadShoulder": {
+        "label": "Mobilità spalle sopra la testa",
+        "note": "Flessione attiva delle spalle a 180° sopra la testa"
+      },
+      "chestOpener": {
+        "label": "Apertura petto e spalla anteriore",
+        "note": "Flessibilità di pettorali e tendine del bicipite"
+      },
+      "thoracicExtension": {
+        "label": "Estensione toracica",
+        "note": "Mobilità posturale della parte alta della schiena"
+      },
+      "fullBodyFlow": {
+        "label": "Flow di mobilità total body",
+        "note": "Routine di mobilità quotidiana completa"
+      },
+      "fullBodyMastery": {
+        "label": "Flessibilità total body",
+        "note": "Flessibilità completa di tutte le articolazioni"
+      }
+    },
+    "strength": {
+      "pullUps": {
+        "label": "10 trazioni strict",
+        "note": "10 ripetizioni strict consecutive"
+      },
+      "pushUps": {
+        "label": "50 piegamenti di fila",
+        "note": "50 piegamenti senza pause"
+      },
+      "benchPress": {
+        "label": "Panca piana a peso corporeo",
+        "note": "Panca piana con 1x il peso corporeo"
+      },
+      "handstandPushUps": {
+        "label": "Piegamenti in verticale",
+        "note": "Piegamenti strict in verticale al muro"
+      },
+      "muscleUp": {
+        "label": "Muscle-up",
+        "note": "Muscle-up strict alla sbarra / agli anelli"
+      },
+      "overheadPress": {
+        "label": "Lento avanti (0,75x PC)",
+        "note": "Lento avanti strict con bilanciere"
+      },
+      "squat": {
+        "label": "Squat a 1,5x PC",
+        "note": "Back squat con bilanciere a 1,5x il peso corporeo"
+      },
+      "deadlift": {
+        "label": "Stacco a 2x PC",
+        "note": "Stacco da terra classico a 2x il peso corporeo"
+      },
+      "pistolSquats": {
+        "label": "Pistol squat (una gamba)",
+        "note": "5 ripetizioni pulite per gamba"
+      },
+      "bulgarianSplitSquat": {
+        "label": "Squat bulgaro pesante",
+        "note": "Forza e stabilità su una gamba"
+      },
+      "plank": {
+        "label": "Plank di 3 minuti",
+        "note": "180 s di plank continuo e rigoroso"
+      },
+      "dragonFlag": {
+        "label": "Dragon flag",
+        "note": "Dragon flag strict a corpo libero"
+      },
+      "hangingLegRaises": {
+        "label": "Leg raise alla sbarra (15 rip.)",
+        "note": "Toes-to-bar strict"
+      },
+      "abWheel": {
+        "label": "Ab wheel dalle punte dei piedi",
+        "note": "Ab wheel rollout in estensione completa"
+      },
+      "cleanAndJerk": {
+        "label": "Slancio (clean & jerk)",
+        "note": "Test di sollevamento olimpico"
+      },
+      "functionalStrength": {
+        "label": "Forza funzionale",
+        "note": "Forza e potenza funzionale total body"
+      }
+    }
+  }
+}

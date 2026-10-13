@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import Text from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
+import { useTranslation } from 'react-i18next';
 import { Radius, BorderWidth } from '@/constants/theme';
 import { Timer, ArrowDownUp } from 'lucide-react-native';
 
@@ -23,6 +24,7 @@ export function ActivityTimer({
   onToggleMode,
 }: Props) {
   const { colors, isDark } = useTheme();
+  const { t } = useTranslation('activity');
   const themeColor = accentColor || colors.primary;
 
   return (
@@ -64,7 +66,7 @@ export function ActivityTimer({
             letterSpacing: 0.8,
           }}
         >
-          {label} ({mode === 'countdown' ? 'COUNTDOWN' : 'ELAPSED'})
+          {t('timer.labelWithMode', { label, mode: mode === 'countdown' ? t('timer.countdown') : t('timer.elapsed') })}
         </Text>
         <ArrowDownUp size={11} color={colors.textSecondary} strokeWidth={2} />
       </TouchableOpacity>

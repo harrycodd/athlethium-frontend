@@ -1,0 +1,25 @@
+{
+  "dailyReadiness": "Daily Readiness",
+  "recordStats": "Record your stats for today",
+  "history": "History",
+  "noEntry": "No entry recorded",
+  "viewingPast": "Viewing past readiness data",
+  "physicalFeeling": "Physical Feeling",
+  "mentalFeeling": "Mental Feeling",
+  "sleepQuality": "Sleep Quality",
+  "injury": "Injury",
+  "illness": "Illness",
+  "weightWithUnit": "Weight ({{unit}})",
+  "notes": "Notes",
+  "notesPlaceholder": "How do you feel today?",
+  "noNotes": "No notes recorded.",
+  "save": "Save Readiness",
+  "options": {
+    "none": "None",
+    "minor": "Minor",
+    "moderate": "Moderate",
+    "severe": "Severe",
+    "mild": "Mild",
+    "sick": "Sick"
+  }
+}

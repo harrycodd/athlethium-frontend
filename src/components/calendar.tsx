@@ -1,7 +1,6 @@
 import { View, Pressable } from 'react-native';
 import React, { useState, useMemo } from 'react';
 import {
-  format,
   addMonths,
   subMonths,
   addWeeks,
@@ -20,6 +19,8 @@ import Card from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useTheme } from '@/hooks/use-theme';
+import { useTranslation } from 'react-i18next';
+import { formatDate } from '@/lib/i18n/format';
 
 import { GlassCard } from '@/components/ui/glass-card';
 import { GlassButton } from '@/components/ui/glass-button';
@@ -42,8 +43,7 @@ export default function Calendar({
   const [isExpanded, setIsExpanded] = useState(false);
   const [viewDate, setViewDate] = useState(new Date());
   const theme = useTheme();
-
-  const daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const { t } = useTranslation('plan');
 
   const monthStart = startOfMonth(viewDate);
   const monthEnd = endOfMonth(monthStart);
@@ -74,6 +74,9 @@ export default function Calendar({
     return r;
   }, [days]);
 
+  // Narrow weekday labels (M T W T F S S in English) in the current language, Monday first.
+  const daysOfWeek = eachDayOfInterval({ start: weekStart, end: weekEnd }).map((d) => formatDate(d, 'EEEEE'));
+
   const handleToggle = () => {
     const newState = !isExpanded;
     setIsExpanded(newState);
@@ -84,7 +87,7 @@ export default function Calendar({
     <>
       <View className="flex-row justify-between items-center mb-4">
         <Text variant="h3" className="mr-1">
-          {format(viewDate, 'MMMM yyyy')}
+          {formatDate(viewDate, 'MMMM yyyy')}
         </Text>
 
         <View className="flex-row gap-1.5 items-center">
@@ -92,7 +95,7 @@ export default function Calendar({
             size="sm"
             shape="pill"
             variant={isSameDay(selectedDate, new Date()) ? "glass-primary" : "glass"}
-            label="Today"
+            label={t('calendar.today')}
             style={{ width: 58, height: 26 }}
             contentContainerStyle={{ width: 58, height: 26, minHeight: 26, paddingHorizontal: 0, paddingVertical: 0, justifyContent: 'center', alignItems: 'center' }}
             textStyle={{
@@ -166,7 +169,7 @@ export default function Calendar({
                     today && !isSelected ? "text-primary font-bold" : ""
                   )}
                 >
-                  {format(day, 'd')}
+                  {formatDate(day, 'd')}
                 </Text>
               </Pressable>
             );
@@ -193,7 +196,7 @@ export default function Calendar({
         >
           <View className="flex-row items-center justify-center gap-1">
             <Text style={{ fontSize: 11, fontWeight: '700', color: theme.colors.text, includeFontPadding: false }}>
-              {isExpanded ? 'Collapse' : 'Expand'}
+              {isExpanded ? t('calendar.collapse') : t('calendar.expand')}
             </Text>
             {isExpanded ? (
               <ChevronUp size={13} color={theme.colors.text} strokeWidth={2.5} />

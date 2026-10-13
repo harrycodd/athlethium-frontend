@@ -43,7 +43,9 @@ import {
   Waves,
   Scale,
   Timer,
+  Globe,
 } from 'lucide-react-native';
+import { Trans, useTranslation } from 'react-i18next';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/hooks/use-auth';
 import { updateUserProfile } from '@/lib/user-service';
@@ -52,6 +54,8 @@ import { Radius, BorderWidth } from '@/constants/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
 import { connectStrava, disconnectStrava } from '@/lib/strava';
+import { LANGUAGES, type LanguageCode } from '@/lib/i18n';
+import { changeAppLanguage } from '@/lib/i18n/language';
 
 // Ensure WebBrowser completes its auth session if necessary
 WebBrowser.maybeCompleteAuthSession();
@@ -59,18 +63,19 @@ WebBrowser.maybeCompleteAuthSession();
 const SPORTS = ['running', 'cycling', 'swimming', 'strength', 'stretching'] as const;
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 
+// Labels are shown via t('equipment.items.<id>'); ids are stored on the profile.
 const EQUIPMENT_LIST = [
-  { id: 'dumbbells', label: 'Dumbbells' },
-  { id: 'kettlebell', label: 'Kettlebell' },
-  { id: 'pullUpBar', label: 'Pull-up Bar' },
-  { id: 'squatRack', label: 'Squat Rack' },
-  { id: 'bench', label: 'Bench' },
-  { id: 'dipBar', label: 'Dip Bar' },
-  { id: 'cable', label: 'Cable Machine' },
-  { id: 'latPulldown', label: 'Lat Pulldown' },
-  { id: 'flyMachine', label: 'Fly Machine' },
-  { id: 'resistanceBands', label: 'Resistance Bands' },
-  { id: 'medicineBall', label: 'Medicine Ball' },
+  { id: 'dumbbells' },
+  { id: 'kettlebell' },
+  { id: 'pullUpBar' },
+  { id: 'squatRack' },
+  { id: 'bench' },
+  { id: 'dipBar' },
+  { id: 'cable' },
+  { id: 'latPulldown' },
+  { id: 'flyMachine' },
+  { id: 'resistanceBands' },
+  { id: 'medicineBall' },
 ] as const;
 
 const formatRunningPace = (secondsPerKm?: number, isImperial: boolean = false) => {
@@ -130,6 +135,7 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
   const { user, profile } = useAuth();
+  const { t, i18n } = useTranslation('settings');
 
   const [displayName, setDisplayName] = useState(profile?.displayName || '');
   const [connectingStrava, setConnectingStrava] = useState(false);
@@ -137,6 +143,8 @@ export default function SettingsScreen() {
   const [showReauthModal, setShowReauthModal] = useState(false);
   const [reauthPassword, setReauthPassword] = useState('');
   const [reauthError, setReauthError] = useState('');
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+  const [changingLanguage, setChangingLanguage] = useState(false);
 
   // Fitness metric local inputs
   const [fthrInput, setFthrInput] = useState(profile?.fthr ? String(Math.round(profile.fthr)) : '170');
@@ -244,7 +252,7 @@ export default function SettingsScreen() {
         queuePlanRegeneration(updates?.scheduleDaysAhead);
       }
     } catch (e) {
-      Alert.alert('Error', 'Failed to update settings');
+      Alert.alert(t('common:error'), t('alerts.updateFailed'));
     }
   };
 
@@ -255,13 +263,13 @@ export default function SettingsScreen() {
     const newValue = !activities[sport];
 
     if (!newValue && currentFocuses[sport]) {
-      Alert.alert('Action Restricted', 'You cannot disable a sport that is currently your Main Focus.');
+      Alert.alert(t('alerts.actionRestricted'), t('alerts.cannotDisableFocus'));
       return;
     }
 
     const activeCount = SPORTS.filter((s) => (s === sport ? newValue : !!activities[s])).length;
     if (activeCount === 0) {
-      Alert.alert('Action Restricted', 'You must have at least one active sport.');
+      Alert.alert(t('alerts.actionRestricted'), t('alerts.needActiveSport'));
       return;
     }
 
@@ -281,14 +289,14 @@ export default function SettingsScreen() {
     if (isActive) {
       const currentActiveCount = SPORTS.filter((s) => !!currentFocuses[s]).length;
       if (currentActiveCount >= 3) {
-        Alert.alert('Maximum 3 Main Focus Sports', 'To ensure effective training adaptations and recovery, you can select up to 3 main focus sports.');
+        Alert.alert(t('alerts.maxFocusTitle'), t('alerts.maxFocusMessage'));
         return;
       }
     }
 
     const activeCount = SPORTS.filter((s) => (s === sport ? isActive : !!currentFocuses[s])).length;
     if (!isActive && activeCount === 0) {
-      Alert.alert('Action Restricted', 'You must have at least one main focus.');
+      Alert.alert(t('alerts.actionRestricted'), t('alerts.needMainFocus'));
       return;
     }
 
@@ -319,16 +327,16 @@ export default function SettingsScreen() {
     if (!user) return;
 
     if (profile?.stravaConnected) {
-      Alert.alert('Disconnect Strava', 'Are you sure you want to disconnect your Strava account?', [
-        { text: 'Cancel', style: 'cancel' },
+      Alert.alert(t('strava.disconnect'), t('strava.disconnectConfirm'), [
+        { text: t('common:cancel'), style: 'cancel' },
         {
-          text: 'Disconnect',
+          text: t('strava.disconnectButton'),
           style: 'destructive',
           onPress: async () => {
             try {
               await disconnectStrava();
             } catch (e: any) {
-              Alert.alert('Error', 'Could not disconnect Strava: ' + (e?.message || ''));
+              Alert.alert(t('common:error'), t('strava.disconnectFailed', { message: e?.message || '' }));
             }
           },
         },
@@ -340,23 +348,23 @@ export default function SettingsScreen() {
       setConnectingStrava(true);
       const result = await connectStrava('/settings');
       if (result.status === 'connected') {
-        Alert.alert('Success', 'Strava Connected Successfully!');
+        Alert.alert(t('common:success'), t('strava.connectedSuccess'));
       } else if (result.status === 'error') {
-        Alert.alert('Error', `Failed to connect to Strava: ${result.error}`);
+        Alert.alert(t('common:error'), t('strava.connectFailed', { error: result.error }));
       }
     } catch (e: any) {
       console.error(e);
-      Alert.alert('Error', 'Authentication failed: ' + (e?.message || ''));
+      Alert.alert(t('common:error'), t('strava.authFailed', { message: e?.message || '' }));
     } finally {
       setConnectingStrava(false);
     }
   };
 
   const handleSignOut = async () => {
-    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('account.signOut'), t('account.signOutConfirm'), [
+      { text: t('common:cancel'), style: 'cancel' },
       {
-        text: 'Sign Out',
+        text: t('account.signOut'),
         style: 'destructive',
         onPress: async () => {
           try {
@@ -412,16 +420,16 @@ export default function SettingsScreen() {
       await deleteUser(currentUser);
 
       setShowReauthModal(false);
-      Alert.alert('Account Deleted', 'Your account and all associated data have been permanently removed.');
+      Alert.alert(t('account.deletedTitle'), t('account.deletedMessage'));
       router.replace('/(auth)/login');
     } catch (error: any) {
       console.error('Error during account deletion:', error);
       if (error.code === 'auth/requires-recent-login') {
         setShowReauthModal(true);
       } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-        setReauthError('Incorrect password. Please try again.');
+        setReauthError(t('account.incorrectPassword'));
       } else {
-        Alert.alert('Error', error.message || 'Failed to delete account. Please try again.');
+        Alert.alert(t('common:error'), error.message || t('account.deleteFailed'));
       }
     } finally {
       setIsDeleting(false);
@@ -430,17 +438,33 @@ export default function SettingsScreen() {
 
   const handleDeleteAccount = () => {
     Alert.alert(
-      'Delete Account',
-      'Are you sure you want to permanently delete your account? This action cannot be undone and all your workouts, metrics, and data will be permanently removed.',
+      t('account.deleteAccount'),
+      t('account.deleteConfirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common:cancel'), style: 'cancel' },
         {
-          text: 'Delete Account',
+          text: t('account.deleteAccount'),
           style: 'destructive',
           onPress: () => executeAccountDeletion(),
         },
       ]
     );
+  };
+
+  const currentLanguage = LANGUAGES.find((l) => l.code === i18n.resolvedLanguage) ?? LANGUAGES[0];
+
+  const selectLanguage = async (code: LanguageCode) => {
+    setShowLanguagePicker(false);
+    if (code === currentLanguage.code) return;
+    setChangingLanguage(true);
+    try {
+      await changeAppLanguage(code, user, profile?.scheduleDaysAhead);
+    } catch (error) {
+      console.error('Failed to change language:', error);
+      Alert.alert(t('common:error'), t('language.changeFailed'));
+    } finally {
+      setChangingLanguage(false);
+    }
   };
 
   // Exact Wizard Theme Tokens
@@ -482,17 +506,17 @@ export default function SettingsScreen() {
 
     if (hasCycling) {
       const ftpVal = Math.round(profile?.ftpCycling ?? profile?.ftp ?? 200);
-      parts.push(`FTP ${ftpVal}W`);
+      parts.push(t('metrics.summaryFtp', { watts: ftpVal }));
     }
     if (hasRunning) {
       const paceStr = formatRunningPace(profile?.ftpPaceRunning, currentUnits === 'Imperial');
-      parts.push(`Pace ${paceStr}/${currentUnits === 'Imperial' ? 'mi' : 'km'}`);
+      parts.push(t('metrics.summaryPace', { pace: paceStr, unit: currentUnits === 'Imperial' ? 'mi' : 'km' }));
     }
     if (hasSwimming && !hasCycling && !hasRunning) {
       const swimPace = formatSwimPace(profile?.ftpPaceSwimming);
-      parts.push(`CSS ${swimPace}/100m`);
+      parts.push(t('metrics.summaryCss', { pace: swimPace }));
     }
-    parts.push(`Max HR ${Math.round(profile?.maxHr ?? 190)} bpm`);
+    parts.push(t('metrics.summaryMaxHr', { bpm: Math.round(profile?.maxHr ?? 190) }));
     return parts.slice(0, 2).join(' · ');
   };
 
@@ -521,13 +545,13 @@ export default function SettingsScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
             <ChevronLeft size={16} color={colors.text} strokeWidth={2.5} />
             <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }}>
-              Back
+              {t('common:back')}
             </Text>
           </View>
         </GlassButton>
 
         <Text style={{ fontSize: 21, fontWeight: '800', color: colors.text, letterSpacing: -0.4 }}>
-          Settings
+          {t('title')}
         </Text>
 
         <View style={{ width: 84 }} />
@@ -585,11 +609,11 @@ export default function SettingsScreen() {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>
-                    Athlete Profile
+                    {t('profile.title')}
                   </Text>
                   {!expandedSections.profile && (
                     <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                      {displayName || 'Athlete'} · {currentUnits} · {scheduleDaysAhead}d Lookahead
+                      {t('profile.summary', { name: displayName || t('profile.defaultName'), units: t(`units.${currentUnits}`), days: scheduleDaysAhead })}
                     </Text>
                   )}
                 </View>
@@ -614,7 +638,7 @@ export default function SettingsScreen() {
               >
                 {/* Display Name Input */}
                 <Text style={{ fontSize: 12, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 8, marginLeft: 2 }}>
-                  Athlete Name
+                  {t('profile.nameLabel')}
                 </Text>
                 <View style={{ marginBottom: 18 }}>
                   <TextInput
@@ -629,7 +653,7 @@ export default function SettingsScreen() {
                       fontSize: 15,
                       fontWeight: displayName.trim() ? '600' : '400',
                     }}
-                    placeholder="Enter your name"
+                    placeholder={t('profile.namePlaceholder')}
                     placeholderTextColor={colors.textSecondary}
                     value={displayName}
                     onChangeText={setDisplayName}
@@ -640,7 +664,7 @@ export default function SettingsScreen() {
 
                 {/* Units Selector */}
                 <Text style={{ fontSize: 12, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 8, marginLeft: 2 }}>
-                  Measurement Units
+                  {t('profile.unitsLabel')}
                 </Text>
                 <View style={{ flexDirection: 'row', gap: 10, marginBottom: 18 }}>
                   <TouchableOpacity
@@ -657,10 +681,10 @@ export default function SettingsScreen() {
                     }}
                   >
                     <Text style={{ fontSize: 15, fontWeight: '700', color: currentUnits === 'Metric' ? colors.primary : colors.text }}>
-                      Metric
+                      {t('units.Metric')}
                     </Text>
                     <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2 }}>
-                      km / kg / °C
+                      {t('units.metricDescription')}
                     </Text>
                   </TouchableOpacity>
 
@@ -678,17 +702,58 @@ export default function SettingsScreen() {
                     }}
                   >
                     <Text style={{ fontSize: 15, fontWeight: '700', color: currentUnits === 'Imperial' ? colors.primary : colors.text }}>
-                      Imperial
+                      {t('units.Imperial')}
                     </Text>
                     <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2 }}>
-                      mi / lbs / °F
+                      {t('units.imperialDescription')}
                     </Text>
                   </TouchableOpacity>
                 </View>
 
+                {/* Language Selector */}
+                <Text style={{ fontSize: 12, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 8, marginLeft: 2 }}>
+                  {t('common:language')}
+                </Text>
+                <View style={{ marginBottom: 18 }}>
+                  <TouchableOpacity
+                    onPress={() => setShowLanguagePicker(true)}
+                    disabled={changingLanguage}
+                    activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common:language')}
+                    testID="language-row"
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      height: 50,
+                      paddingHorizontal: 16,
+                      borderRadius: Radius.lg,
+                      backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+                      borderWidth: BorderWidth.thin,
+                      borderColor: cardBorder,
+                    }}
+                  >
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                      <Globe size={18} color={colors.textSecondary} strokeWidth={2.2} />
+                      <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }}>
+                        {currentLanguage.name}
+                      </Text>
+                    </View>
+                    {changingLanguage ? (
+                      <ActivityIndicator size="small" color={colors.primary} />
+                    ) : (
+                      <ChevronDown size={18} color={colors.textSecondary} />
+                    )}
+                  </TouchableOpacity>
+                  <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 6, marginLeft: 2 }}>
+                    {t('language.helper')}
+                  </Text>
+                </View>
+
                 {/* Target Weekly Training Hours */}
                 <Text style={{ fontSize: 12, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 8, marginLeft: 2 }}>
-                  Target Weekly Hours
+                  {t('profile.weeklyHoursLabel')}
                 </Text>
                 <View
                   style={{
@@ -705,10 +770,10 @@ export default function SettingsScreen() {
                 >
                   <View>
                     <Text style={{ fontSize: 20, fontWeight: '800', color: colors.primary }}>
-                      {weeklyHours} <Text style={{ fontSize: 14, fontWeight: '600', color: colors.textSecondary }}>hours / week</Text>
+                      {weeklyHours} <Text style={{ fontSize: 14, fontWeight: '600', color: colors.textSecondary }}>{t('hoursPerWeek')}</Text>
                     </Text>
                     <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2 }}>
-                      ~{(weeklyHours / 7).toFixed(1)} hrs daily average
+                      {t('profile.dailyAverage', { hours: (weeklyHours / 7).toFixed(1) })}
                     </Text>
                   </View>
 
@@ -745,7 +810,7 @@ export default function SettingsScreen() {
 
                 {/* Schedule Lookahead Horizon (Days) */}
                 <Text style={{ fontSize: 12, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 8, marginLeft: 2 }}>
-                  Schedule Lookahead Horizon
+                  {t('profile.lookaheadLabel')}
                 </Text>
                 <View style={{ flexDirection: 'row', gap: 6 }}>
                   {[1, 2, 3, 4, 5, 6, 7].map((days) => {
@@ -766,7 +831,7 @@ export default function SettingsScreen() {
                         }}
                       >
                         <Text style={{ fontSize: 13, fontWeight: '700', color: isSelected ? colors.primary : colors.text }}>
-                          {days}d
+                          {t('profile.daysShort', { days })}
                         </Text>
                       </TouchableOpacity>
                     );
@@ -812,11 +877,11 @@ export default function SettingsScreen() {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>
-                    Sports & Focus
+                    {t('sports.title')}
                   </Text>
                   {!expandedSections.sports && (
                     <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                      {activeSportsCount} Active · ★ {mainFocusSportsList.map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(', ') || 'None'}
+                      {t('sports.summary', { active: activeSportsCount, focus: mainFocusSportsList.map((s) => t(`sportNames.${s}`)).join(', ') || t('common:none') })}
                     </Text>
                   )}
                 </View>
@@ -840,7 +905,11 @@ export default function SettingsScreen() {
                 }}
               >
                 <Text style={{ fontSize: 12, color: colors.textSecondary, marginBottom: 12 }}>
-                  Use switches to enable sports. Tap the star to toggle your <Text style={{ fontWeight: '700', color: colors.text }}>Main Focus</Text>.
+                  <Trans
+                    t={t}
+                    i18nKey="sports.hint"
+                    components={{ bold: <Text style={{ fontWeight: '700', color: colors.text }} /> }}
+                  />
                 </Text>
 
                 <View style={{ gap: 8 }}>
@@ -864,7 +933,7 @@ export default function SettingsScreen() {
                         }}
                       >
                         <Text style={{ fontSize: 15, fontWeight: '700', color: isActive ? colors.text : colors.textSecondary, textTransform: 'capitalize', flex: 1 }}>
-                          {sport}
+                          {t(`sportNames.${sport}`)}
                         </Text>
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
@@ -939,7 +1008,7 @@ export default function SettingsScreen() {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>
-                    Fitness Metrics
+                    {t('metrics.title')}
                   </Text>
                   {!expandedSections.metrics && (
                     <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
@@ -971,7 +1040,7 @@ export default function SettingsScreen() {
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10, marginLeft: 2 }}>
                     <Heart size={14} color="#e11d48" strokeWidth={2.5} />
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.text, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                      Heart Rate & Thresholds
+                      {t('metrics.heartRateTitle')}
                     </Text>
                   </View>
 
@@ -987,7 +1056,7 @@ export default function SettingsScreen() {
                     }}
                   >
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 4 }}>
-                      Max Heart Rate (HRmax)
+                      {t('metrics.maxHr')}
                     </Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                       <TextInput
@@ -1031,7 +1100,7 @@ export default function SettingsScreen() {
                     }}
                   >
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 4 }}>
-                      Resting Heart Rate (RHR)
+                      {t('metrics.restHr')}
                     </Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                       <TextInput
@@ -1076,7 +1145,7 @@ export default function SettingsScreen() {
                     }}
                   >
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 4 }}>
-                      Functional Threshold Heart Rate (FTHR)
+                      {t('metrics.fthr')}
                     </Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                       <TextInput
@@ -1115,7 +1184,7 @@ export default function SettingsScreen() {
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10, marginLeft: 2 }}>
                       <Footprints size={14} color="#22c55e" strokeWidth={2.5} />
                       <Text style={{ fontSize: 11, fontWeight: '700', color: colors.text, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                        Running Metrics
+                        {t('metrics.runningTitle')}
                       </Text>
                     </View>
 
@@ -1131,7 +1200,7 @@ export default function SettingsScreen() {
                       }}
                     >
                       <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 4 }}>
-                        Threshold Pace (FTPa)
+                        {t('metrics.thresholdPace')}
                       </Text>
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <TextInput
@@ -1178,7 +1247,7 @@ export default function SettingsScreen() {
                       }}
                     >
                       <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 4 }}>
-                        Running Threshold Power (FTP)
+                        {t('metrics.runningPower')}
                       </Text>
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <TextInput
@@ -1188,7 +1257,7 @@ export default function SettingsScreen() {
                             const num = Math.round(parseFloat(runningFtpInput) || 0);
                             updateProfile({ ftpRunning: num > 0 ? num : undefined });
                           }}
-                          placeholder="Optional (e.g. 280)"
+                          placeholder={t('metrics.runningPowerPlaceholder')}
                           placeholderTextColor={colors.textSecondary}
                           keyboardType="numeric"
                           style={{
@@ -1207,7 +1276,7 @@ export default function SettingsScreen() {
                             backgroundColor: isDark ? 'rgba(34, 197, 94, 0.15)' : 'rgba(34, 197, 94, 0.10)',
                           }}
                         >
-                          <Text style={{ fontSize: 12, fontWeight: '700', color: '#22c55e' }}>Watts</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '700', color: '#22c55e' }}>{t('metrics.watts')}</Text>
                         </View>
                       </View>
                     </View>
@@ -1220,7 +1289,7 @@ export default function SettingsScreen() {
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10, marginLeft: 2 }}>
                       <Bike size={14} color="#06b6d4" strokeWidth={2.5} />
                       <Text style={{ fontSize: 11, fontWeight: '700', color: colors.text, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                        Cycling Metrics
+                        {t('metrics.cyclingTitle')}
                       </Text>
                     </View>
 
@@ -1236,7 +1305,7 @@ export default function SettingsScreen() {
                     >
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
                         <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase' }}>
-                          Functional Threshold Power (FTP)
+                          {t('metrics.cyclingFtp')}
                         </Text>
                         {(() => {
                           const ftpNum = parseFloat(cyclingFtpInput) || 0;
@@ -1286,7 +1355,7 @@ export default function SettingsScreen() {
                             backgroundColor: isDark ? 'rgba(6, 182, 212, 0.15)' : 'rgba(6, 182, 212, 0.10)',
                           }}
                         >
-                          <Text style={{ fontSize: 12, fontWeight: '700', color: '#06b6d4' }}>Watts</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '700', color: '#06b6d4' }}>{t('metrics.watts')}</Text>
                         </View>
                       </View>
                     </View>
@@ -1299,7 +1368,7 @@ export default function SettingsScreen() {
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10, marginLeft: 2 }}>
                       <Waves size={14} color="#3b82f6" strokeWidth={2.5} />
                       <Text style={{ fontSize: 11, fontWeight: '700', color: colors.text, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                        Swimming Metrics
+                        {t('metrics.swimmingTitle')}
                       </Text>
                     </View>
 
@@ -1314,7 +1383,7 @@ export default function SettingsScreen() {
                       }}
                     >
                       <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 4 }}>
-                        Critical Swim Speed (CSS Pace)
+                        {t('metrics.css')}
                       </Text>
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <TextInput
@@ -1357,7 +1426,7 @@ export default function SettingsScreen() {
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10, marginLeft: 2 }}>
                     <Scale size={14} color="#ec4899" strokeWidth={2.5} />
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.text, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                      Body Composition
+                      {t('metrics.bodyTitle')}
                     </Text>
                   </View>
 
@@ -1372,7 +1441,7 @@ export default function SettingsScreen() {
                     }}
                   >
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase', marginBottom: 4 }}>
-                      Body Weight
+                      {t('metrics.bodyWeight')}
                     </Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                       <TextInput
@@ -1385,7 +1454,7 @@ export default function SettingsScreen() {
                             updateProfile({ weight: inKg.toFixed(1) });
                           }
                         }}
-                        placeholder="e.g. 70"
+                        placeholder={t('metrics.weightPlaceholder')}
                         placeholderTextColor={colors.textSecondary}
                         keyboardType="decimal-pad"
                         style={{
@@ -1451,11 +1520,11 @@ export default function SettingsScreen() {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>
-                    Daily Availability
+                    {t('availability.title')}
                   </Text>
                   {!expandedSections.availability && (
                     <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                      {totalWeeklyAvailability.toFixed(1)} hrs Total Capacity
+                      {t('availability.summary', { hours: totalWeeklyAvailability.toFixed(1) })}
                     </Text>
                   )}
                 </View>
@@ -1494,10 +1563,10 @@ export default function SettingsScreen() {
                 >
                   <View>
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, textTransform: 'uppercase' }}>
-                      Total Available Capacity
+                      {t('availability.totalLabel')}
                     </Text>
                     <Text style={{ fontSize: 18, fontWeight: '800', color: colors.primary, marginTop: 2 }}>
-                      {totalWeeklyAvailability.toFixed(1)} <Text style={{ fontSize: 13, fontWeight: '600', color: colors.textSecondary }}>hours / week</Text>
+                      {totalWeeklyAvailability.toFixed(1)} <Text style={{ fontSize: 13, fontWeight: '600', color: colors.textSecondary }}>{t('hoursPerWeek')}</Text>
                     </Text>
                   </View>
 
@@ -1512,7 +1581,7 @@ export default function SettingsScreen() {
                     }}
                   >
                     <Text style={{ fontSize: 11, fontWeight: '700', color: colors.primary }}>
-                      Target: {weeklyHours}h
+                      {t('availability.target', { hours: weeklyHours })}
                     </Text>
                   </View>
                 </View>
@@ -1545,12 +1614,12 @@ export default function SettingsScreen() {
                               }}
                             />
                             <Text style={{ fontSize: 14, fontWeight: '700', color: colors.text }}>
-                              {day}
+                              {t(`weekdays.${day}`)}
                             </Text>
                           </View>
 
                           <Text style={{ fontSize: 14, fontWeight: '800', color: isRest ? colors.textSecondary : colors.primary }}>
-                            {isRest ? 'Rest Day' : `${hours} hrs`}
+                            {isRest ? t('availability.restDay') : t('availability.hours', { hours })}
                           </Text>
                         </View>
 
@@ -1642,11 +1711,11 @@ export default function SettingsScreen() {
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>
-                      Strength Equipment
+                      {t('equipment.title')}
                     </Text>
                     {!expandedSections.equipment && (
                       <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                        {equipmentCount} of {EQUIPMENT_LIST.length} Available
+                        {t('equipment.summary', { available: equipmentCount, total: EQUIPMENT_LIST.length })}
                       </Text>
                     )}
                   </View>
@@ -1670,7 +1739,7 @@ export default function SettingsScreen() {
                   }}
                 >
                   <Text style={{ fontSize: 12, color: colors.textSecondary, marginBottom: 12 }}>
-                    Select equipment you have available for strength workouts.
+                    {t('equipment.hint')}
                   </Text>
 
                   <View style={{ gap: 8 }}>
@@ -1693,7 +1762,7 @@ export default function SettingsScreen() {
                           }}
                         >
                           <Text style={{ fontSize: 15, fontWeight: '700', color: isChecked ? colors.text : colors.textSecondary, flex: 1, marginRight: 12 }}>
-                            {item.label}
+                            {t(`equipment.items.${item.id}`)}
                           </Text>
 
                           <Switch
@@ -1746,11 +1815,11 @@ export default function SettingsScreen() {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>
-                    Partner Integrations
+                    {t('integrations.title')}
                   </Text>
                   {!expandedSections.integrations && (
                     <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                      Strava · {profile?.stravaConnected ? 'Connected' : 'Not Connected'}
+                      {t('integrations.summary', { status: profile?.stravaConnected ? t('strava.connected') : t('strava.notConnected') })}
                     </Text>
                   )}
                 </View>
@@ -1789,7 +1858,7 @@ export default function SettingsScreen() {
                         Strava
                       </Text>
                       <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>
-                        Rides, Runs, Swims & GPS Activities
+                        {t('strava.subtitle')}
                       </Text>
                     </View>
 
@@ -1806,13 +1875,13 @@ export default function SettingsScreen() {
                         }}
                       >
                         <Check size={12} color={colors.primary} strokeWidth={3} />
-                        <Text style={{ fontSize: 11, fontWeight: '700', color: colors.primary }}>Connected</Text>
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: colors.primary }}>{t('strava.connected')}</Text>
                       </View>
                     )}
                   </View>
 
                   <Text style={{ fontSize: 12, color: colors.textSecondary, lineHeight: 17, marginBottom: 12 }}>
-                    Automatically imports your completed workouts, power duration curves, heart rate, and GPS tracks.
+                    {t('strava.description')}
                   </Text>
 
                   {/* Full width centered connect button */}
@@ -1830,12 +1899,12 @@ export default function SettingsScreen() {
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                       {profile?.stravaConnected ? (
                         <Text style={{ fontSize: 13, fontWeight: '700', color: colors.textSecondary }}>
-                          Disconnect Strava
+                          {t('strava.disconnect')}
                         </Text>
                       ) : (
                         <>
                           <Text style={{ fontSize: 13, fontWeight: '700', color: isDark ? '#4ade80' : '#15803d' }}>
-                            Connect with Strava
+                            {t('strava.connect')}
                           </Text>
                           <ExternalLink size={14} color={isDark ? '#4ade80' : '#15803d'} strokeWidth={2.2} />
                         </>
@@ -1855,12 +1924,12 @@ export default function SettingsScreen() {
               shape="pill"
               onPress={() => {
                 Alert.alert(
-                  'Setup Wizard',
-                  'Would you like to rerun the interactive setup wizard from the beginning?',
+                  t('account.wizardTitle'),
+                  t('account.wizardMessage'),
                   [
-                    { text: 'Cancel', style: 'cancel' },
+                    { text: t('common:cancel'), style: 'cancel' },
                     {
-                      text: 'Rerun',
+                      text: t('account.rerun'),
                       onPress: async () => {
                         await updateProfile({ wizardCompleted: false });
                         router.replace('/wizard');
@@ -1875,7 +1944,7 @@ export default function SettingsScreen() {
             >
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <Sparkles size={16} color={colors.primary} style={{ marginRight: 6 }} />
-                <Text style={{ fontSize: 14, fontWeight: '700', color: colors.primary }}>Rerun Setup Wizard</Text>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: colors.primary }}>{t('account.rerunWizard')}</Text>
               </View>
             </GlassButton>
 
@@ -1890,7 +1959,7 @@ export default function SettingsScreen() {
             >
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <LogOut size={16} color="#ef4444" style={{ marginRight: 6 }} />
-                <Text style={{ color: '#ef4444', fontWeight: '700', fontSize: 14 }}>Sign Out</Text>
+                <Text style={{ color: '#ef4444', fontWeight: '700', fontSize: 14 }}>{t('account.signOut')}</Text>
               </View>
             </GlassButton>
 
@@ -1908,7 +1977,7 @@ export default function SettingsScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <Trash2 size={16} color="#ef4444" style={{ marginRight: 6 }} />
                 <Text style={{ color: '#ef4444', fontWeight: '700', fontSize: 14 }}>
-                  {isDeleting ? "Deleting..." : "Delete Account"}
+                  {isDeleting ? t('account.deleting') : t('account.deleteAccount')}
                 </Text>
               </View>
             </GlassButton>
@@ -1939,16 +2008,16 @@ export default function SettingsScreen() {
                 <Trash2 size={24} color="#ef4444" />
               </View>
               <Text variant="h2" style={{ fontSize: 18, fontWeight: '800', textAlign: 'center' }}>
-                Confirm Account Deletion
+                {t('reauth.title')}
               </Text>
               <Text variant="muted" style={{ fontSize: 13, textAlign: 'center', marginTop: 6 }}>
-                For your security, please enter your password to confirm permanent deletion of your account.
+                {t('reauth.message')}
               </Text>
             </View>
 
             <View className="mb-4">
               <Text variant="small" className="mb-1.5 ml-1 text-muted-foreground uppercase font-bold tracking-wider text-[11px]">
-                Password
+                {t('reauth.passwordLabel')}
               </Text>
               <TextInput
                 value={reauthPassword}
@@ -1956,7 +2025,7 @@ export default function SettingsScreen() {
                   setReauthPassword(text);
                   setReauthError('');
                 }}
-                placeholder="Enter your password"
+                placeholder={t('reauth.passwordPlaceholder')}
                 placeholderTextColor={colors.textSecondary}
                 secureTextEntry
                 style={{
@@ -1979,7 +2048,7 @@ export default function SettingsScreen() {
 
             <View className="gap-2.5">
               <GlassButton
-                label={isDeleting ? "Deleting..." : "Permanently Delete Account"}
+                label={isDeleting ? t('account.deleting') : t('reauth.confirm')}
                 variant="glass-destructive"
                 size="md"
                 shape="pill"
@@ -1991,7 +2060,7 @@ export default function SettingsScreen() {
                 textStyle={{ color: '#ef4444', fontWeight: '700', fontSize: 14 }}
               />
               <GlassButton
-                label="Cancel"
+                label={t('common:cancel')}
                 variant="glass"
                 size="md"
                 shape="pill"
@@ -2007,6 +2076,92 @@ export default function SettingsScreen() {
             </View>
           </View>
         </KeyboardAvoidingView>
+      </Modal>
+
+      {/* Language Picker Modal */}
+      <Modal
+        visible={showLanguagePicker}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLanguagePicker(false)}
+      >
+        <View className="flex-1 bg-black/70 justify-center items-center px-6">
+          <View
+            style={{
+              backgroundColor: isDark ? '#18181b' : '#ffffff',
+              borderColor: colors.border,
+              borderRadius: Radius.xxl,
+              borderWidth: BorderWidth.hairline,
+              padding: 24,
+              width: '100%',
+              maxWidth: 380,
+            }}
+            className="shadow-2xl"
+          >
+            <View className="items-center mb-4">
+              <View
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: Radius.pill,
+                  backgroundColor: 'rgba(2, 132, 199, 0.12)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 12,
+                }}
+              >
+                <Globe size={24} color="#0284c7" />
+              </View>
+              <Text variant="h2" style={{ fontSize: 18, fontWeight: '800', textAlign: 'center' }}>
+                {t('language.pickerTitle')}
+              </Text>
+              <Text variant="muted" style={{ fontSize: 13, textAlign: 'center', marginTop: 6 }}>
+                {t('language.helper')}
+              </Text>
+            </View>
+
+            <View style={{ gap: 8, marginBottom: 16 }}>
+              {LANGUAGES.map((language) => {
+                const isSelected = language.code === currentLanguage.code;
+                return (
+                  <TouchableOpacity
+                    key={language.code}
+                    onPress={() => selectLanguage(language.code)}
+                    activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      paddingVertical: 12,
+                      paddingHorizontal: 14,
+                      borderRadius: Radius.lg,
+                      backgroundColor: isSelected ? (isDark ? 'rgba(34, 197, 94, 0.15)' : 'rgba(22, 163, 74, 0.10)') : (isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'),
+                      borderWidth: BorderWidth.hairline,
+                      borderColor: isSelected ? colors.primary : cardBorder,
+                    }}
+                  >
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: isSelected ? colors.primary : colors.text }}>
+                      {language.name}
+                    </Text>
+                    {isSelected && <Check size={16} color={colors.primary} strokeWidth={3} />}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <GlassButton
+              label={t('common:cancel')}
+              variant="glass"
+              size="md"
+              shape="pill"
+              onPress={() => setShowLanguagePicker(false)}
+              style={{ height: 44 }}
+              contentContainerStyle={{ height: 44, justifyContent: 'center', alignItems: 'center' }}
+            />
+          </View>
+        </View>
       </Modal>
     </ScreenWrapper>
   );

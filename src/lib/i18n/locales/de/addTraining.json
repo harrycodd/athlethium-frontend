@@ -1,0 +1,49 @@
+{
+  "upload": "Hochladen",
+  "namePlaceholder": "Name der Einheit",
+  "tssBadge": "~{{tss}} TSS",
+  "sports": {
+    "stretching": "Dehnen",
+    "other": "Sonstiges"
+  },
+  "eventTypes": {
+    "session": "Einheit",
+    "event": "Wettkampf",
+    "goal": "Ziel"
+  },
+  "effortLevels": {
+    "recovery": "Regeneration (Zone 1)",
+    "steady": "Grundlage (Zone 2)",
+    "threshold": "Schwelle (Zone 3/4)",
+    "hard": "VO2max / Hart (Zone 5)"
+  },
+  "uploading": {
+    "title": "Einheit wird hochgeladen",
+    "message": "FIT-Datei wird gelesen und ausgewertet. Das kann ein paar Sekunden dauern..."
+  },
+  "fields": {
+    "date": "Datum",
+    "sport": "Sportart",
+    "type": "Typ",
+    "effortLevel": "Intensität",
+    "plannedDuration": "Geplante Dauer",
+    "description": "Beschreibung & Ziele",
+    "descriptionPlaceholder": "Welche Ziele oder Notizen hast du für diese Einheit?"
+  },
+  "saving": "Speichert...",
+  "addToPlan": "Zum Plan hinzufügen",
+  "pickers": {
+    "sport": "Sportart wählen",
+    "eventType": "Typ wählen",
+    "effortLevel": "Intensität wählen"
+  },
+  "alerts": {
+    "requiredTitle": "Pflichtfeld",
+    "nameRequired": "Bitte gib einen Namen für die Einheit ein",
+    "saveFailed": "Einheit konnte nicht gespeichert werden",
+    "uploadSuccess": "Einheit erfolgreich hochgeladen und ausgewertet!",
+    "uploadErrorTitle": "Upload-Fehler",
+    "uploadFailed": "Einheit konnte nicht hochgeladen werden.",
+    "uploadException": "Beim Hochladen ist ein Fehler aufgetreten."
+  }
+}

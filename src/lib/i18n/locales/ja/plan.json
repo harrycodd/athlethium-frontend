@@ -1,0 +1,18 @@
+{
+  "title": "あなたのプラン",
+  "todaysSchedule": "今日の予定",
+  "scheduledSessions": "予定のセッション",
+  "emptyDay": "この日に予定されているセッションはありません。",
+  "dailyMax": {
+    "title": "1日の上限",
+    "limitFor": "{{date}}の上限",
+    "hoursShort_other": "{{count}}時間",
+    "modalTitle": "1日の上限時間",
+    "hoursOption_other": "{{count}}時間"
+  },
+  "calendar": {
+    "today": "今日",
+    "expand": "展開",
+    "collapse": "折りたたむ"
+  }
+}

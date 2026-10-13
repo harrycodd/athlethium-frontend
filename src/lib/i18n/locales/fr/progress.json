@@ -1,0 +1,79 @@
+{
+  "title": "Progrès",
+  "subtitle": "Suivez l'évolution de vos indicateurs de forme",
+  "range": {
+    "days_one": "{{count}} jour",
+    "days_other": "{{count}} jours"
+  },
+  "interactiveChart": "Graphique interactif",
+  "presets": {
+    "load": "Charge",
+    "readiness": "Ressenti",
+    "custom": "Perso",
+    "fitnessFatigue": "Condition et fatigue",
+    "dailyReadiness": "Ressenti du jour",
+    "customEllipsis": "Personnaliser…"
+  },
+  "axis": {
+    "readiness": "Ressenti",
+    "trainingLoad": "Charge d'entraînement",
+    "weightWithUnit": "Poids ({{unit}})"
+  },
+  "axisBadge": {
+    "L": "G",
+    "R": "D",
+    "S": "É"
+  },
+  "today": "Aujourd'hui",
+  "metricValueLabel": "{{label}} :",
+  "selectAtLeastOne": "Sélectionnez au moins un indicateur à afficher.",
+  "editMetrics": "Modifier les indicateurs…",
+  "apply": "Appliquer",
+  "customGraph": {
+    "title": "Graphique personnalisé",
+    "subtitle": "Choisissez jusqu'à 5 indicateurs ({{selected}}/5 sélectionnés)"
+  },
+  "groups": {
+    "training": "Charge d'entraînement",
+    "readiness": "Ressenti du jour",
+    "body": "Mesures corporelles"
+  },
+  "metrics": {
+    "ctl": {
+      "label": "Condition (CTL)",
+      "short": "Condition"
+    },
+    "atl": {
+      "label": "Fatigue (ATL)",
+      "short": "Fatigue"
+    },
+    "form": {
+      "label": "Forme (TSB)",
+      "short": "Forme"
+    },
+    "sleep": {
+      "label": "Sommeil",
+      "short": "Sommeil"
+    },
+    "physical": {
+      "label": "Physique",
+      "short": "Physique"
+    },
+    "mental": {
+      "label": "Mental",
+      "short": "Mental"
+    },
+    "weight": {
+      "label": "Poids",
+      "short": "Poids"
+    },
+    "injury": {
+      "label": "Blessure",
+      "short": "Blessure"
+    },
+    "illness": {
+      "label": "Maladie",
+      "short": "Maladie"
+    }
+  }
+}

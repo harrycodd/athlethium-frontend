@@ -1,0 +1,421 @@
+{
+  "stepOf": "Schritt {{current}} von {{total}}",
+  "hoursPerWeek": "Stunden / Woche",
+  "sports": {
+    "stretching": "Dehnen"
+  },
+  "units": {
+    "metric": "Metrisch",
+    "imperial": "Imperial",
+    "metricHint": "km / kg / °C",
+    "imperialHint": "mi / lbs / °F"
+  },
+  "weekdays": {
+    "Monday": "Montag",
+    "Tuesday": "Dienstag",
+    "Wednesday": "Mittwoch",
+    "Thursday": "Donnerstag",
+    "Friday": "Freitag",
+    "Saturday": "Samstag",
+    "Sunday": "Sonntag"
+  },
+  "goals": {
+    "generalFitness": "Allgemeine Fitness",
+    "ironman": "Ironman",
+    "halfIronman": "Mitteldistanz (70.3)",
+    "olympicTriathlon": "Olympische Distanz",
+    "sprintTriathlon": "Sprint-Triathlon",
+    "aquathlon": "Aquathlon",
+    "swimRun": "SwimRun",
+    "duathlon": "Duathlon",
+    "marathon": "Marathon",
+    "halfMarathon": "Halbmarathon",
+    "run10k": "10 km",
+    "run5k": "5 km",
+    "centuryRide": "160-km-Ausfahrt",
+    "tt40k": "40 km EZF",
+    "tt10Mile": "10 Meilen EZF",
+    "freestyle1500m": "1500 m Freistil",
+    "individualMedley400m": "400 m Lagen",
+    "strokeSpecialization200m": "200 m Spezialstrecke",
+    "sprintEvent100m": "100 m Sprint",
+    "openWater1_5k": "Freiwasser 1,5 km",
+    "openWater5k": "Freiwasser 5 km",
+    "openWater10k": "Freiwasser 10 km",
+    "functionalStrength": "Funktionelle Kraft & Athletik",
+    "fullBodyFlexibility": "Ganzkörper-Beweglichkeit",
+    "frontSplitsMastery": "Längsspagat meistern",
+    "middleSplitsMastery": "Querspagat meistern"
+  },
+  "levels": {
+    "beginner": {
+      "label": "Einsteiger",
+      "badge": "Am Anfang",
+      "description": "Neu im strukturierten Training oder Wiedereinstieg nach einer Pause (Basis 1-3 Std./Woche)."
+    },
+    "intermediate": {
+      "label": "Fortgeschritten",
+      "badge": "Regelmäßig aktiv",
+      "description": "Trainiert regelmäßig 4-8 Std./Woche mit solider Grundlagenausdauer."
+    },
+    "advanced": {
+      "label": "Erfahren",
+      "badge": "Ambitionierter Wettkämpfer",
+      "description": "Jahrelanges regelmäßiges Ausdauertraining mit hohem Umfang (8-14+ Std./Woche)."
+    },
+    "elite": {
+      "label": "Elite / National",
+      "badge": "Leistungssport",
+      "description": "Elite- bzw. Altersklassen-Podiumsathlet mit langjährigem hohem Umfang (14-20+ Std./Woche)."
+    },
+    "pro": {
+      "label": "Profi",
+      "badge": "Vollzeitathlet",
+      "description": "Vollzeitprofi mit 20-30 Std./Woche, inklusive Doppeleinheiten."
+    }
+  },
+  "equipment": {
+    "dumbbells": "Kurzhanteln",
+    "kettlebell": "Kettlebell",
+    "pullUpBar": "Klimmzugstange",
+    "squatRack": "Squat-Rack",
+    "bench": "Hantelbank",
+    "dipBar": "Dipstation",
+    "cable": "Kabelzug",
+    "latPulldown": "Latzug",
+    "flyMachine": "Butterfly-Maschine",
+    "resistanceBands": "Widerstandsbänder",
+    "medicineBall": "Medizinball"
+  },
+  "milestones": {
+    "stretching": {
+      "fullFrontSplits": {
+        "label": "Voller Längsspagat",
+        "note": "Längsspagat flach am Boden"
+      },
+      "middleSplits": {
+        "label": "Seit- / Querspagat",
+        "note": "Hüftabduktion für den Querspagat"
+      },
+      "palmsToFloor": {
+        "label": "Handflächen zum Boden",
+        "note": "Beweglichkeit von Beinbeuger & hinterer Kette"
+      },
+      "deepSquat": {
+        "label": "Tiefe Hocke",
+        "note": "Mobilität für Sprunggelenk & Hüfte"
+      },
+      "pigeonPose": {
+        "label": "Taube 90°",
+        "note": "Beweglichkeit von Gesäß & tiefen Hüftrotatoren"
+      },
+      "ankleDorsiflexion": {
+        "label": "Dorsalflexion Sprunggelenk",
+        "note": "Volle Beweglichkeit im Sprunggelenk"
+      },
+      "thoracicBridge": {
+        "label": "Brücke",
+        "note": "Volle Rückbeuge & Streckung der BWS"
+      },
+      "lSit": {
+        "label": "L-Sitz",
+        "note": "Rumpfkompression & Hüftbeuger-Beweglichkeit"
+      },
+      "spinalTwists": {
+        "label": "Wirbelsäule: Entlastung & Rotation",
+        "note": "Mobilität und Rotationsbalance der Wirbelsäule"
+      },
+      "overheadShoulder": {
+        "label": "Schultermobilität über Kopf",
+        "note": "180° aktive Schulterflexion über Kopf"
+      },
+      "chestOpener": {
+        "label": "Brust- & vordere Schulteröffnung",
+        "note": "Beweglichkeit von Brustmuskel und Bizepssehne"
+      },
+      "thoracicExtension": {
+        "label": "BWS-Streckung",
+        "note": "Haltungsmobilität im oberen Rücken"
+      },
+      "fullBodyFlow": {
+        "label": "Ganzkörper-Mobility-Flow",
+        "note": "Komplette tägliche Mobilitätsroutine"
+      },
+      "fullBodyMastery": {
+        "label": "Ganzkörper-Beweglichkeit meistern",
+        "note": "Umfassende Beweglichkeit aller Gelenke"
+      }
+    },
+    "strength": {
+      "pullUps": {
+        "label": "10 saubere Klimmzüge",
+        "note": "10 saubere Wdh. am Stück"
+      },
+      "pushUps": {
+        "label": "50 Liegestütze am Stück",
+        "note": "50 Liegestütze ohne Pause"
+      },
+      "benchPress": {
+        "label": "Bankdrücken mit Körpergewicht",
+        "note": "1x Körpergewicht beim Bankdrücken"
+      },
+      "handstandPushUps": {
+        "label": "Handstand-Liegestütze",
+        "note": "Saubere Handstand-Liegestütze an der Wand"
+      },
+      "muscleUp": {
+        "label": "Muscle-up meistern",
+        "note": "Saubere Muscle-ups an Stange / Ringen"
+      },
+      "overheadPress": {
+        "label": "Schulterdrücken (0,75x KG)",
+        "note": "Sauberes Schulterdrücken mit Langhantel"
+      },
+      "squat": {
+        "label": "Kniebeuge 1,5x KG",
+        "note": "Langhantel-Kniebeuge mit 1,5x Körpergewicht"
+      },
+      "deadlift": {
+        "label": "Kreuzheben 2x KG",
+        "note": "Klassisches Kreuzheben mit 2x Körpergewicht"
+      },
+      "pistolSquats": {
+        "label": "Pistol Squats (einbeinig)",
+        "note": "5 saubere Wdh. pro Bein"
+      },
+      "bulgarianSplitSquat": {
+        "label": "Bulgarian Split Squat schwer",
+        "note": "Einbeinige Kraft & Stabilität"
+      },
+      "plank": {
+        "label": "3 Minuten Plank",
+        "note": "180 s sauberer Unterarmstütz am Stück"
+      },
+      "dragonFlag": {
+        "label": "Dragon Flag meistern",
+        "note": "Saubere Dragon Flag mit Körpergewicht"
+      },
+      "hangingLegRaises": {
+        "label": "Hängendes Beinheben (15 Wdh.)",
+        "note": "Saubere Toes-to-Bar"
+      },
+      "abWheel": {
+        "label": "Ab-Wheel-Rollouts auf den Zehen",
+        "note": "Ab-Wheel-Rollouts in voller Streckung"
+      },
+      "cleanAndJerk": {
+        "label": "Stoßen-Benchmark",
+        "note": "Benchmark aus dem Gewichtheben"
+      },
+      "functionalStrength": {
+        "label": "Funktionelle Kraft meistern",
+        "note": "Funktionelle Ganzkörperkraft & Explosivkraft"
+      }
+    }
+  },
+  "defaults": {
+    "goalName": "Mein Fitnessziel",
+    "goalNameForType": "Ziel: {{goal}}",
+    "swimGoalName": "Ziel: 1500 m Schwimmen",
+    "customMilestoneNotes": "Eigener Meilenstein"
+  },
+  "goalEvent": {
+    "description": "Hauptziel: {{goal}}",
+    "metaGoal": "Ziel",
+    "metaTarget": "Ziel {{time}}"
+  },
+  "alerts": {
+    "required": "Pflichtfeld",
+    "nameRequired": "Bitte gib deinen Namen ein, um fortzufahren.",
+    "sportRequired": "Bitte wähle mindestens eine aktive Sportart.",
+    "focusRequired": "Bitte wähle aus deinen aktiven Sportarten mindestens einen Hauptfokus.",
+    "goalNameRequired": "Bitte gib einen Namen für dein Ziel ein oder wähle einen aus.",
+    "finishFailed": "Einrichtung konnte nicht abgeschlossen werden",
+    "restricted": "Nicht möglich",
+    "oneActiveSport": "Du brauchst mindestens eine aktive Sportart.",
+    "enableSportFirst": "Bitte aktiviere diese Sportart zuerst unter den aktiven Sportarten.",
+    "oneMainFocus": "Du brauchst mindestens einen Hauptfokus.",
+    "maxFocus": {
+      "title": "Maximal 3 Hauptfokus-Sportarten",
+      "message": "Damit Trainingsanpassung und Regeneration gut funktionieren, kannst du bis zu 3 Hauptfokus-Sportarten wählen."
+    },
+    "disconnectStrava": {
+      "title": "Strava trennen",
+      "message": "Willst du dein Strava-Konto wirklich trennen?",
+      "confirm": "Trennen"
+    },
+    "stravaConnected": "Strava erfolgreich verbunden!",
+    "stravaFailed": "Verbindung mit Strava fehlgeschlagen: {{error}}",
+    "authFailed": "Authentifizierung fehlgeschlagen: {{message}}",
+    "minimumTarget": {
+      "title": "Minimum erreicht",
+      "message": "Deine verfügbaren Stunden können nicht unter deine Ziel-Wochenstunden ({{hours}} Std.) fallen."
+    }
+  },
+  "steps": {
+    "name": {
+      "title": "Willkommen!",
+      "subtitle": "Wie sollen wir dich auf deinem Trainingsweg nennen?",
+      "placeholder": "Gib deinen Namen ein"
+    },
+    "preferences": {
+      "title": "Einstellungen",
+      "subtitle": "Wähle deine Maßeinheiten und deine Ziel-Trainingsstunden pro Woche.",
+      "unitsLabel": "Maßeinheiten",
+      "weeklyHoursLabel": "Ziel-Trainingsstunden pro Woche",
+      "dailyAverage": "~{{hours}} Std. im Tagesschnitt"
+    },
+    "sports": {
+      "title": "Sportarten & Fokus",
+      "subtitle": "Aktiviere deine Disziplinen und tippe auf den Stern, um deinen Hauptfokus festzulegen."
+    },
+    "primaryGoal": {
+      "title": "Hauptziel",
+      "subtitle": "Wähle das übergeordnete Ziel für dein Training."
+    },
+    "goal": {
+      "title": "Setz dir ein Ziel",
+      "subtitle": "Plane konkrete Meilensteine und Termine für deinen Hauptfokus.",
+      "mainFocusSport": "HAUPTFOKUS-SPORTART",
+      "focusedOnly": "★ Nur Fokus-Sportarten",
+      "focusedSport": "★ {{sport}}",
+      "flexibilityMilestoneLabel": "BEWEGLICHKEITS-MEILENSTEIN / FOKUS",
+      "strengthBenchmarkLabel": "KRAFT-BENCHMARK / FOKUS",
+      "selectFlexibilityMilestone": "Beweglichkeits-Meilenstein wählen",
+      "selectStrengthBenchmark": "Kraft-Benchmark wählen",
+      "category": "Kategorie: {{category}}",
+      "allFocusAreas": "Alle Bereiche",
+      "categoryValues": {
+        "legs": "Beine",
+        "core": "Rumpf",
+        "upper": "Oberkörper",
+        "other": "Sonstiges"
+      },
+      "targetAreaLabel": "KÖRPERBEREICH FÜR DEN ALGORITHMUS",
+      "nameLabelStretching": "EIGENES ZIEL / MEILENSTEIN",
+      "nameLabelStrength": "EIGENES ZIEL / BENCHMARK",
+      "nameLabel": "ZIEL / WETTKAMPF",
+      "namePlaceholderStretching": "z. B. Längsspagat, Handflächen zum Boden, Eigenes",
+      "namePlaceholderStrength": "z. B. 10 saubere Klimmzüge, 100 kg Kniebeuge, Eigenes",
+      "namePlaceholder": "z. B. Herbstmarathon, Sub 4 h",
+      "swimDistanceLabel": "ZIEL-SCHWIMMDISTANZ (METER / YARDS)",
+      "distanceLabelMiles": "ZIELDISTANZ (MEILEN)",
+      "distanceLabelKm": "ZIELDISTANZ (KILOMETER)",
+      "yards": "Yards",
+      "meters": "Meter",
+      "imperialMi": "Imperial (mi)",
+      "metricKm": "Metrisch (km)",
+      "presetTimeTrial": "{{distance}} (EZF)",
+      "distancePlaceholderSwim": "Distanz in Metern/Yards (z. B. 1500)",
+      "distancePlaceholderMiles": "Distanz in Meilen (z. B. 26,2)",
+      "distancePlaceholderKm": "Distanz in km (z. B. 42,2)",
+      "finishTimeLabel": "ZIELZEIT (HH:MM:SS)",
+      "eventDateLabel": "WETTKAMPFDATUM",
+      "weeksAway_one": "in {{count}} Woche",
+      "weeksAway_other": "in {{count}} Wochen",
+      "weeksPreset": "+{{weeks}} Wo.",
+      "changeDate": "Datum ändern",
+      "selectTargetDate": "Zieldatum wählen",
+      "notesLabelStretching": "MOBILITÄTSFOKUS / NOTIZEN (OPTIONAL)",
+      "notesLabelStrength": "BENCHMARK-WERTE / NOTIZEN (OPTIONAL)",
+      "notesLabel": "NOTIZEN ZUM ZIEL (OPTIONAL)",
+      "notesPlaceholderStretching": "z. B. täglich 15 min Hüftmobilität, flach auf den Boden kommen",
+      "notesPlaceholderStrength": "z. B. 10 saubere Wdh., 100 kg 1RM als Ziel",
+      "notesPlaceholder": "z. B. unter 3:45 finishen, Negativ-Split"
+    },
+    "distribution": {
+      "title": "Trainingsverteilung",
+      "subtitle": "Lege fest, welchen Anteil deiner {{hours}} Wochenstunden oder Einheiten jede Sportart bekommt.",
+      "percentageMode": "% Zeitanteil",
+      "sessionsMode": "Einheiten/Woche",
+      "totalAllocated": "GESAMT VERTEILT",
+      "mainFocus": "★ Hauptfokus",
+      "hoursPerWeek": "({{hours}} h/Wo.)",
+      "sessionsPerWeek_one": "Einheit/Wo.",
+      "sessionsPerWeek_other": "Einheiten/Wo."
+    },
+    "availability": {
+      "title": "Standard-Verfügbarkeit",
+      "subtitle": "Leg deine üblichen Trainingsstunden pro Tag fest. Einzelne Tage kannst du jederzeit im Trainingskalender anpassen.",
+      "totalCapacity": "Verfügbare Gesamtkapazität",
+      "target": "Ziel: {{hours}} h",
+      "restDay": "Ruhetag",
+      "hours": "{{hours}} Std."
+    },
+    "equipment": {
+      "title": "Kraftequipment",
+      "subtitle": "Wähle das Equipment aus, das dir zur Verfügung steht."
+    },
+    "integrations": {
+      "title": "Partner-Integrationen",
+      "subtitle": "Verbinde deine Trainingsplattformen, um Aktivitäten, GPS- und Leistungsdaten automatisch zu synchronisieren.",
+      "stravaSubtitle": "Rad, Lauf, Schwimmen & GPS-Aktivitäten",
+      "connected": "Verbunden",
+      "stravaDescription": "Importiert automatisch deine absolvierten Einheiten, Leistungskurven, Herzfrequenz und GPS-Tracks.",
+      "disconnectStrava": "Strava trennen",
+      "connectStrava": "Mit Strava verbinden",
+      "garminSubtitle": "Edge-, Forerunner- & Fenix-Geräte",
+      "wahooSubtitle": "ELEMNT GPS-Radcomputer",
+      "comingSoon": "DEMNÄCHST",
+      "settingsHint": "Du kannst Konten auch jederzeit in den Einstellungen verbinden, trennen oder verwalten."
+    },
+    "fitness": {
+      "title": "Aktuelles Fitnesslevel",
+      "subtitle": "Wähle deinen Trainingshintergrund oder gib deine aktuellen Schwellenwerte ein.",
+      "pace": "Pace {{pace}}/{{unit}}",
+      "figuresTitle": "Aktuelle Trainingswerte",
+      "figuresSubtitle": "Passe die Werte an die Daten deines letzten Schwellentests an.",
+      "thresholdHr": "Schwellen-HF (FTHR)",
+      "maxHr": "Max. Herzfrequenz",
+      "cyclingFtp": "Rad-FTP (funktionelle Schwellenleistung)",
+      "watts": "Watt",
+      "runningPace": "Lauf-Schwellenpace (mm:ss)",
+      "swimCss": "Critical Swim Speed (CSS mm:ss)",
+      "bodyWeight": "Körpergewicht",
+      "advancedCtl": "Erweitert: CTL manuell angeben",
+      "currentCtl": "Aktuell: {{ctl}} CTL",
+      "ctlLabel": "Chronic Training Load (CTL / Fitness)",
+      "ctlInfo": "CTL ist dein gleitender 42-Tage-Durchschnitt der täglichen Trainingsbelastung. Wenn du TrainingPeaks oder Strava Fitness nutzt, gib deinen aktuellen Wert ein, damit die Anfangsbelastung deines Plans genau zu deinem Trainingszustand passt."
+    },
+    "summary": {
+      "title": "Bereit fürs Training",
+      "subtitle": "Prüfe deine persönlichen Profileinstellungen.",
+      "athleteName": "Name",
+      "units": "Maßeinheiten",
+      "weeklyHours": "Ziel-Wochenstunden",
+      "hours_one": "{{count}} Stunde",
+      "hours_other": "{{count}} Stunden",
+      "mainFocus": "Hauptfokus",
+      "primaryGoal": "Hauptziel",
+      "timeDistribution": "Zeitverteilung",
+      "weeklyTotal": "{{hours}} h / Woche gesamt",
+      "sportBreakdown": "({{hours}} h • {{sessions}}x/Wo.)",
+      "targetMilestone": "Ziel-Meilenstein",
+      "fitnessLevel": "Fitnesslevel",
+      "fitnessLevelValue": "{{level}} ({{ctl}} CTL)",
+      "integrations": "Integrationen",
+      "stravaConnected": "Strava verbunden",
+      "standalone": "Ohne Verbindung",
+      "generating": "Dein persönlicher Trainingsplan wird erstellt..."
+    }
+  },
+  "bodyAreas": {
+    "all": "Ganzkörper",
+    "core": "Rumpf",
+    "upper": "Oberkörper",
+    "lower": "Unterkörper / Beine"
+  },
+  "milestonePicker": {
+    "selectFlexibilityTarget": "Beweglichkeitsziel wählen",
+    "selectStrengthBenchmark": "Kraft-Benchmark wählen",
+    "categories": {
+      "all": "Alle Bereiche",
+      "legs": "Beine",
+      "core": "Rumpf",
+      "upper": "Oberkörper",
+      "other": "Sonstiges / Eigenes"
+    },
+    "otherTitle": "Sonstiges / Eigenes Ziel",
+    "otherDescription": "Wähle den Körperbereich und gib eine eigene Übung ein"
+  }
+}

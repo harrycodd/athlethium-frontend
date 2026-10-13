@@ -1,0 +1,20 @@
+{
+  "title": "Tu plan",
+  "todaysSchedule": "Programa de hoy",
+  "scheduledSessions": "Sesiones programadas",
+  "emptyDay": "No hay sesiones programadas para este día.",
+  "dailyMax": {
+    "title": "Máximo diario",
+    "limitFor": "Límite para el {{date}}",
+    "hoursShort_one": "{{count}} h",
+    "hoursShort_other": "{{count}} h",
+    "modalTitle": "Horas máximas al día",
+    "hoursOption_one": "{{count}} hora",
+    "hoursOption_other": "{{count}} horas"
+  },
+  "calendar": {
+    "today": "Hoy",
+    "expand": "Ampliar",
+    "collapse": "Contraer"
+  }
+}

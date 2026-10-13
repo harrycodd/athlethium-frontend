@@ -25,7 +25,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert(t('common:error'), t('errors.fillAllFields'));
       return;
     }
 
@@ -46,9 +46,9 @@ export default function LoginScreen() {
         code === 'auth/wrong-password' ||
         code === 'auth/invalid-email'
       ) {
-        Alert.alert('Login Error', 'Incorrect username or password');
+        Alert.alert(t('errors.loginTitle'), t('errors.incorrectCredentials'));
       } else {
-        Alert.alert('Login Error', 'Please try again later');
+        Alert.alert(t('errors.loginTitle'), t('errors.tryAgainLater'));
       }
     } finally {
       setLoading(false);
@@ -138,6 +138,7 @@ export default function LoginScreen() {
         shape="rounded"
         size="lg"
         glowColor={isFormFilled ? '#22c55e' : undefined}
+        // i18n-ignore: colour values
         tintColor={isFormFilled ? (isDark ? 'rgba(34, 197, 94, 0.35)' : 'rgba(22, 163, 74, 0.25)') : undefined}
         style={{ 
           minHeight: 52,

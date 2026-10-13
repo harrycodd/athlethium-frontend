@@ -1,0 +1,271 @@
+{
+  "defaultEventName": "Événement cible",
+  "sports": {
+    "stretching": "Étirements"
+  },
+  "card": {
+    "reachedTitle": "Objectif atteint !",
+    "nextGoalPrompt": "Quel est votre prochain objectif ?",
+    "setNextGoal": "+ Nouvel objectif",
+    "countdownTitle": "Compte à rebours : {{name}}",
+    "daysToGo_one": "<num>{{count}}</num><label>jour restant</label>",
+    "daysToGo_other": "<num>{{count}}</num><label>jours restants</label>",
+    "planProgress": "Avancement du plan",
+    "weekProgressPercent": "Semaine {{week}} sur {{total}} ({{percent}} %)"
+  },
+  "details": {
+    "title": "Détails de l'objectif",
+    "blockProgress": "Avancement du bloc d'entraînement",
+    "weekProgress": "Semaine {{week}} sur {{total}}",
+    "daysCompleted_one": "{{count}} jour effectué",
+    "daysCompleted_other": "{{count}} jours effectués",
+    "daysRemaining_one": "{{count}} jour restant",
+    "daysRemaining_other": "{{count}} jours restants",
+    "quotedDescription": "« {{text}} »",
+    "markAchieved": "Marquer comme atteint",
+    "editGoal": "Modifier l'objectif"
+  },
+  "form": {
+    "editTitle": "Modifier l'objectif",
+    "newTitle": "Fixez votre objectif",
+    "subtitle": "Visez des étapes précises et des dates de course",
+    "sportFocus": "Sport visé",
+    "goalTemplates": "Modèles d'objectifs",
+    "flexibilityMilestoneFocus": "Étape de souplesse / priorité",
+    "strengthBenchmarkFocus": "Référence de force / priorité",
+    "selectFlexibilityMilestone": "Choisir une étape de souplesse",
+    "selectStrengthBenchmark": "Choisir une référence de force",
+    "category": "Catégorie : {{category}}",
+    "allFocusAreas": "Toutes les zones",
+    "categories": {
+      "legs": "Jambes",
+      "core": "Tronc",
+      "upper": "Haut du corps",
+      "other": "Autre"
+    },
+    "anatomicalArea": "Zone du corps ciblée par l'algorithme",
+    "bodyAreas": {
+      "all": "Corps entier",
+      "core": "Tronc",
+      "upper": "Haut du corps",
+      "lower": "Bas du corps / jambes"
+    },
+    "nameLabelStretching": "Nom de l'objectif / de l'étape",
+    "nameLabelStrength": "Nom de la référence",
+    "nameLabel": "Nom de l'objectif / de l'événement",
+    "namePlaceholderStretching": "ex. grand écart latéral, paumes au sol, autre",
+    "namePlaceholderStrength": "ex. 10 tractions strictes, squat à 100 kg, autre",
+    "namePlaceholder": "ex. marathon d'automne, objectif moins de 4 h",
+    "defaultGoalName": "Mon objectif de forme",
+    "goalNameFromTemplate": "Objectif {{goal}}",
+    "swimGoalName": "Objectif 1500 m nage",
+    "customMilestoneNote": "Étape personnalisée",
+    "swimDistanceLabel": "Distance de nage visée (mètres/yards)",
+    "distanceLabelMiles": "Distance visée (miles)",
+    "distanceLabelKm": "Distance visée (kilomètres)",
+    "yards": "Yards",
+    "meters": "Mètres",
+    "imperialMi": "Impérial (mi)",
+    "metricKm": "Métrique (km)",
+    "distanceChips": {
+      "halfMi": "Semi 13,1 mi",
+      "halfKm": "Semi 21,1 km",
+      "fullMi": "Marathon 26,2 mi",
+      "fullKm": "Marathon 42,2 km"
+    },
+    "swimDistancePlaceholder": "Distance en mètres/yards (ex. 1500)",
+    "distancePlaceholderMiles": "Distance en miles (ex. 26,2)",
+    "distancePlaceholderKm": "Distance en km (ex. 42,2)",
+    "finishTime": "Temps final visé (HH:MM:SS)",
+    "eventDate": "Date de l'événement",
+    "weeksAway_one": "dans {{count}} semaine",
+    "weeksAway_other": "dans {{count}} semaines",
+    "weeksPreset": "+{{weeks}} sem.",
+    "changeDate": "Changer la date",
+    "notesLabelStretching": "Priorité mobilité / notes (facultatif)",
+    "notesLabelStrength": "Notes sur la référence (facultatif)",
+    "notesLabel": "Notes sur l'objectif (facultatif)",
+    "notesPlaceholderStretching": "ex. 15 min de mobilité des hanches par jour, toucher le sol",
+    "notesPlaceholderStrength": "ex. 10 rép. strictes, 1RM à 100 kg",
+    "notesPlaceholder": "ex. moins de 3:45, negative split",
+    "saveUpdate": "Enregistrer et mettre à jour le plan",
+    "saveCreate": "Valider et générer le plan"
+  },
+  "milestonePicker": {
+    "flexibilityTitle": "Étapes de souplesse",
+    "strengthTitle": "Références de force",
+    "subtitle": "Choisissez une étape pour calibrer votre progression hebdomadaire.",
+    "categories": {
+      "all": "Toutes les étapes",
+      "legs": "Jambes et hanches",
+      "core": "Tronc et colonne",
+      "upper": "Haut du corps"
+    },
+    "otherTitle": "Autre / objectif personnalisé",
+    "otherNote": "Choisissez la zone du corps ciblée et saisissez votre mouvement"
+  },
+  "datePicker": {
+    "title": "Choisir la date cible"
+  },
+  "alerts": {
+    "requiredTitle": "Champ requis",
+    "requiredMessage": "Veuillez saisir ou choisir un nom d'objectif.",
+    "saveFailed": "Échec de l'enregistrement de l'objectif.",
+    "achievedTitle": "🎉 Félicitations !",
+    "achievedMessage": "Objectif atteint ! Quel sera votre prochain défi ?"
+  },
+  "goalTypes": {
+    "generalFitness": "Forme générale",
+    "ironman": "Ironman",
+    "halfIronman": "Demi-Ironman (70.3)",
+    "olympicTriathlon": "Triathlon olympique",
+    "sprintTriathlon": "Triathlon sprint",
+    "aquathlon": "Aquathlon",
+    "swimRun": "SwimRun",
+    "duathlon": "Duathlon",
+    "marathon": "Marathon",
+    "halfMarathon": "Semi-marathon",
+    "tenK": "10 km",
+    "fiveK": "5 km",
+    "centuryRide": "Cyclosportive 160 km",
+    "fortyKTT": "CLM 40 km",
+    "tenMileTT": "CLM 10 miles",
+    "freestyle1500": "1500 m nage libre",
+    "individualMedley400": "400 m 4 nages",
+    "strokeSpecialization200": "200 m spécialité",
+    "sprintEvent100": "Sprint 100 m",
+    "openWater1500": "Eau libre 1,5 km",
+    "openWater5K": "Eau libre 5 km",
+    "openWater10K": "Eau libre 10 km",
+    "functionalStrength": "Renforcement fonctionnel et préparation physique",
+    "fullBodyFlexibility": "Souplesse globale",
+    "frontSplitsMastery": "Maîtrise du grand écart latéral",
+    "middleSplitsMastery": "Maîtrise du grand écart facial"
+  },
+  "milestones": {
+    "stretching": {
+      "fullFrontSplits": {
+        "label": "Grand écart latéral complet",
+        "note": "Grand écart latéral jusqu'au sol"
+      },
+      "middleSplits": {
+        "label": "Grand écart facial",
+        "note": "Amplitude d'abduction des hanches"
+      },
+      "palmsToFloor": {
+        "label": "Paumes au sol",
+        "note": "Souplesse des ischios et de la chaîne postérieure"
+      },
+      "deepSquat": {
+        "label": "Squat profond",
+        "note": "Mobilité profonde des chevilles et des hanches"
+      },
+      "pigeonPose": {
+        "label": "Posture du pigeon à 90°",
+        "note": "Souplesse des fessiers et des rotateurs de hanche"
+      },
+      "ankleDorsiflexion": {
+        "label": "Flexion dorsale de cheville",
+        "note": "Amplitude complète de la cheville"
+      },
+      "thoracicBridge": {
+        "label": "Pont thoracique",
+        "note": "Pont complet et extension de la colonne thoracique"
+      },
+      "spinalDecompression": {
+        "label": "Décompression et torsions du dos",
+        "note": "Mobilité de la colonne et équilibre en rotation"
+      },
+      "lSit": {
+        "label": "Mobilité L-sit",
+        "note": "Compression abdominale et amplitude des fléchisseurs de hanche"
+      },
+      "overheadShoulder": {
+        "label": "Mobilité des épaules bras levés",
+        "note": "Flexion active des épaules à 180°"
+      },
+      "chestOpener": {
+        "label": "Ouverture pectoraux et épaules",
+        "note": "Souplesse des pectoraux et du tendon du biceps"
+      },
+      "thoracicExtension": {
+        "label": "Extension thoracique",
+        "note": "Mobilité posturale du haut du dos"
+      },
+      "fullBodyFlow": {
+        "label": "Enchaînement mobilité complet",
+        "note": "Routine de mobilité quotidienne complète"
+      },
+      "fullBodyMastery": {
+        "label": "Souplesse globale avancée",
+        "note": "Souplesse complète de toutes les articulations"
+      }
+    },
+    "strength": {
+      "pullUps": {
+        "label": "10 tractions strictes",
+        "note": "10 répétitions strictes d'affilée"
+      },
+      "pushUps": {
+        "label": "50 pompes d'affilée",
+        "note": "50 pompes sans pause"
+      },
+      "benchPress": {
+        "label": "Développé couché au PDC",
+        "note": "Développé couché à 1× le poids de corps"
+      },
+      "handstandPushUps": {
+        "label": "Pompes en équilibre",
+        "note": "Pompes strictes en équilibre contre un mur"
+      },
+      "muscleUp": {
+        "label": "Maîtrise du muscle-up",
+        "note": "Muscle-ups stricts à la barre ou aux anneaux"
+      },
+      "overheadPress": {
+        "label": "Développé militaire (0,75× PDC)",
+        "note": "Développé militaire strict à la barre"
+      },
+      "squat": {
+        "label": "Squat à 1,5× PDC",
+        "note": "Back squat à 1,5× le poids de corps"
+      },
+      "deadlift": {
+        "label": "Soulevé de terre à 2× PDC",
+        "note": "Soulevé de terre classique à 2× le poids de corps"
+      },
+      "pistolSquats": {
+        "label": "Pistol squats (sur une jambe)",
+        "note": "5 répétitions propres par jambe"
+      },
+      "bulgarianSplitSquat": {
+        "label": "Squat bulgare lourd",
+        "note": "Force et stabilité sur une jambe"
+      },
+      "plank": {
+        "label": "Gainage de 3 minutes",
+        "note": "180 s de planche stricte en continu"
+      },
+      "dragonFlag": {
+        "label": "Maîtrise du dragon flag",
+        "note": "Dragon flag strict au poids de corps"
+      },
+      "hangingLegRaises": {
+        "label": "Relevés de jambes suspendu (15 rép.)",
+        "note": "Relevés stricts pieds à la barre"
+      },
+      "abWheel": {
+        "label": "Roue abdominale depuis les pieds",
+        "note": "Roue abdominale en extension complète"
+      },
+      "cleanAndJerk": {
+        "label": "Épaulé-jeté de référence",
+        "note": "Référence en haltérophilie"
+      },
+      "functionalStrength": {
+        "label": "Force fonctionnelle avancée",
+        "note": "Force et puissance fonctionnelles globales"
+      }
+    }
+  }
+}

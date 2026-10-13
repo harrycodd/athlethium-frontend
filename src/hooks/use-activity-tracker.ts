@@ -2,6 +2,35 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Session, SessionSegment, WorkoutStep } from '@/types/activity';
 import { Workout } from '@/lib/workout-service';
 import { UserProfile } from '@/lib/user-service';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/lib/i18n';
+
+/** Translates an `activity` key (the hook passes its own `t` so labels follow the current language). */
+type Translate = (key: string, options?: Record<string, unknown>) => string;
+
+// Step type codes come from the backend; only their display labels are translated.
+const STEP_TYPE_LABEL_KEYS: Record<string, string> = {
+  warmup: 'stepTypes.warmup',
+  interval: 'stepTypes.interval',
+  recovery: 'stepTypes.recovery',
+  cooldown: 'stepTypes.cooldown',
+  tempo: 'stepTypes.tempo',
+  endurance: 'stepTypes.endurance',
+  exercise: 'stepTypes.exercise',
+  work: 'stepTypes.work',
+  sprint: 'stepTypes.sprint',
+  rest: 'stepTypes.rest',
+  threshold: 'stepTypes.threshold',
+  strength: 'stepTypes.strength',
+  stretching: 'stepTypes.stretching',
+  mobility: 'stepTypes.mobility',
+};
+
+/** Display label for a step type code, e.g. 'warmup' -> "Warmup" (unknown codes are capitalised as-is). */
+export function stepTypeLabel(t: Translate, type: string): string {
+  const key = STEP_TYPE_LABEL_KEYS[(type || '').toLowerCase()];
+  return key ? t(key) : type.charAt(0).toUpperCase() + type.slice(1);
+}
 
 export interface PlayableStep {
   id: string;
@@ -59,7 +88,8 @@ const getStepColor = (type: string): string => {
 
 export function normalizeWorkoutSteps(
   workout: (Workout & Session) | null,
-  profile?: UserProfile | null
+  profile?: UserProfile | null,
+  t: Translate = i18n.getFixedT(null, 'activity') as Translate
 ): PlayableStep[] {
   if (!workout) return [];
 
@@ -81,15 +111,15 @@ export function normalizeWorkoutSteps(
       const type = step.type || 'interval';
       const duration = Number(step.duration) || 0;
       const color = getStepColor(type);
-      let targetLabel = 'TARGET INTENSITY';
-      let targetValue = 'Steady Effort';
-      let targetSubtext = 'Zone 2 Aerobic';
+      let targetLabel = t('targets.intensityLabel');
+      let targetValue = t('targets.steadyEffort');
+      let targetSubtext = t('targets.zone2Aerobic');
       let targetType: PlayableStep['targetType'] = 'none';
 
       // Power based (cycling or running power)
       if (sport === 'cycling' || (sport === 'running' && step.targetType === 'power')) {
         targetType = 'power';
-        targetLabel = 'TARGET POWER';
+        targetLabel = t('targets.powerLabel');
         const ftp = sport === 'cycling' ? cyclingFtp : runningFtp;
 
         if (step.target_low && step.target_high) {
@@ -118,34 +148,34 @@ export function normalizeWorkoutSteps(
             const lowW = Math.round(ftp * 0.50);
             const highW = Math.round(ftp * 0.65);
             targetValue = `${lowW} - ${highW} W`;
-            targetSubtext = `50-65% FTP · Warm-up Zone`;
+            targetSubtext = t('targets.warmupZone');
           } else if (type === 'interval') {
             const lowW = Math.round(ftp * 0.95);
             const highW = Math.round(ftp * 1.05);
             targetValue = `${lowW} - ${highW} W`;
-            targetSubtext = `95-105% FTP · Threshold Zone`;
+            targetSubtext = t('targets.thresholdZone');
           } else if (type === 'recovery') {
             const lowW = Math.round(ftp * 0.45);
             const highW = Math.round(ftp * 0.55);
             targetValue = `${lowW} - ${highW} W`;
-            targetSubtext = `45-55% FTP · Active Recovery`;
+            targetSubtext = t('targets.activeRecovery');
           } else if (type === 'cooldown') {
             const lowW = Math.round(ftp * 0.45);
             const highW = Math.round(ftp * 0.60);
             targetValue = `${lowW} - ${highW} W`;
-            targetSubtext = `45-60% FTP · Cool-down Zone`;
+            targetSubtext = t('targets.cooldownZone');
           } else {
             const lowW = Math.round(ftp * 0.65);
             const highW = Math.round(ftp * 0.75);
             targetValue = `${lowW} - ${highW} W`;
-            targetSubtext = `65-75% FTP · Endurance Zone`;
+            targetSubtext = t('targets.enduranceZone');
           }
         }
       }
       // Running Pace
       else if (sport === 'running') {
         targetType = 'pace';
-        targetLabel = 'TARGET PACE';
+        targetLabel = t('targets.paceLabel');
         const unitLabel = isImperial ? 'mi' : 'km';
         const factor = isImperial ? 1.60934 : 1.0;
 
@@ -153,66 +183,66 @@ export function normalizeWorkoutSteps(
           const lowSec = Math.round(runningThresholdPace * 0.95 * factor);
           const highSec = Math.round(runningThresholdPace * 1.02 * factor);
           targetValue = `${formatPaceFromSeconds(lowSec)} - ${formatPaceFromSeconds(highSec)} /${unitLabel}`;
-          targetSubtext = 'Threshold / 5K-10K Race Pace';
+          targetSubtext = t('targets.racePace');
         } else if (type === 'warmup' || type === 'recovery' || type === 'cooldown') {
           const lowSec = Math.round(runningThresholdPace * 1.20 * factor);
           const highSec = Math.round(runningThresholdPace * 1.35 * factor);
           targetValue = `${formatPaceFromSeconds(lowSec)} - ${formatPaceFromSeconds(highSec)} /${unitLabel}`;
-          targetSubtext = 'Easy Aerobic / Recovery Pace';
+          targetSubtext = t('targets.easyAerobicPace');
         } else {
           const lowSec = Math.round(runningThresholdPace * 1.08 * factor);
           const highSec = Math.round(runningThresholdPace * 1.18 * factor);
           targetValue = `${formatPaceFromSeconds(lowSec)} - ${formatPaceFromSeconds(highSec)} /${unitLabel}`;
-          targetSubtext = 'Zone 2 · Steady Endurance Pace';
+          targetSubtext = t('targets.steadyEndurancePace');
         }
       }
       // Swimming Pace
       else if (sport === 'swimming') {
         targetType = 'pace';
-        targetLabel = 'TARGET CSS PACE';
+        targetLabel = t('targets.cssPaceLabel');
         const unitLabel = isImperial ? '100yd' : '100m';
 
         if (type === 'interval') {
           const lowSec = Math.round(swimCssPace * 0.95);
           const highSec = Math.round(swimCssPace * 1.02);
           targetValue = `${formatPaceFromSeconds(lowSec)} - ${formatPaceFromSeconds(highSec)} /${unitLabel}`;
-          targetSubtext = 'Critical Swim Speed · Threshold';
+          targetSubtext = t('targets.criticalSwimSpeed');
         } else {
           const lowSec = Math.round(swimCssPace * 1.10);
           const highSec = Math.round(swimCssPace * 1.25);
           targetValue = `${formatPaceFromSeconds(lowSec)} - ${formatPaceFromSeconds(highSec)} /${unitLabel}`;
-          targetSubtext = 'Aerobic / Recovery Pace';
+          targetSubtext = t('targets.aerobicRecoveryPace');
         }
       }
       // Strength / Reps
       else if (sport === 'strength' || step.reps || step.sets) {
         targetType = 'reps';
-        targetLabel = 'TARGET REPS';
+        targetLabel = t('targets.repsLabel');
         if (step.sets && step.reps) {
-          targetValue = `${step.sets} Sets × ${step.reps} Reps`;
+          targetValue = t('targets.setsReps', { sets: step.sets, reps: step.reps });
         } else if (step.reps) {
-          targetValue = `${step.reps} Reps`;
+          targetValue = t('targets.reps', { reps: step.reps });
         } else {
-          targetValue = 'Quality Reps';
+          targetValue = t('targets.qualityReps');
         }
-        targetSubtext = 'Focus on controlled eccentric form';
+        targetSubtext = t('targets.eccentricForm');
       }
       // Heart Rate fallback
       else if (step.targetType === 'heart_rate' || fthr > 0) {
         targetType = 'heart_rate';
-        targetLabel = 'TARGET HEART RATE';
+        targetLabel = t('targets.heartRateLabel');
         if (step.target_low && step.target_high) {
           const lowBpm = step.target_high <= 150 ? Math.round(fthr * (step.target_low / 100)) : Math.round(step.target_low);
           const highBpm = step.target_high <= 150 ? Math.round(fthr * (step.target_high / 100)) : Math.round(step.target_high);
           targetValue = `${lowBpm} - ${highBpm} bpm`;
-          targetSubtext = `Target HR Zone`;
+          targetSubtext = t('targets.hrZone');
         } else {
           targetValue = `${Math.round(fthr * 0.85)} - ${Math.round(fthr * 0.95)} bpm`;
-          targetSubtext = 'Zone 3-4 Threshold HR';
+          targetSubtext = t('targets.thresholdHr');
         }
       }
 
-      const defaultName = `${type.charAt(0).toUpperCase() + type.slice(1)} Step`;
+      const defaultName = t('defaultStepName', { type: stepTypeLabel(t, type) });
 
       return {
         id: `step-${index}`,
@@ -244,13 +274,13 @@ export function normalizeWorkoutSteps(
         id: `segment-${index}`,
         index,
         totalSteps,
-        name: seg.title || `Segment ${index + 1}`,
+        name: seg.title || t('defaultSegmentName', { number: index + 1 }),
         type: 'work',
         duration,
         targetType: 'time',
-        targetLabel: 'SESSION TARGET',
-        targetValue: seg.title || 'Execute Segment',
-        targetSubtext: 'Follow programmed interval guidance',
+        targetLabel: t('targets.sessionLabel'),
+        targetValue: seg.title || t('targets.executeSegment'),
+        targetSubtext: t('targets.followGuidance'),
         notes: seg.description,
         description: seg.description,
         assetName: seg.assetName,
@@ -266,13 +296,13 @@ export function normalizeWorkoutSteps(
       id: 'step-0',
       index: 0,
       totalSteps: 1,
-      name: workout.name || 'Workout Session',
+      name: workout.name || t('defaultWorkoutName'),
       type: 'work',
       duration: totalDuration,
       targetType: sport === 'cycling' ? 'power' : 'pace',
-      targetLabel: sport === 'cycling' ? 'TARGET POWER' : 'TARGET PACE',
+      targetLabel: sport === 'cycling' ? t('targets.powerLabel') : t('targets.paceLabel'),
       targetValue: sport === 'cycling' ? `${Math.round(cyclingFtp * 0.75)} W` : `${formatPaceFromSeconds(runningThresholdPace * 1.15)} /km`,
-      targetSubtext: 'Zone 2 Aerobic Endurance',
+      targetSubtext: t('targets.zone2AerobicEndurance'),
       description: workout.description,
       color: '#22c55e',
     },
@@ -283,7 +313,9 @@ export function useActivityTracker(
   workout: (Workout & Session) | null,
   profile?: UserProfile | null
 ) {
-  const steps = useMemo(() => normalizeWorkoutSteps(workout, profile), [workout, profile]);
+  const { t } = useTranslation('activity');
+  // `t` changes with the language, so step labels are rebuilt when it changes.
+  const steps = useMemo(() => normalizeWorkoutSteps(workout, profile, t), [workout, profile, t]);
 
   const [hasStarted, setHasStarted] = useState(false);
   const [isActive, setIsActive] = useState(false);
