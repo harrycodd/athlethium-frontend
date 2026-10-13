@@ -10,6 +10,12 @@ from beginner to pro.
 The app is React Native (Expo SDK 57, expo-router). The training engine and API live in
 [harrycodd/fitness-app-backend](https://github.com/harrycodd/fitness-app-backend).
 
+## Project history
+
+This repository is an enhancement of [harrycodd/athlethium-react](https://github.com/harrycodd/athlethium-react), the
+original Athlethium app (now archived). It has been refined using [Claude Code](https://claude.com/claude-code) to make it ready
+for deployment. The backend started as [harrycodd/athlethium-aws](https://github.com/harrycodd/athlethium-aws).
+
 ## Architecture
 
 ```
