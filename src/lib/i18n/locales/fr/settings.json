@@ -47,7 +47,9 @@
   "language": {
     "helper": "Les séances à venir seront réécrites dans la nouvelle langue.",
     "pickerTitle": "Choisir la langue",
-    "changeFailed": "Impossible de changer la langue. Veuillez réessayer."
+    "changeFailed": "Impossible de changer la langue. Veuillez réessayer.",
+    "device": "Langue du téléphone",
+    "deviceCurrent": "Langue du téléphone ({{language}})"
   },
   "sports": {
     "title": "Sports et priorités",

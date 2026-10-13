@@ -55,7 +55,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
 import { connectStrava, disconnectStrava } from '@/lib/strava';
 import { LANGUAGES, type LanguageCode } from '@/lib/i18n';
-import { changeAppLanguage } from '@/lib/i18n/language';
+import { DEVICE_LANGUAGE, changeAppLanguage, followsDeviceLanguage, type LanguageChoice } from '@/lib/i18n/language';
 
 // Ensure WebBrowser completes its auth session if necessary
 WebBrowser.maybeCompleteAuthSession();
@@ -452,13 +452,18 @@ export default function SettingsScreen() {
   };
 
   const currentLanguage = LANGUAGES.find((l) => l.code === i18n.resolvedLanguage) ?? LANGUAGES[0];
+  const languageChoice: LanguageChoice = followsDeviceLanguage() ? DEVICE_LANGUAGE : currentLanguage.code;
+  const languageOptions: { choice: LanguageChoice; name: string }[] = [
+    { choice: DEVICE_LANGUAGE, name: t('language.device') },
+    ...LANGUAGES.map((l) => ({ choice: l.code as LanguageCode, name: l.name })),
+  ];
 
-  const selectLanguage = async (code: LanguageCode) => {
+  const selectLanguage = async (next: LanguageChoice) => {
     setShowLanguagePicker(false);
-    if (code === currentLanguage.code) return;
+    if (next === languageChoice) return;
     setChangingLanguage(true);
     try {
-      await changeAppLanguage(code, user, profile?.scheduleDaysAhead);
+      await changeAppLanguage(next, user, profile?.scheduleDaysAhead);
     } catch (error) {
       console.error('Failed to change language:', error);
       Alert.alert(t('common:error'), t('language.changeFailed'));
@@ -737,7 +742,9 @@ export default function SettingsScreen() {
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                       <Globe size={18} color={colors.textSecondary} strokeWidth={2.2} />
                       <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }}>
-                        {currentLanguage.name}
+                        {languageChoice === DEVICE_LANGUAGE
+                          ? t('language.deviceCurrent', { language: currentLanguage.name })
+                          : currentLanguage.name}
                       </Text>
                     </View>
                     {changingLanguage ? (
@@ -2121,12 +2128,12 @@ export default function SettingsScreen() {
             </View>
 
             <View style={{ gap: 8, marginBottom: 16 }}>
-              {LANGUAGES.map((language) => {
-                const isSelected = language.code === currentLanguage.code;
+              {languageOptions.map((language) => {
+                const isSelected = language.choice === languageChoice;
                 return (
                   <TouchableOpacity
-                    key={language.code}
-                    onPress={() => selectLanguage(language.code)}
+                    key={language.choice}
+                    onPress={() => selectLanguage(language.choice)}
                     activeOpacity={0.8}
                     accessibilityRole="button"
                     accessibilityState={{ selected: isSelected }}

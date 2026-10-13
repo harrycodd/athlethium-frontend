@@ -16,12 +16,28 @@ export function isSupportedLanguage(code: unknown): code is LanguageCode {
   return typeof code === 'string' && LANGUAGES.some((l) => l.code === code);
 }
 
-/** The phone's language if we support it ("de-AT" -> "de"), otherwise English. */
-export function deviceLanguage(): LanguageCode {
+/** The phone's languages, most preferred first. On iOS this includes the app's own Language setting. */
+function phoneLanguages(): string[] {
   try {
-    const base = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[0].toLowerCase();
-    return isSupportedLanguage(base) ? base : DEFAULT_LANGUAGE;
+    // Loaded lazily so a build without the native module falls back to Intl instead of crashing.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getLocales } = require('expo-localization') as typeof import('expo-localization');
+    const codes = getLocales().map((l) => l.languageCode ?? l.languageTag.split('-')[0]);
+    if (codes.length) return codes;
   } catch {
-    return DEFAULT_LANGUAGE;
+    // fall through
   }
+  try {
+    return [Intl.DateTimeFormat().resolvedOptions().locale.split('-')[0]];
+  } catch {
+    return [];
+  }
+}
+
+/** The first of the phone's languages we support ("de-AT" -> "de"), otherwise English. */
+export function deviceLanguage(): LanguageCode {
+  const match = phoneLanguages()
+    .map((code) => code.toLowerCase())
+    .find(isSupportedLanguage);
+  return match ?? DEFAULT_LANGUAGE;
 }

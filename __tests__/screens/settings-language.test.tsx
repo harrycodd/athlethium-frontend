@@ -11,6 +11,8 @@ jest.mock('@/lib/i18n/language', () => ({
   changeAppLanguage: jest.fn(async (code: string) => {
     await jest.requireActual('@/lib/i18n').default.changeLanguage(code);
   }),
+  DEVICE_LANGUAGE: 'device',
+  followsDeviceLanguage: jest.fn(() => false),
   applyLanguage: jest.fn(async () => {}),
   restoreLanguage: jest.fn(async () => {}),
 }));
@@ -58,4 +60,20 @@ it('does nothing when the current language is picked again', async () => {
 
   expect(changeAppLanguage).not.toHaveBeenCalled();
   expect(screen.queryByText('Choose Language')).toBeNull();
+});
+
+it('offers the phone language and shows it on the row when chosen', async () => {
+  const { followsDeviceLanguage } = jest.requireMock('@/lib/i18n/language');
+  await render(<SettingsScreen />);
+  await fireEvent.press(screen.getByText('Athlete Profile'));
+  await fireEvent.press(screen.getByLabelText('Language'));
+
+  await fireEvent.press(screen.getByText('Phone language'));
+  expect(changeAppLanguage).toHaveBeenCalledWith('device', { uid: 'u1', email: 'sam@example.com' }, 3);
+
+  followsDeviceLanguage.mockReturnValue(true);
+  await fireEvent.press(screen.getByLabelText('Language'));
+  await fireEvent.press(screen.getByText('Cancel'));
+  expect(screen.getByText('Phone language (English)')).toBeTruthy();
+  followsDeviceLanguage.mockReturnValue(false);
 });

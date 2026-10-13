@@ -47,7 +47,9 @@
   "language": {
     "helper": "Kommende Einheiten werden in der neuen Sprache neu erstellt.",
     "pickerTitle": "Sprache wählen",
-    "changeFailed": "Die Sprache konnte nicht geändert werden. Bitte versuch es erneut."
+    "changeFailed": "Die Sprache konnte nicht geändert werden. Bitte versuch es erneut.",
+    "device": "Gerätesprache",
+    "deviceCurrent": "Gerätesprache ({{language}})"
   },
   "sports": {
     "title": "Sportarten & Fokus",

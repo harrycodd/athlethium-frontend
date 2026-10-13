@@ -47,7 +47,9 @@
   "language": {
     "helper": "Las próximas sesiones se reescribirán en el nuevo idioma.",
     "pickerTitle": "Elige idioma",
-    "changeFailed": "No se pudo cambiar el idioma. Inténtalo de nuevo."
+    "changeFailed": "No se pudo cambiar el idioma. Inténtalo de nuevo.",
+    "device": "Idioma del teléfono",
+    "deviceCurrent": "Idioma del teléfono ({{language}})"
   },
   "sports": {
     "title": "Deportes y enfoque",
