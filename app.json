@@ -40,7 +40,7 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
-      "package": "com.fdasjkfjasndjf.fitnessapp"
+      "package": "com.athlethium"
     },
     "web": {
       "output": "static",
