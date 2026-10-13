@@ -31,7 +31,7 @@ import {
   Zap,
 } from 'lucide-react-native';
 import { format } from 'date-fns';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePickerSheet from '@/components/date-picker-sheet';
 import { Radius, BorderWidth } from '@/constants/theme';
 import { GlassButton } from '@/components/ui/glass-button';
 import { cn } from "@/lib/utils";
@@ -495,17 +495,13 @@ export default function AddTrainingScreen() {
       </ScreenWrapper>
 
       {/* Date Picker Modal */}
-      {showDatePicker && (
-        <DateTimePicker
-          value={selectedDate}
-          mode="date"
-          display="default"
-          onChange={(_event: any, date?: Date) => {
-            setShowDatePicker(false);
-            if (date) setSelectedDate(date);
-          }}
-        />
-      )}
+      <DatePickerSheet
+        visible={showDatePicker}
+        value={selectedDate}
+        title={t('fields.date')}
+        onChange={setSelectedDate}
+        onClose={() => setShowDatePicker(false)}
+      />
 
       {/* Modals for Pickers */}
       <SelectionModal

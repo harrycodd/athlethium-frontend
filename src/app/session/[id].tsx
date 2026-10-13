@@ -14,7 +14,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { formatDate } from '@/lib/i18n/format';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePickerSheet from '@/components/date-picker-sheet';
 import { Timestamp } from 'firebase/firestore';
 import { Radius, BorderWidth, getIntensityZoneToken } from '@/constants/theme';
 import { GlassButton } from '@/components/ui/glass-button';
@@ -715,17 +715,13 @@ export default function SessionDetailsScreen() {
       </ScreenWrapper>
 
       {/* Date Picker */}
-      {showDatePicker && (
-        <DateTimePicker
-          value={selectedDate}
-          mode="date"
-          display="default"
-          onChange={(_event: any, date?: Date) => {
-            setShowDatePicker(false);
-            if (date) setSelectedDate(date);
-          }}
-        />
-      )}
+      <DatePickerSheet
+        visible={showDatePicker}
+        value={selectedDate}
+        title={t('details.date')}
+        onChange={setSelectedDate}
+        onClose={() => setShowDatePicker(false)}
+      />
 
       {/* Sport Picker Modal */}
       <Modal visible={showSportPicker} transparent animationType="slide">
